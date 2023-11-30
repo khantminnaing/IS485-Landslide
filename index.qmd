@@ -2,8 +2,10 @@
 title: "What Causes Landslides? Explanatory Landslide Susceptibility Modelling : Case Study of Italy"
 ---
 
-#### **Abstract**
+::: {style="color: #e75326;"}
+#### **Abstract** {style="color: #e75326;"}
+:::
 
-![](images/landslides (3).png)
+![](images/landslides (4).png)
 
 Landslides are a major natural hazard that can have a devastating impact on cities and communities all around the world. Over the past five decades, disasters caused by landslides have become ten times more frequent (Cendrero et al., 2020). Worldwide, landslides cause billions of dollars in damage to infrastructure and thousands of deaths every year. On average, about 3,500 people per year were killed due to landslide events all around the world (Froude & Petley, 2018). In addition to causality, landslides also impose long-term economic and social impacts, including property damage, disruption of access to essential services and supplies, and eventually displacement of people. Moreover, the aftermath of landslides often requires significant resources and time for recovery and reconstruction efforts, further straining already limited resources in affected areas. Landslide susceptibility modelling is an emerging research area of both importance and urgency. It is a relatively nascent field of study, despite the ever-lasting disaster threats of landslides around the world. Several approaches have been explored for landslide susceptibility zoning in the scientific literature. However, there are still challenges in terms of developing accurate and reliable models. One challenge is the lack of comprehensive and high-quality landslide inventories which hinders the ability to accurately assess the factors contributing to landslide susceptibility. Additionally, the complex nature of landslides makes it difficult to establish a universally applicable model. This project aims to research and develop **a reproducible methodology framework** for building and calibrating landslide susceptibility zoning models, in order to advance the current scientific knowledge base and research efforts.
