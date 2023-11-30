@@ -2,7 +2,7 @@
 title: "What Causes Landslides? Explanatory Landslide Susceptibility Modelling : Case Study of Italy"
 ---
 
-::: {style="color: #e75326;"}
+::: {style="color: #603494;"}
 #### **Abstract** {style="color: #e75326;"}
 :::
 

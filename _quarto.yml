@@ -12,9 +12,9 @@ website:
 
 format:
   html:
-    theme: united
+    theme: pulse
     css: styles.css
     toc: true
-
+    
 editor: visual
 

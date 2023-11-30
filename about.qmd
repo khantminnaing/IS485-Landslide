@@ -6,8 +6,8 @@ title: "About"
 
 This project is submitted to the **Singapore Management University** in fulfillment of the requirements for the degree of **Bachelor of Science (Information Systems) Smart-City Management and Technology major** under IS485 IS Project Experience (SMT Research).
 
-::: {style="color: #e75326;"}
-#### **Co-Authors** {style="color: #e75326;"}
+::: {style="color: #603494;"}
+#### **Co-Authors** {style="color: #603494;"}
 :::
 
 **Khant Min Naing**\
@@ -18,8 +18,8 @@ Singapore Management University
 victoriaann.2021\@scis.smu.edu.sg\
 Singapore Management University
 
-::: {style="color: #e75326;"}
-#### **Supervisor** {style="color: #e75326;"}
+::: {style="color: #603494;"}
+#### **Supervisor** {style="color: #603494;"}
 :::
 
 **Associate Professor Kam Tin Seong**\
