@@ -4,4 +4,4 @@ title: "About"
 
 ![](images/Spatialilengt.png){width="321"}
 
-This project is submitted to the **Singapore Management University** in partial fulfilment of the requirements for the degree of **Bachelor of Science (Information Systems) Smart-City Management and Technology major**.
+This project is submitted to the **Singapore Management University** in partial fulfillment of the requirements for the degree of **Bachelor of Science (Information Systems) Smart-City Management and Technology major**.
