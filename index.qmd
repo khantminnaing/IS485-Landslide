@@ -3,7 +3,7 @@ title: "What Causes Landslides? Explanatory Landslide Susceptibility Modelling :
 ---
 
 ![](images/landslides (4).png)
-
+ 
 ::: {style="color: #603494;"}
 #### **Abstract** {style="color: #603494;"}
 :::
