@@ -9,6 +9,7 @@ website:
         text: Home
       - about.qmd
       - research.qmd
+      - studyarea.qmd
 
 format:
   html:
