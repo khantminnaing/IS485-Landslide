@@ -1,5 +1,5 @@
 ---
-title: "What Causes Landslides? Explanatory Landslide Susceptibility Modelling : Case Study of Italy"
+title: "What Causes Landslides? Explanatory Landslide Susceptibility Modelling of Valtellina Valley, Lombardy Region, Italy"
 ---
 
 ![](images/landslides (4).png)
