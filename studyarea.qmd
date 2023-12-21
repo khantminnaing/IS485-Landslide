@@ -1,7 +1,8 @@
 ---
 title: "Study Area"
+
 ---
 
-![ Study Area](images/mapp.png)
+![Study Area](images/mapp.png)
 
-![ Landslides Inventory of Study Area](images/mapp_landslide.png)
+![Landslides Inventory of Study Area](images/mapp_landslide.png) 
