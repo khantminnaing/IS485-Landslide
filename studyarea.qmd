@@ -27,3 +27,4 @@ Nestled between Switzerland and the Lombard plain, the valley's geographical set
 ![Hillshade Analysis of Study Area](images/hillshade.png){fig-align="center"}
 
 ![Slope Analysis of Study Area](images/slope.png)
+
