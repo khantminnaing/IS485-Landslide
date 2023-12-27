@@ -40,4 +40,6 @@ Nestled between Switzerland and the Lombard plain, the valley's geographical set
 
 Quantitative geomorphological and [environmental analysis](https://www.sciencedirect.com/topics/earth-and-planetary-sciences/environmental-analysis "Learn more about environmental analysis from ScienceDirect's AI-generated Topic Pages") requires the adoption of well--defined spatial domains as basic mapping units. They provide local boundaries to aggregate environmental and morphometric variables and to perform calculations, thus they identify the spatial scale of the analysis. Grid cells, typically aligned with a [digital elevation model](https://www.sciencedirect.com/topics/earth-and-planetary-sciences/digital-elevation-model "Learn more about digital elevation model from ScienceDirect's AI-generated Topic Pages"), are the standard mapping unit choice. A wiser choice is represented by slope units, irregular terrain partitions delimited by drainage and divide lines that maximise geomorphological homogeneity within each unit and geomorphological heterogeneity between neighbouring units. Adoption of slope units has the advantage of enforcing a strong relation with the underlying topography, absent in grid cell--based analyses.
 
-![90th Percentile Precipitation Map](images/precipitation%20map.png)
+![90th Percentile Precipitation Map of Study Area](images/precipitation%20map.png)
+
+![Lithological Map of Study Area](images/geological_map-02.png)
