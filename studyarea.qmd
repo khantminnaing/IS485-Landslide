@@ -42,4 +42,4 @@ Quantitative geomorphological and [environmental analysis](https://www.sciencedi
 
 ![90th Percentile Precipitation Map of Study Area](images/precipitation%20map.png)
 
-![Lithological Map of Study Area](images/geological_map-02.png)
+![Lithological Map of Study Area](images/litho_map.png)
