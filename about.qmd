@@ -4,7 +4,7 @@ title: "About"
 
 ![](images/Spatialilengt.png){width="50%" style="display: block; margin-left: auto; margin-right: auto;"}
 
-This project is submitted to the **Singapore Management University** in fulfillment of the requirements for the degree of **Bachelor of Science (Information Systems) Smart-City Management and Technology major** under IS485 IS Project Experience (SMT Research).
+This project is submitted to the **Singapore Management University** in partial fulfillment of the requirements for the degree of **Bachelor of Science (Information Systems) Smart-City Management and Technology major** under IS485 IS Project Experience (SMT Research).
 
 ::: {style="color: #603494;"}
 #### **Co-Authors** {style="color: #603494;"}
@@ -14,9 +14,13 @@ This project is submitted to the **Singapore Management University** in fulfillm
 mnkhant.2020\@scis.smu.edu.sg\
 Singapore Management University
 
+[![](images/LinkedIn_logo.png){fig-align="left" width="25"}](www.linkedin.com/in/khantminnaing)
+
 **Ann Mei Yi Victoria Grace**\
 victoriaann.2021\@scis.smu.edu.sg\
 Singapore Management University
+
+[![](images/LinkedIn_logo.png){fig-align="left" width="25"}](www.linkedin.com/in/victoriagraceann2021)
 
 ::: {style="color: #603494;"}
 #### **Supervisor** {style="color: #603494;"}
@@ -25,3 +29,9 @@ Singapore Management University
 **Associate Professor Kam Tin Seong**\
 tskam\@smu.edu.sg\
 Singapore Management University
+
+::: {style="color: #603494;"}
+#### **Submitted to** {style="color: #603494;"}
+:::
+
+[![](images/smu-logo.jpeg){fig-align="left" width="252"}](smu.edu.sg)
