@@ -14,13 +14,13 @@ This project is submitted to the **Singapore Management University** in partial 
 mnkhant.2020\@scis.smu.edu.sg\
 Singapore Management University
 
-[![](images/LinkedIn_logo.png){fig-align="left" width="25"}](www.linkedin.com/in/khantminnaing)
+[![](images/LinkedIn_logo.png){fig-align="left" width="25"}](https://www.linkedin.com/in/khantminnaing/)
 
 **Ann Mei Yi Victoria Grace**\
 victoriaann.2021\@scis.smu.edu.sg\
 Singapore Management University
 
-[![](images/LinkedIn_logo.png){fig-align="left" width="25"}](www.linkedin.com/in/victoriagraceann2021)
+[![](images/LinkedIn_logo.png){fig-align="left" width="25"}](https://www.linkedin.com/in/victoriagraceann2021/)
 
 ::: {style="color: #603494;"}
 #### **Supervisor** {style="color: #603494;"}
