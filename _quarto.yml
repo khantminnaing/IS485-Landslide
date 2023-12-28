@@ -2,20 +2,21 @@ project:
   type: website
 
 website:
-  title: "IS485 Research"
   navbar:
-    logo: "images/logo.png"
-    left:
+    logo: "images/logo_name.png"
+    right:
       - href: index.qmd
         text: Home
       - about.qmd
       - research.qmd
       - studyarea.qmd
-
+  page-footer:
+    background: primary
+    left: "What Causes Landslides? Explanatory Landslide Susceptibility Modelling of Valtellina Valley, Lombardy Region, Italy" 
 format:
   html:
     theme: pulse
-    css: styles.css
+    css: [styles.css, logo.css]
     toc: true
     
 editor: visual
