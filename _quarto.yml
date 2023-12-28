@@ -4,6 +4,7 @@ project:
 website:
   title: "IS485 Research"
   navbar:
+    logo: "images/logo.png"
     left:
       - href: index.qmd
         text: Home
