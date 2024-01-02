@@ -25,6 +25,6 @@
     "href": "methodology.html",
     "title": "",
     "section": "",
-    "text": "Geographically Weighted Regression"
+    "text": "Geographically Weighted Regression\nGWR extends the ordinary least-sqaures regression framework by allowing local rather than global parameters to be estimated. That is, we allow there to be a continuous surface of parameter values, and measurements of this surface are taken at certain points to denote the spatial variability of the surface. Thus, the GWR equation recognises that spatial variations in relationships might exist and provides a way in which they can be measured. \nSpatial Weights\nSpatial weights are a key component in any cross-sectional analysis of spatial dependence. They are an essential element in the construction of spatial autocorrelation statistics, and provide the means to create spatially explicit variables, such as spatially lagged variables and spatially smoothed rates. Formally, the weights express the neighbour structure between the observations as a n×n matrix, in which the elements wij of the matrix are the spatial weights."
   }
 ]
