@@ -46,4 +46,6 @@ Quantitative geomorphological and [environmental analysis](https://www.sciencedi
 
 ![](images/profile_curvature.png)
 
+![](images/plan_c.png)
+
 Profile and Plan Curvatures
