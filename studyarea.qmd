@@ -8,9 +8,7 @@ title: "Study Area"
 
 **Valtellina Valley, Lombardy Region, Italy**
 
-![Study Area - Valtellina Valley](images/mapp.png)
-
-Valtellina or the Valtelline is a valley in the Lombardy region of northern Italy. The most important comune of the valley is Sondrio; the others major centers are Aprica, Morbegno, Tirano, Chiavenna, Bormio and Livigno.
+![](images/study_area_final.png)Valtellina or the Valtelline is a valley in the Lombardy region of northern Italy. The most important comune of the valley is Sondrio; the others major centers are Aprica, Morbegno, Tirano, Chiavenna, Bormio and Livigno.
 
 Nestled between Switzerland and the Lombard plain, the valley's geographical setting plays a crucial role in its susceptibility to landslides, making it an ideal case study for understanding and mitigating these complex natural hazards.
 
@@ -23,3 +21,5 @@ Nestled between Switzerland and the Lombard plain, the valley's geographical set
 -   **Hydrological Regimen:** The Adda River, fed by abundant alpine meltwater and subject to intense seasonal precipitation, carves into the valley floor, further weakening slopes and contributing to soil saturation, a key trigger for landslides.
 
 -   **Densely Populated:** Despite its rugged terrain, the Valtellina Valley boasts a thriving population, with numerous villages and towns nestled along its slopes and valley floor. This proximity to potential landslides heightens the vulnerability of people and infrastructure.
+
+![](images/elevation_map_final.png)
