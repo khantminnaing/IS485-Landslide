@@ -23,3 +23,5 @@ Nestled between Switzerland and the Lombard plain, the valley's geographical set
 -   **Densely Populated:** Despite its rugged terrain, the Valtellina Valley boasts a thriving population, with numerous villages and towns nestled along its slopes and valley floor. This proximity to potential landslides heightens the vulnerability of people and infrastructure.
 
 ![](images/elevation_map_final.png)
+
+![](images/curvature_profile_website.png)
