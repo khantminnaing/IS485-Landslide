@@ -16,13 +16,23 @@ output:
     self_contained: false
 ---
 
-## Set Up
-```{r, code_folding=FALSE}
-pacman::p_load(sf,sp,raster,tera,tidyr,dplyr,elevatr,cowplot,ggplot2,paletteer,classInt,RColorBrewer)
-
+## Set Up {style="color: #603494;"}
+```{r, code_folding=FALSE,warning=FALSE}
+library(sp)
+library(raster) 
+library(elevatr)
+library(sf)
+library(RColorBrewer)
+library(classInt)
+library(ggplot2)
+library(terra)
+library(tidyr)
+library(paletteer)
+library(cowplot)
+library(dplyr)
 ```
 
-## Import 
+## Import {style="color: #603494;"}
 
 ```{r, code_folding=FALSE}
 valtellina <- read_sf(dsn = "./data/vector", layer = "valtellina")
@@ -30,26 +40,22 @@ precipitation <-raster("data/raster/avgprecipitation_mm.tif")
 ```
 
 
-## Fixing CRS References
-```{r, code_folding=FALSE}
+## Fixing CRS References {style="color: #603494;"}
+```{r, code_folding=FALSE,results='hide'}
 
-st_crs(valtellina)
 valtellina <- st_set_crs(valtellina,32632)
-
-st_crs(precipitation)
 precipitation <- projectRaster(precipitation, crs = crs(valtellina))
-
 ```
 
 
-## Create Database
+## Create Database {style="color: #603494;"}
 ```{r, code_folding=FALSE}
 
 precipitation_df <- as.data.frame(precipitation,xy=TRUE)%>%drop_na()
 tail(precipitation_df)
 ```
 
-## Plot with ggplot2
+## Plot with ggplot2 {style="color: #603494;"}
 
 ```{r, code_folding=FALSE}
 
