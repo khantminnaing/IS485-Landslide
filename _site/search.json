@@ -32,7 +32,7 @@
     "href": "project.html#study-area",
     "title": "Project",
     "section": "Study Area",
-    "text": "Study Area\n\nggplot(data = valtellina) +\n  geom_sf()+\n  coord_sf(expand=FALSE)+\n  labs(x='Longitude',y='Latitude',\n       title=\"Study Area\",\n       subtitle='Valtellina Valley, Italy',\n       caption='Source: Zindi') +\n  cowplot::theme_cowplot()+\n  theme(panel.grid.major = element_line(color = gray(.5),\n                                        linetype = 'dashed',\n                                        linewidth = 0.5),\n        panel.grid.minor = element_blank(),\n        panel.background = element_rect(fill=NA,color = 'black'),\n        panel.ontop = TRUE)"
+    "text": "Study Area\n\nggplot(data = valtellina) +\n  geom_sf()+\n  coord_sf(expand=FALSE)+\n  labs(x='Longitude',y='Latitude',\n       title=\"Study Area\",\n       subtitle='Valtellina Valley, Italy',\n       caption='Source: Zindi') +\n  cowplot::theme_cowplot()+\n  theme(panel.grid.major = element_line(color = gray(.5),\n                                        linetype = 'dashed',\n                                        linewidth = 0.5),\n        panel.grid.minor = element_blank(),\n        panel.background = element_rect(fill=NA,color = 'black'),\n        panel.ontop = TRUE,\n        axis.title.x = element_text(size = 12), \n        axis.title.y = element_text(size = 12),\n        axis.text.x = element_text(size = 10),\n        axis.text.y = element_text(size = 10))"
   },
   {
     "objectID": "project.html#fixing-crs-references",
