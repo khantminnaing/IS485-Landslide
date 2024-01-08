@@ -155,12 +155,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#set-up" id="toc-set-up" class="nav-link active" data-scroll-target="#set-up">Set Up</a></li>
-  <li><a href="#import" id="toc-import" class="nav-link" data-scroll-target="#import">Import</a></li>
-  <li><a href="#study-area" id="toc-study-area" class="nav-link" data-scroll-target="#study-area">Study Area</a></li>
-  <li><a href="#fixing-crs-references" id="toc-fixing-crs-references" class="nav-link" data-scroll-target="#fixing-crs-references">Fixing CRS References</a></li>
-  <li><a href="#create-database" id="toc-create-database" class="nav-link" data-scroll-target="#create-database">Create Database</a></li>
-  <li><a href="#plot-with-ggplot2" id="toc-plot-with-ggplot2" class="nav-link" data-scroll-target="#plot-with-ggplot2">Plot with ggplot2</a></li>
+  <li><a href="#set-up" id="toc-set-up" class="nav-link active" data-scroll-target="#set-up">1.0 Set Up</a></li>
+  <li><a href="#import" id="toc-import" class="nav-link" data-scroll-target="#import">2.0 Import</a></li>
+  <li><a href="#study-area" id="toc-study-area" class="nav-link" data-scroll-target="#study-area">3.0 Study Area</a></li>
+  <li><a href="#fixing-crs-references" id="toc-fixing-crs-references" class="nav-link" data-scroll-target="#fixing-crs-references">4.0 Fixing CRS References</a></li>
+  <li><a href="#create-database" id="toc-create-database" class="nav-link" data-scroll-target="#create-database">5.0 Create Database</a></li>
+  <li><a href="#plot-with-ggplot2" id="toc-plot-with-ggplot2" class="nav-link" data-scroll-target="#plot-with-ggplot2">6.0 Plot with ggplot2</a></li>
   </ul>
 </nav>
     </div>
@@ -209,7 +209,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 <section id="set-up" class="level2" style="color: #603494;">
-<h2 style="color: #603494;" class="anchored" data-anchor-id="set-up">Set Up</h2>
+<h2 style="color: #603494;" class="anchored" data-anchor-id="set-up">1.0 Set Up</h2>
+<p>In this section, we set up the necessary R packages for data processing and exploratory spatial data analysis. The following packages are downloaded.</p>
+<ul>
+<li><p><a href="https://cran.r-project.org/web/packages/sp/index.html"><strong>sp</strong></a>for handling and analysing spatial data, providing classes and methods for spatial data manipulation.</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/sf/index.html"><strong>sf</strong></a> for importing, managing, and processing geospatial data, using simple features, enabling seamless integration with other tidyverse tools.</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/raster/index.html"><strong>raster</strong></a>for reading, writing, manipulating, analysing and modelling raster (gridded) spatial data.</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/elevatr/index.html"><strong>elevatr</strong></a>for extracting elevation data from various APIs and digital elevation models.</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/terra/index.html"><strong>terra</strong></a>for spatial data analysis with vector (points, lines, polygons) and raster (grid) data</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/tidyr/index.html"><strong>tidyr</strong></a> for creating tidy data, where each column is a variable, each row is an observation, and each cell contains a single value.</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/dplyr/index.html"><strong>dplyr</strong></a>fordata manipulation and wrangling</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/ggplot2/index.html"><strong>ggplot2</strong></a>for visualizing data into static and interactive graphics, based on <a href="https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448/ref=as_li_ss_tl">The Grammar of Graphics</a> paradigm.</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html"><strong>cowplot</strong></a>for creating complex and publication-quality multi-panel plots with added features and themes, an extension to ggplot2</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/classInt/index.html"><strong>classInt</strong></a>for classifying numeric data into intervals or classes, for mapping or other graphics purposes</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/RColorBrewer/index.html"><strong>RColorBrewer</strong></a>for creating visually appealing plots, particularly useful for thematic mapping.</p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/paletteer/index.html"><strong>paletteer</strong></a>for accessing a diverse collection of color palettes for data visualization.</p></li>
+</ul>
 <div class="cell" data-code_folding="false">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sp)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(raster) </span>
@@ -226,14 +241,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 <section id="import" class="level2" style="color: #603494;">
-<h2 style="color: #603494;" class="anchored" data-anchor-id="import">Import</h2>
+<h2 style="color: #603494;" class="anchored" data-anchor-id="import">2.0 Import</h2>
+<p>In this section, I will import the necessary datasets (both spatial and geospatial) into R environment.</p>
 <div class="cell" data-code_folding="false">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>valtellina <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="at">dsn =</span> <span class="st">"./data/vector"</span>, <span class="at">layer =</span> <span class="st">"valtellina"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>precipitation <span class="ot">&lt;-</span><span class="fu">raster</span>(<span class="st">"data/raster/avgprecipitation_mm.tif"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="study-area" class="level2">
-<h2 class="anchored" data-anchor-id="study-area">Study Area</h2>
+<section id="study-area" class="level2" style="color: #603494;">
+<h2 style="color: #603494;" class="anchored" data-anchor-id="study-area">3.0 Study Area</h2>
+<p>Before creating thematic maps for each landslide parameter, a map is created to plot the study area of this project, Valtellina Valley in Italy using <code>ggplot</code> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> valtellina) <span class="sc">+</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>()<span class="sc">+</span></span>
@@ -259,14 +276,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 <section id="fixing-crs-references" class="level2" style="color: #603494;">
-<h2 style="color: #603494;" class="anchored" data-anchor-id="fixing-crs-references">Fixing CRS References</h2>
+<h2 style="color: #603494;" class="anchored" data-anchor-id="fixing-crs-references">4.0 Fixing CRS References</h2>
+<p>Map projection is an important property of a geospatial data. In order to perform geoprocessing using geospatial data, we need to ensure that data are projected using the appropriate and standard coordinate system. For this project, we use EPSG:32632 (WGS 84 / UTM zone 32N) for all the datasets.</p>
 <div class="cell" data-code_folding="false">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>valtellina <span class="ot">&lt;-</span> <span class="fu">st_set_crs</span>(valtellina,<span class="dv">32632</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>precipitation <span class="ot">&lt;-</span> <span class="fu">projectRaster</span>(precipitation, <span class="at">crs =</span> <span class="fu">crs</span>(valtellina))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="create-database" class="level2" style="color: #603494;">
-<h2 style="color: #603494;" class="anchored" data-anchor-id="create-database">Create Database</h2>
+<h2 style="color: #603494;" class="anchored" data-anchor-id="create-database">5.0 Create Database</h2>
+<p>Before plotting the thematic maps with ggplot2, raster datasets are converted into data frames.</p>
 <div class="cell" data-code_folding="false">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>precipitation_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(precipitation,<span class="at">xy=</span><span class="cn">TRUE</span>)<span class="sc">%&gt;%</span><span class="fu">drop_na</span>()</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(precipitation_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -282,7 +301,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 <section id="plot-with-ggplot2" class="level2" style="color: #603494;">
-<h2 style="color: #603494;" class="anchored" data-anchor-id="plot-with-ggplot2">Plot with ggplot2</h2>
+<h2 style="color: #603494;" class="anchored" data-anchor-id="plot-with-ggplot2">6.0 Plot with ggplot2</h2>
+<p><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html"><code>geom_raster()</code></a> allows for visualizing <code>tiles</code> (such as raster).</p>
+<p><a href="https://ggplot2.tidyverse.org/reference/ggsf.html"><code>geom_sf()</code></a> allows for visualizing <code>sf</code> objects. Conveniently, <a href="https://ggplot2.tidyverse.org/reference/ggsf.html"><code>geom_sf()</code></a> automatically detects the geometry type of spatial objects stored in <code>sf</code> and draw maps accordingly.</p>
 <div class="cell" data-code_folding="false">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>()<span class="sc">+</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_raster</span>(<span class="fu">aes</span>(<span class="at">x=</span>x,<span class="at">y=</span>y,<span class="at">fill=</span>avgprecipitation_mm),<span class="at">data=</span>precipitation_df)<span class="sc">+</span></span>
