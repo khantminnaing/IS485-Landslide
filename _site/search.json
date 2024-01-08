@@ -7,11 +7,46 @@
     "text": "Study Area Selection\n\nValtellina Valley, Lombardy Region, Italy\nValtellina or the Valtelline is a valley in the Lombardy region of northern Italy. The most important comune of the valley is Sondrio; the others major centers are Aprica, Morbegno, Tirano, Chiavenna, Bormio and Livigno.\nNestled between Switzerland and the Lombard plain, the valley’s geographical setting plays a crucial role in its susceptibility to landslides, making it an ideal case study for understanding and mitigating these complex natural hazards.\nGeographic Features:\n\nAlpine Setting: Situated within the collision zone of the European and African plates, the Valtellina Valley experiences ongoing tectonic activity, leading to steep slopes, unstable rock formations, and frequent seismic tremors.\nGlacial Legacy: Past glacial activity sculpted the valley’s topography, resulting in U-shaped valleys, hanging valleys, and over-steepened slopes, all contributing to potential landslide initiation zones.\nHydrological Regimen: The Adda River, fed by abundant alpine meltwater and subject to intense seasonal precipitation, carves into the valley floor, further weakening slopes and contributing to soil saturation, a key trigger for landslides.\nDensely Populated: Despite its rugged terrain, the Valtellina Valley boasts a thriving population, with numerous villages and towns nestled along its slopes and valley floor. This proximity to potential landslides heightens the vulnerability of people and infrastructure."
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "project.html",
+    "href": "project.html",
+    "title": "Project",
     "section": "",
-    "text": "This project is submitted to the Singapore Management University in partial fulfillment of the requirements for the degree of Bachelor of Science (Information Systems) Smart-City Management and Technology major under IS485 IS Project Experience (SMT Research).\n\nCo-Authors\n\nKhant Min Naing\nmnkhant.2020@scis.smu.edu.sg\nSingapore Management University\n\n\n\n\n\nAnn Mei Yi Victoria Grace\nvictoriaann.2021@scis.smu.edu.sg\nSingapore Management University\n\n\n\n\n\n\nSupervisor\n\nAssociate Professor Kam Tin Seong\ntskam@smu.edu.sg\nSingapore Management University\n\nSubmitted to"
+    "text": "pacman::p_load(sf,sp,raster,tera,tidyr,dplyr,elevatr,cowplot,ggplot2,paletteer,classInt,RColorBrewer)\n\nWarning: package 'tera' is not available for this version of R\n\nA version of this package for your version of R might be available elsewhere,\nsee the ideas at\nhttps://cran.r-project.org/doc/manuals/r-patched/R-admin.html#Installing-packages\n\n\nWarning: 'BiocManager' not available.  Could not check Bioconductor.\n\nPlease use `install.packages('BiocManager')` and then retry.\n\n\nWarning in p_install(package, character.only = TRUE, ...):\n\n\nWarning in library(package, lib.loc = lib.loc, character.only = TRUE,\nlogical.return = TRUE, : there is no package called 'tera'\n\n\nWarning in pacman::p_load(sf, sp, raster, tera, tidyr, dplyr, elevatr, cowplot, : Failed to install/load:\ntera"
+  },
+  {
+    "objectID": "project.html#set-up",
+    "href": "project.html#set-up",
+    "title": "Project",
+    "section": "",
+    "text": "pacman::p_load(sf,sp,raster,tera,tidyr,dplyr,elevatr,cowplot,ggplot2,paletteer,classInt,RColorBrewer)\n\nWarning: package 'tera' is not available for this version of R\n\nA version of this package for your version of R might be available elsewhere,\nsee the ideas at\nhttps://cran.r-project.org/doc/manuals/r-patched/R-admin.html#Installing-packages\n\n\nWarning: 'BiocManager' not available.  Could not check Bioconductor.\n\nPlease use `install.packages('BiocManager')` and then retry.\n\n\nWarning in p_install(package, character.only = TRUE, ...):\n\n\nWarning in library(package, lib.loc = lib.loc, character.only = TRUE,\nlogical.return = TRUE, : there is no package called 'tera'\n\n\nWarning in pacman::p_load(sf, sp, raster, tera, tidyr, dplyr, elevatr, cowplot, : Failed to install/load:\ntera"
+  },
+  {
+    "objectID": "project.html#import",
+    "href": "project.html#import",
+    "title": "Project",
+    "section": "Import",
+    "text": "Import\n\nvaltellina &lt;- read_sf(dsn = \"./data/vector\", layer = \"valtellina\")\nprecipitation &lt;-raster(\"data/raster/avgprecipitation_mm.tif\")"
+  },
+  {
+    "objectID": "project.html#fixing-crs-references",
+    "href": "project.html#fixing-crs-references",
+    "title": "Project",
+    "section": "Fixing CRS References",
+    "text": "Fixing CRS References\n\nst_crs(valtellina)\n\nCoordinate Reference System:\n  User input: WGS 84 / UTM zone 32N \n  wkt:\nPROJCRS[\"WGS 84 / UTM zone 32N\",\n    BASEGEOGCRS[\"WGS 84\",\n        DATUM[\"World Geodetic System 1984\",\n            ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4326]],\n    CONVERSION[\"UTM zone 32N\",\n        METHOD[\"Transverse Mercator\",\n            ID[\"EPSG\",9807]],\n        PARAMETER[\"Latitude of natural origin\",0,\n            ANGLEUNIT[\"Degree\",0.0174532925199433],\n            ID[\"EPSG\",8801]],\n        PARAMETER[\"Longitude of natural origin\",9,\n            ANGLEUNIT[\"Degree\",0.0174532925199433],\n            ID[\"EPSG\",8802]],\n        PARAMETER[\"Scale factor at natural origin\",0.9996,\n            SCALEUNIT[\"unity\",1],\n            ID[\"EPSG\",8805]],\n        PARAMETER[\"False easting\",500000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8806]],\n        PARAMETER[\"False northing\",0,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8807]]],\n    CS[Cartesian,2],\n        AXIS[\"(E)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"(N)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    ID[\"EPSG\",32632]]\n\nvaltellina &lt;- st_set_crs(valtellina,32632)\n\nst_crs(precipitation)\n\nCoordinate Reference System:\n  User input: +proj=utm +zone=32 +datum=WGS84 +units=m +no_defs \n  wkt:\nPROJCRS[\"unknown\",\n    BASEGEOGCRS[\"unknown\",\n        DATUM[\"World Geodetic System 1984\",\n            ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n                LENGTHUNIT[\"metre\",1]],\n            ID[\"EPSG\",6326]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8901]]],\n    CONVERSION[\"UTM zone 32N\",\n        METHOD[\"Transverse Mercator\",\n            ID[\"EPSG\",9807]],\n        PARAMETER[\"Latitude of natural origin\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8801]],\n        PARAMETER[\"Longitude of natural origin\",9,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8802]],\n        PARAMETER[\"Scale factor at natural origin\",0.9996,\n            SCALEUNIT[\"unity\",1],\n            ID[\"EPSG\",8805]],\n        PARAMETER[\"False easting\",500000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8806]],\n        PARAMETER[\"False northing\",0,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8807]],\n        ID[\"EPSG\",16032]],\n    CS[Cartesian,2],\n        AXIS[\"(E)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1,\n                ID[\"EPSG\",9001]]],\n        AXIS[\"(N)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1,\n                ID[\"EPSG\",9001]]]]\n\nprecipitation &lt;- projectRaster(precipitation, crs = crs(valtellina))"
+  },
+  {
+    "objectID": "project.html#create-database",
+    "href": "project.html#create-database",
+    "title": "Project",
+    "section": "Create Database",
+    "text": "Create Database\n\nprecipitation_df &lt;- as.data.frame(precipitation,xy=TRUE)%&gt;%drop_na()\ntail(precipitation_df)\n\n               x       y avgprecipitation_mm\n4737030 540976.3 5095477           0.2868658\n4737031 541002.7 5095477           0.2868658\n4737032 541029.1 5095477           0.2868658\n4737033 541055.5 5095477           0.2868658\n4737034 541081.9 5095477           0.2868658\n4737035 541108.3 5095477           0.2868658"
+  },
+  {
+    "objectID": "project.html#plot-with-ggplot2",
+    "href": "project.html#plot-with-ggplot2",
+    "title": "Project",
+    "section": "Plot with ggplot2",
+    "text": "Plot with ggplot2\n\nggplot()+\n  geom_raster(aes(x=x,y=y,fill=avgprecipitation_mm),data=precipitation_df)+\n  geom_sf(fill='transparent',data=valtellina)+\n  scale_fill_gradientn('avg precipitation \\n(mm)', colours=c(\"#eff635\",\"#e4c838\",\"#99bf3e\",\"#61adab\",\"#5071ea\",\"#4225df\",\"#3310a2\"))+\n  coord_sf(expand=FALSE)+\n  labs(x='Longitude',y='Latitude',\n       title=\"Average Precipitation Map\",\n       subtitle='Valtellina Valley, Italy',\n       caption='Source: Zindi') +\n  cowplot::theme_cowplot()+\n  theme(panel.grid.major = element_line(color = gray(.5),\n                                        linetype = 'dashed',\n                                        linewidth = 0.5),\n        panel.grid.minor = element_blank(),\n        panel.background = element_rect(fill=NA,color = 'black'),\n        panel.ontop = TRUE,\n        axis.title.x = element_text(size = 10), \n        axis.title.y = element_text(size = 10),\n        axis.text.x = element_text(size = 8),\n        axis.text.y = element_text(size = 8),\n        legend.title = element_text(size = 10))"
   },
   {
     "objectID": "index.html",
@@ -19,6 +54,13 @@
     "title": "Explanatory and Predictive Landslide Susceptibility Modelling Using Statistical and Machine Learning Techniques: Case Study of Valtellina Valley, Italy",
     "section": "",
     "text": "Abstract\n\nLandslides are a major natural hazard that can have a devastating impact on cities and communities all around the world. Over the past five decades, disasters caused by landslides have become ten times more frequent (Cendrero et al., 2020). Worldwide, landslides cause billions of dollars in damage to infrastructure and thousands of deaths every year. On average, about 3,500 people per year were killed due to landslide events all around the world (Froude & Petley, 2018). In addition to causality, landslides also impose long-term economic and social impacts, including property damage, disruption of access to essential services and supplies, and eventually displacement of people. Moreover, the aftermath of landslides often requires significant resources and time for recovery and reconstruction efforts, further straining already limited resources in affected areas. Landslide susceptibility modelling is an emerging research area of both importance and urgency. It is a relatively nascent field of study, despite the ever-lasting disaster threats of landslides around the world. Several approaches have been explored for landslide susceptibility zoning in the scientific literature. However, there are still challenges in terms of developing accurate and reliable models. One challenge is the lack of comprehensive and high-quality landslide inventories which hinders the ability to accurately assess the factors contributing to landslide susceptibility. Additionally, the complex nature of landslides makes it difficult to establish a universally applicable model. This project aims to research and develop a reproducible methodology framework for building and calibrating landslide susceptibility zoning models, in order to advance the current scientific knowledge base and research efforts."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "This project is submitted to the Singapore Management University in partial fulfillment of the requirements for the degree of Bachelor of Science (Information Systems) Smart-City Management and Technology major under IS485 IS Project Experience (SMT Research).\n\nCo-Authors\n\nKhant Min Naing\nmnkhant.2020@scis.smu.edu.sg\nSingapore Management University\n\n\n\n\n\nAnn Mei Yi Victoria Grace\nvictoriaann.2021@scis.smu.edu.sg\nSingapore Management University\n\n\n\n\n\n\nSupervisor\n\nAssociate Professor Kam Tin Seong\ntskam@smu.edu.sg\nSingapore Management University\n\nSubmitted to"
   },
   {
     "objectID": "methodology.html",
