@@ -15,8 +15,9 @@ output:
     toc: true
     self_contained: false
 ---
-
+::: {style="color: #603494;"}
 ## 1.0 Set Up {style="color: #603494;"}
+:::
 
 In this section, we set up the necessary R packages for data processing and exploratory spatial data analysis. The following packages are downloaded.
 
@@ -59,7 +60,9 @@ library(cowplot)
 library(dplyr)
 ```
 
+::: {style="color: #603494;"}
 ## 2.0 Import {style="color: #603494;"}
+:::
 
 In this section, I will import the necessary datasets (both spatial and geospatial) into R environment.
 
@@ -68,7 +71,9 @@ valtellina <- read_sf(dsn = "./data/vector", layer = "valtellina")
 precipitation <-raster("data/raster/avgprecipitation_mm.tif")
 ```
 
+::: {style="color: #603494;"}
 ## 3.0 Study Area {style="color: #603494;"}
+:::
 
 Before creating thematic maps for each landslide parameter, a map is created to plot the study area of this project, Valtellina Valley in Italy using `ggplot` package.
 
@@ -93,7 +98,9 @@ ggplot(data = valtellina) +
         axis.text.y = element_text(size = 10))
 ```
 
+::: {style="color: #603494;"}
 ## 4.0 Fixing CRS References {style="color: #603494;"}
+:::
 
 Map projection is an important property of a geospatial data. In order to perform geoprocessing using geospatial data, we need to ensure that data are projected using the appropriate and standard coordinate system. For this project, we use EPSG:32632 (WGS 84 / UTM zone 32N) for all the datasets.
 
@@ -103,7 +110,9 @@ valtellina <- st_set_crs(valtellina,32632)
 precipitation <- projectRaster(precipitation, crs = crs(valtellina))
 ```
 
+::: {style="color: #603494;"}
 ## 5.0 Create Database {style="color: #603494;"}
+:::
 
 Before plotting the thematic maps with ggplot2, raster datasets are converted into data frames.
 
@@ -113,7 +122,9 @@ precipitation_df <- as.data.frame(precipitation,xy=TRUE)%>%drop_na()
 tail(precipitation_df)
 ```
 
+::: {style="color: #603494;"}
 ## 6.0 Plot with ggplot2 {style="color: #603494;"}
+:::
 
 [`geom_raster()`](https://ggplot2.tidyverse.org/reference/geom_tile.html) allows for visualizing `tiles` (such as raster).
 
