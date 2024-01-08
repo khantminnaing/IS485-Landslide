@@ -15,35 +15,36 @@ output:
     toc: true
     self_contained: false
 ---
+
 ::: {style="color: #603494;"}
 ## 1.0 Set Up {style="color: #603494;"}
 :::
 
 In this section, we set up the necessary R packages for data processing and exploratory spatial data analysis. The following packages are downloaded.
 
--   [**sp**](https://cran.r-project.org/web/packages/sp/index.html)for handling and analysing spatial data, providing classes and methods for spatial data manipulation.
+-   [**sp**](https://cran.r-project.org/web/packages/sp/index.html) for handling and analysing spatial data, providing classes and methods for spatial data manipulation.
 
 -   [**sf**](https://cran.r-project.org/web/packages/sf/index.html) for importing, managing, and processing geospatial data, using simple features, enabling seamless integration with other tidyverse tools.
 
--   [**raster**](https://cran.r-project.org/web/packages/raster/index.html)for reading, writing, manipulating, analysing and modelling raster (gridded) spatial data.
+-   [**raster**](https://cran.r-project.org/web/packages/raster/index.html) for reading, writing, manipulating, analysing and modelling raster (gridded) spatial data.
 
--   [**elevatr**](https://cran.r-project.org/web/packages/elevatr/index.html)for extracting elevation data from various APIs and digital elevation models.
+-   [**elevatr**](https://cran.r-project.org/web/packages/elevatr/index.html) for extracting elevation data from various APIs and digital elevation models.
 
--   [**terra**](https://cran.r-project.org/web/packages/terra/index.html)for spatial data analysis with vector (points, lines, polygons) and raster (grid) data
+-   [**terra**](https://cran.r-project.org/web/packages/terra/index.html) for spatial data analysis with vector (points, lines, polygons) and raster (grid) data
 
 -   [**tidyr**](https://cran.r-project.org/web/packages/tidyr/index.html) for creating tidy data, where each column is a variable, each row is an observation, and each cell contains a single value.
 
--   [**dplyr**](https://cran.r-project.org/web/packages/dplyr/index.html)fordata manipulation and wrangling
+-   [**dplyr**](https://cran.r-project.org/web/packages/dplyr/index.html) for data manipulation and wrangling
 
 -   [**ggplot2**](https://cran.r-project.org/web/packages/ggplot2/index.html)for visualizing data into static and interactive graphics, based on [The Grammar of Graphics](https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448/ref=as_li_ss_tl) paradigm.
 
--   [**cowplot**](https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html)for creating complex and publication-quality multi-panel plots with added features and themes, an extension to ggplot2
+-   [**cowplot**](https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html) for creating complex and publication-quality multi-panel plots with added features and themes, an extension to ggplot2
 
--   [**classInt**](https://cran.r-project.org/web/packages/classInt/index.html)for classifying numeric data into intervals or classes, for mapping or other graphics purposes
+-   [**classInt**](https://cran.r-project.org/web/packages/classInt/index.html) for classifying numeric data into intervals or classes, for mapping or other graphics purposes
 
--   [**RColorBrewer**](https://cran.r-project.org/web/packages/RColorBrewer/index.html)for creating visually appealing plots, particularly useful for thematic mapping.
+-   [**RColorBrewer**](https://cran.r-project.org/web/packages/RColorBrewer/index.html) for creating visually appealing plots, particularly useful for thematic mapping.
 
--   [**paletteer**](https://cran.r-project.org/web/packages/paletteer/index.html)for accessing a diverse collection of color palettes for data visualization.
+-   [**paletteer**](https://cran.r-project.org/web/packages/paletteer/index.html) for accessing a diverse collection of color palettes for data visualization.
 
 ```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
 library(sp)
