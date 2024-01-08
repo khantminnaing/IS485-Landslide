@@ -39,6 +39,24 @@ valtellina <- read_sf(dsn = "./data/vector", layer = "valtellina")
 precipitation <-raster("data/raster/avgprecipitation_mm.tif")
 ```
 
+## Study Area
+
+```{r}
+ggplot(data = valtellina) +
+  geom_sf()+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Study Area",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Zindi') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.5),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE)
+```
 
 ## Fixing CRS References {style="color: #603494;"}
 ```{r, code_folding=FALSE,results='hide'}
