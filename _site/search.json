@@ -11,14 +11,14 @@
     "href": "project.html",
     "title": "Project",
     "section": "",
-    "text": "library(sp)\nlibrary(raster) \nlibrary(elevatr)\n\nelevatr v0.99.0 NOTE: Version 0.99.0 of 'elevatr' uses 'sf' and 'terra'.  Use \nof the 'sp', 'raster', and underlying 'rgdal' packages by 'elevatr' is being \ndeprecated; however, get_elev_raster continues to return a RasterLayer.  This \nwill be dropped in future versions, so please plan accordingly.\n\nlibrary(sf)\n\nLinking to GEOS 3.11.0, GDAL 3.5.3, PROJ 9.1.0; sf_use_s2() is TRUE\n\nlibrary(RColorBrewer)\nlibrary(classInt)\nlibrary(ggplot2)\nlibrary(terra)\n\nterra 1.7.55\n\nlibrary(tidyr)\n\n\nAttaching package: 'tidyr'\n\n\nThe following object is masked from 'package:terra':\n\n    extract\n\n\nThe following object is masked from 'package:raster':\n\n    extract\n\nlibrary(paletteer)\nlibrary(cowplot)\nlibrary(dplyr)\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:terra':\n\n    intersect, union\n\n\nThe following objects are masked from 'package:raster':\n\n    intersect, select, union\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union"
+    "text": "library(sp)\nlibrary(raster) \nlibrary(elevatr)\nlibrary(sf)\nlibrary(RColorBrewer)\nlibrary(classInt)\nlibrary(ggplot2)\nlibrary(terra)\nlibrary(tidyr)\nlibrary(paletteer)\nlibrary(cowplot)\nlibrary(dplyr)"
   },
   {
     "objectID": "project.html#set-up",
     "href": "project.html#set-up",
     "title": "Project",
     "section": "",
-    "text": "library(sp)\nlibrary(raster) \nlibrary(elevatr)\n\nelevatr v0.99.0 NOTE: Version 0.99.0 of 'elevatr' uses 'sf' and 'terra'.  Use \nof the 'sp', 'raster', and underlying 'rgdal' packages by 'elevatr' is being \ndeprecated; however, get_elev_raster continues to return a RasterLayer.  This \nwill be dropped in future versions, so please plan accordingly.\n\nlibrary(sf)\n\nLinking to GEOS 3.11.0, GDAL 3.5.3, PROJ 9.1.0; sf_use_s2() is TRUE\n\nlibrary(RColorBrewer)\nlibrary(classInt)\nlibrary(ggplot2)\nlibrary(terra)\n\nterra 1.7.55\n\nlibrary(tidyr)\n\n\nAttaching package: 'tidyr'\n\n\nThe following object is masked from 'package:terra':\n\n    extract\n\n\nThe following object is masked from 'package:raster':\n\n    extract\n\nlibrary(paletteer)\nlibrary(cowplot)\nlibrary(dplyr)\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:terra':\n\n    intersect, union\n\n\nThe following objects are masked from 'package:raster':\n\n    intersect, select, union\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union"
+    "text": "library(sp)\nlibrary(raster) \nlibrary(elevatr)\nlibrary(sf)\nlibrary(RColorBrewer)\nlibrary(classInt)\nlibrary(ggplot2)\nlibrary(terra)\nlibrary(tidyr)\nlibrary(paletteer)\nlibrary(cowplot)\nlibrary(dplyr)"
   },
   {
     "objectID": "project.html#import",

@@ -17,7 +17,7 @@ output:
 ---
 
 ## Set Up {style="color: #603494;"}
-```{r, code_folding=FALSE, results='hide', warning=FALSE}
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
 library(sp)
 library(raster) 
 library(elevatr)
