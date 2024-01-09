@@ -93,7 +93,7 @@ ggplot(data = valtellina) +
   cowplot::theme_cowplot()+
   theme(panel.grid.major = element_line(color = gray(.5),
                                         linetype = 'dashed',
-                                        linewidth = 0.5),
+                                        linewidth = 0.1),
         panel.grid.minor = element_blank(),
         panel.background = element_rect(fill=NA,color = 'black'),
         panel.ontop = TRUE,
@@ -152,7 +152,7 @@ ggplot()+
   cowplot::theme_cowplot()+
   theme(panel.grid.major = element_line(color = gray(.5),
                                         linetype = 'dashed',
-                                        linewidth = 0.2),
+                                        linewidth = 0.1),
         panel.grid.minor = element_blank(),
         panel.background = element_rect(fill=NA,color = 'black'),
         panel.ontop = TRUE,
@@ -174,7 +174,7 @@ ggplot()+
   cowplot::theme_cowplot()+
   theme(panel.grid.major = element_line(color = gray(.5),
                                         linetype = 'dashed',
-                                        linewidth = 0.5),
+                                        linewidth = 0.1),
         panel.grid.minor = element_blank(),
         panel.background = element_rect(fill=NA,color = 'black'),
         panel.ontop = TRUE,
@@ -197,7 +197,7 @@ ggplot()+
   cowplot::theme_cowplot()+
   theme(panel.grid.major = element_line(color = gray(.5),
                                         linetype = 'dashed',
-                                        linewidth = 0.5),
+                                        linewidth = 0.1),
         panel.grid.minor = element_blank(),
         panel.background = element_rect(fill=NA,color = 'black'),
         panel.ontop = TRUE,
@@ -230,7 +230,7 @@ ggplot()+
   cowplot::theme_cowplot()+
   theme(panel.grid.major = element_line(color = gray(.5),
                                         linetype = 'dashed',
-                                        linewidth = 0.5),
+                                        linewidth = 0.1),
         panel.grid.minor = element_blank(),
         panel.background = element_rect(fill=NA,color = 'black'),
         panel.ontop = FALSE,
