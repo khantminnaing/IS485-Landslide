@@ -189,7 +189,7 @@ ggplot()+
   scale_fill_gradientn('twi', colours=c("#ffc803","#fe6b15","#ff2a36","#fd0275","#9d00d7","#0000fe"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
-       title="Average Precipitation Map",
+       title="Topographic Wetness Index Map",
        subtitle='Valtellina Valley, Italy',
        caption='Source: Zindi') +
   cowplot::theme_cowplot()+
