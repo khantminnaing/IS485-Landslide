@@ -72,6 +72,7 @@ valtellina <- read_sf(dsn = "./data/vector", layer = "valtellina")
 precipitation <-raster("data/raster/avgprecipitation_mm.tif")
 elevation <-raster("data/raster/elevation_m.tiff")
 twi <-raster("data/raster/twi_.tif")
+lithology <- read_sf(dsn = "./data/vector", layer = "lithology_cat")
 
 ```
 
@@ -126,6 +127,7 @@ precipitation_df <- as.data.frame(precipitation,xy=TRUE)%>%drop_na()
 tail(precipitation_df)
 elevation_df <- as.data.frame(elevation,xy=TRUE)%>%drop_na()
 twi_df <- as.data.frame(twi,xy=TRUE)%>%drop_na()
+lithology_df <- as.data.frame(lithology,xy=TRUE)%>%drop_na()
 ```
 
 ::: {style="color: #603494;"}
@@ -204,4 +206,39 @@ ggplot()+
         axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8),
         legend.title = element_text(size = 10))
+```
+
+Lithology
+```{r}
+
+profile_names <- as.vector( lithology_df$code )
+profile_colors <-c("#9cecfb","#fff204","#eed2c4","#ed6f05","#0d07e8",
+                   "#ee138d","#fe0902","#1bd7ff","#f582af","#c0e36c",
+                   "#712dfe","#4ccea0","#fffeba")
+
+
+# Plotting
+ggplot()+
+  geom_sf(aes(fill=code),color='transparent',data=lithology)+
+  scale_fill_manual(name = "lithology class",
+                    values = profile_colors,
+                    na.translate = FALSE)+
+  coord_sf(expand=FALSE)+
+  labs(title="Lithology Classification Map",
+       subtitle='Valtellina Valley, Italy',
+       caption=c('Source: Bucci et a., (2021)'))+
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.5),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = FALSE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 10))
+
 ```
