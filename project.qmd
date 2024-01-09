@@ -70,6 +70,9 @@ In this section, I will import the necessary datasets (both spatial and geospati
 ```{r, code_folding=FALSE}
 valtellina <- read_sf(dsn = "./data/vector", layer = "valtellina")
 precipitation <-raster("data/raster/avgprecipitation_mm.tif")
+elevation <-raster("data/raster/elevation_m.tiff")
+twi <-raster("data/raster/twi_.tif")
+
 ```
 
 ::: {style="color: #603494;"}
@@ -121,6 +124,8 @@ Before plotting the thematic maps with ggplot2, raster datasets are converted in
 
 precipitation_df <- as.data.frame(precipitation,xy=TRUE)%>%drop_na()
 tail(precipitation_df)
+elevation_df <- as.data.frame(elevation,xy=TRUE)%>%drop_na()
+twi_df <- as.data.frame(twi,xy=TRUE)%>%drop_na()
 ```
 
 ::: {style="color: #603494;"}
@@ -137,6 +142,51 @@ ggplot()+
   geom_raster(aes(x=x,y=y,fill=avgprecipitation_mm),data=precipitation_df)+
   geom_sf(fill='transparent',data=valtellina)+
   scale_fill_gradientn('avg precipitation \n(mm)', colours=c("#eff635","#e4c838","#99bf3e","#61adab","#5071ea","#4225df","#3310a2"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Average Precipitation Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Zindi') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.5),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10))
+
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=elevation_m),data=elevation_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scico::scale_fill_scico('elevation (m)',direction = -1,palette = "lajolla")+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Elevation Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Shuttle Radar Topography Mission') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.5),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10))
+
+
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=twi_),data=twi_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('twi', colours=c("#ffc803","#fe6b15","#ff2a36","#fd0275","#9d00d7","#0000fe"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Average Precipitation Map",
