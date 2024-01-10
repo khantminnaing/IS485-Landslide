@@ -67,7 +67,7 @@ library(dplyr)
 
 In this section, I will import the necessary datasets (both spatial and geospatial) into R environment.
 
-```{r, code_folding=FALSE}
+```{r, code_folding=FALSE, warning=FALSE}
 valtellina <- read_sf(dsn = "./data/vector", layer = "valtellina")
 precipitation <-raster("data/raster/avgprecipitation_mm.tif")
 elevation <-raster("data/raster/elevation_m.tiff")
@@ -75,6 +75,26 @@ twi <-raster("data/raster/twi_.tif")
 lithology <- read_sf(dsn = "./data/vector", layer = "lithology_cat")
 profile_c <- raster("data/raster/profile_curvature_cat.tif")
 plan_c <- raster("data/raster/plan_curvature_cat.tif")
+slope <- raster("data/raster/slope_degree.tif")
+distance_building <- raster("data/raster/distance_to_building_m.tif")
+distance_roads <-  raster("data/raster/distance_to_roads_m.tif")
+distance_river <-  raster("data/raster/distance_to_river_m.tif")
+distance_faults <-  raster("data/raster/distance_to_faults_m.tif")
+```
+
+Some Layers Required Cropping and Masking
+```{r}
+distance_building_cropped = crop(distance_building, valtellina)
+distance_building_final = mask(distance_building_cropped, valtellina)
+distance_roads_cropped = crop(distance_roads, valtellina)
+distance_roads_final = mask(distance_roads_cropped, valtellina)
+distance_river_cropped = crop(distance_river, valtellina)
+distance_river_final = mask(distance_river_cropped, valtellina)
+distance_faults_cropped = crop(distance_faults, valtellina)
+distance_faults_final = mask(distance_faults_cropped, valtellina)
+
+ref = extent(distance_building_final)
+distance_faults_final = setExtent(distance_faults_final, ref, keepres=FALSE, snap=FALSE)
 ```
 
 ::: {style="color: #603494;"}
@@ -131,6 +151,15 @@ twi_df <- as.data.frame(twi,xy=TRUE)%>%drop_na()
 lithology_df <- as.data.frame(lithology,xy=TRUE)%>%drop_na()
 profile_c_df <- as.data.frame(profile_c,xy=TRUE)%>%drop_na()
 plan_c_df <- as.data.frame(plan_c,xy=TRUE)%>%drop_na()
+slope_df <- as.data.frame(slope,xy=TRUE)%>%drop_na()
+distance_building_df <- as.data.frame(distance_building_final,xy=TRUE)%>%drop_na()
+distance_roads_df <- as.data.frame(distance_roads_final,xy=TRUE)%>%drop_na()
+distance_river_df <- as.data.frame(distance_river_final,xy=TRUE)%>%drop_na()
+distance_faults_df <- as.data.frame(distance_faults_final,xy=TRUE)%>%drop_na()
+head(distance_faults_df)
+head(distance_river_df)
+head(distance_roads_df)
+head(distance_building_df)
 ```
 
 ::: {style="color: #603494;"}
@@ -163,7 +192,8 @@ ggplot()+
         axis.title.y = element_text(size = 10),
         axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8),
-        legend.title = element_text(size = 10))
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
 
 ggplot()+
   geom_raster(aes(x=x,y=y,fill=elevation_m),data=elevation_df)+
@@ -185,7 +215,8 @@ ggplot()+
         axis.title.y = element_text(size = 10),
         axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8),
-        legend.title = element_text(size = 10))
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
 
 
 ggplot()+
@@ -208,7 +239,8 @@ ggplot()+
         axis.title.y = element_text(size = 10),
         axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8),
-        legend.title = element_text(size = 10))
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
 ```
 
 Lithology
@@ -241,7 +273,7 @@ ggplot()+
         axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8),
         legend.title = element_text(size = 10),
-        legend.text = element_text(size = 10))
+        legend.text = element_text(size = 9))
 
 ```
 
@@ -291,7 +323,7 @@ ggplot(data=profile_classifed_df)+
         axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8),
         legend.title = element_text(size = 10),
-        legend.text = element_text(size = 10))
+        legend.text = element_text(size = 9))
 
 ggplot(data=plan_classifed_df)+
   geom_raster(aes(x=x,y=y,fill=as.character(plan_curvature_cat)))+
@@ -317,6 +349,126 @@ ggplot(data=plan_classifed_df)+
         axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8),
         legend.title = element_text(size = 10),
-        legend.text = element_text(size = 10))
+        legend.text = element_text(size = 9))
+```
+```{r}
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=slope_degree),data=slope_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_viridis_c('slope (degree)',direction = -1)+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Slope Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Shuttle Radar Topography Mission') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
 
+Proximity Maps
+```{r}
+
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=distance_to_building_m),data=distance_building_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('proxmity (m)', colours=c("#A7226E","#EC2049","#F26B38","#F7DB4F","#DFD7BF"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Distance to Settlements Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: OpenStreetMap') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=distance_to_roads_m),data=distance_roads_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('proximity (m)', colours=c("#f04e53","#f3a757","#f9d46f","#8ddccc","#00a797"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Distance to Roads Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: OpenStreetMap') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+
+```{r}
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=distance_to_river_m),data=distance_river_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('proximity (m)', colours=c("#2D3F61","#10a6b1","#b6edf0"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Distance to Rivers Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Zindi') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=distance_to_faults_m_1),data=distance_faults_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+   scale_fill_gradientn('proximity (m)', colours=c("#a66119","#dfc37c","#f5f4f5","#80cdc1","#028571" ))+
+  labs(x='Longitude',y='Latitude',
+       title="Distance to Faults Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Zindi') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
 ```
