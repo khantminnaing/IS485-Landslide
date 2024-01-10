@@ -80,6 +80,7 @@ distance_building <- raster("data/raster/distance_to_building_m.tif")
 distance_roads <-  raster("data/raster/distance_to_roads_m.tif")
 distance_river <-  raster("data/raster/distance_to_river_m.tif")
 distance_faults <-  raster("data/raster/distance_to_faults_m.tif")
+aspect <- raster("data/raster/aspect_cat.tif")
 ```
 
 Some Layers Required Cropping and Masking
@@ -94,7 +95,7 @@ distance_faults_cropped = crop(distance_faults, valtellina)
 distance_faults_final = mask(distance_faults_cropped, valtellina)
 
 ref = extent(distance_building_final)
-distance_faults_final = setExtent(distance_faults_final, ref, keepres=FALSE, snap=FALSE)
+distance_faults_final <- setExtent(distance_faults_final, ref, keepres=FALSE, snap=FALSE)
 ```
 
 ::: {style="color: #603494;"}
@@ -156,10 +157,6 @@ distance_building_df <- as.data.frame(distance_building_final,xy=TRUE)%>%drop_na
 distance_roads_df <- as.data.frame(distance_roads_final,xy=TRUE)%>%drop_na()
 distance_river_df <- as.data.frame(distance_river_final,xy=TRUE)%>%drop_na()
 distance_faults_df <- as.data.frame(distance_faults_final,xy=TRUE)%>%drop_na()
-head(distance_faults_df)
-head(distance_river_df)
-head(distance_roads_df)
-head(distance_building_df)
 ```
 
 ::: {style="color: #603494;"}
@@ -465,6 +462,50 @@ ggplot()+
         panel.grid.minor = element_blank(),
         panel.background = element_rect(fill=NA,color = 'black'),
         panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+reclass_df <- c(-0.1, 51.4283882, 1,
+                51.4283883, 102.8567766 , 2,
+                102.8567767, 154.285164 , 3,
+                154.285165, 205.7135532 , 4,
+                205.7135533, 257.1419415, 5,
+                257.1419416, 308.57032, 6,
+                308.57033, 359.99868, 7,
+                359.99869, 360, 8)
+reclass_m <- matrix(reclass_df,ncol = 3,byrow = TRUE)
+
+aspect_classifed <- reclassify(aspect,reclass_m)
+aspect_classifed_df <- as.data.frame(aspect_classifed,xy=TRUE)%>%drop_na()
+
+aspect_names <-c("N","NE","E","SE","S","SW","W","NW")
+aspect_colors <-c("#84d601","#08ab44","#0068c0","#6c00a3","#ca009d","#ff5668","#ffab47","#f4fa03")
+
+ggplot(data=aspect_classifed_df)+
+  geom_raster(aes(x=x,y=y,fill=as.character(aspect_cat)))+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_manual(name = "direction",
+                    values = aspect_colors,
+                    labels = aspect_names,
+                    na.translate = FALSE)+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Aspect Direction Classification Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Shuttle Radar Topography Mission') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = FALSE,
         axis.title.x = element_text(size = 10), 
         axis.title.y = element_text(size = 10),
         axis.text.x = element_text(size = 8),
