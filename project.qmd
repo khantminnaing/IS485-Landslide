@@ -259,13 +259,13 @@ profile_classifed <- reclassify(profile_c,reclass_m)
 profile_classifed_df <- as.data.frame(profile_classifed,xy=TRUE)%>%drop_na()
 profile_codes <- unique(profile_classifed_df["profile_curvature_cat"])
 profile_names <-c("convex", "flat", "concave")
-profile_colors <-c("#2f4798","#e9e9e9","#00c8cd")
+profile_colors <-c("#65451F","#FEFAE0","#A9B388")
 
 plan_classifed <- reclassify(plan_c,reclass_m)
 plan_classifed_df <- as.data.frame(plan_classifed,xy=TRUE)%>%drop_na()
 plan_codes <- unique(plan_classifed_df["plan_curvature_cat"])
 plan_names <-c("concave", "flat", "convex")
-plan_colors <-c("#2f4798","#e9e9e9","#00c8cd")
+plan_colors <-c("#65451F","#FEFAE0","#A9B388")
 
 ggplot(data=profile_classifed_df)+
   geom_raster(aes(x=x,y=y,fill=as.character(profile_curvature_cat)))+

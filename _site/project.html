@@ -200,7 +200,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 9, 2024</p>
+      <p class="date-modified">January 10, 2024</p>
     </div>
   </div>
     
@@ -437,13 +437,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>profile_classifed_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(profile_classifed,<span class="at">xy=</span><span class="cn">TRUE</span>)<span class="sc">%&gt;%</span><span class="fu">drop_na</span>()</span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>profile_codes <span class="ot">&lt;-</span> <span class="fu">unique</span>(profile_classifed_df[<span class="st">"profile_curvature_cat"</span>])</span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>profile_names <span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"convex"</span>, <span class="st">"flat"</span>, <span class="st">"concave"</span>)</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>profile_colors <span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"#2f4798"</span>,<span class="st">"#e9e9e9"</span>,<span class="st">"#00c8cd"</span>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>profile_colors <span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"#65451F"</span>,<span class="st">"#FEFAE0"</span>,<span class="st">"#A9B388"</span>)</span>
 <span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>plan_classifed <span class="ot">&lt;-</span> <span class="fu">reclassify</span>(plan_c,reclass_m)</span>
 <span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>plan_classifed_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(plan_classifed,<span class="at">xy=</span><span class="cn">TRUE</span>)<span class="sc">%&gt;%</span><span class="fu">drop_na</span>()</span>
 <span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>plan_codes <span class="ot">&lt;-</span> <span class="fu">unique</span>(plan_classifed_df[<span class="st">"plan_curvature_cat"</span>])</span>
 <span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>plan_names <span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"concave"</span>, <span class="st">"flat"</span>, <span class="st">"convex"</span>)</span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>plan_colors <span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"#2f4798"</span>,<span class="st">"#e9e9e9"</span>,<span class="st">"#00c8cd"</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>plan_colors <span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"#65451F"</span>,<span class="st">"#FEFAE0"</span>,<span class="st">"#A9B388"</span>)</span>
 <span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>profile_classifed_df)<span class="sc">+</span></span>
 <span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_raster</span>(<span class="fu">aes</span>(<span class="at">x=</span>x,<span class="at">y=</span>y,<span class="at">fill=</span><span class="fu">as.character</span>(profile_curvature_cat)))<span class="sc">+</span></span>
