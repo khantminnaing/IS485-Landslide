@@ -8,9 +8,16 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
-      - research.qmd
-      - studyarea.qmd
-      - project.qmd
+    left:
+      - text: Research
+        href: research.qmd
+      - text: Study Area
+        href: studyarea.qmd
+      - text: Project
+        href: project.qmd
+      - text: Methodology
+        href: methodology.qmd
+
   page-footer:
     background: primary
     left: "What Causes Landslides? Explanatory Landslide Susceptibility Modelling of Valtellina Valley, Lombardy Region, Italy"
