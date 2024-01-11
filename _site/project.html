@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Khant Min Naing">
-<meta name="author" content="Mei Yi Victoria Grace Ann">
+<meta name="author" content="Ann Mei Yi Victoria Grace">
 <meta name="dcterms.date" content="2024-01-07">
 
 <title>Project</title>
@@ -118,18 +118,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="./index.html" rel="" target="">
- <span class="menu-text">Home</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./about.html" rel="" target="">
- <span class="menu-text">About</span></a>
-  </li>  
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link" href="./research.html" rel="" target="">
- <span class="menu-text">Research Paper</span></a>
+ <span class="menu-text">Research</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./studyarea.html" rel="" target="">
@@ -138,6 +130,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li class="nav-item">
     <a class="nav-link active" href="./project.html" rel="" target="" aria-current="page">
  <span class="menu-text">Project</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./methodology.html" rel="" target="">
+ <span class="menu-text">Methodology</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
   </li>  
 </ul>
             <div class="quarto-navbar-tools">
@@ -186,7 +192,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div class="quarto-title-meta-heading">Authors</div>
     <div class="quarto-title-meta-contents">
              <p>Khant Min Naing </p>
-             <p>Mei Yi Victoria Grace Ann </p>
+             <p>Ann Mei Yi Victoria Grace </p>
           </div>
   </div>
     
@@ -200,7 +206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 11, 2024</p>
+      <p class="date-modified">January 12, 2024</p>
     </div>
   </div>
     
@@ -247,18 +253,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>In this section, I will import the necessary datasets (both spatial and geospatial) into R environment.</p>
 <div class="cell" data-code_folding="false">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>valtellina <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="at">dsn =</span> <span class="st">"./data/vector"</span>, <span class="at">layer =</span> <span class="st">"valtellina"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>precipitation <span class="ot">&lt;-</span><span class="fu">raster</span>(<span class="st">"data/raster/avgprecipitation_mm.tif"</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>elevation <span class="ot">&lt;-</span><span class="fu">raster</span>(<span class="st">"data/raster/elevation_m.tiff"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>twi <span class="ot">&lt;-</span><span class="fu">raster</span>(<span class="st">"data/raster/twi_.tif"</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>lithology <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="at">dsn =</span> <span class="st">"./data/vector"</span>, <span class="at">layer =</span> <span class="st">"lithology_cat"</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>profile_c <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="st">"data/raster/profile_curvature_cat.tif"</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>plan_c <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="st">"data/raster/plan_curvature_cat.tif"</span>)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>slope <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="st">"data/raster/slope_degree.tif"</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>distance_building <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="st">"data/raster/distance_to_building_m.tif"</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>distance_roads <span class="ot">&lt;-</span>  <span class="fu">raster</span>(<span class="st">"data/raster/distance_to_roads_m.tif"</span>)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>distance_river <span class="ot">&lt;-</span>  <span class="fu">raster</span>(<span class="st">"data/raster/distance_to_river_m.tif"</span>)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>distance_faults <span class="ot">&lt;-</span>  <span class="fu">raster</span>(<span class="st">"data/raster/distance_to_faults_m.tif"</span>)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>aspect <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="st">"data/raster/aspect_cat.tif"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>landslides <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="at">dsn =</span> <span class="st">"./data/vector"</span>, <span class="at">layer =</span> <span class="st">"landslide_inventory"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>precipitation <span class="ot">&lt;-</span><span class="fu">raster</span>(<span class="st">"data/raster/avgprecipitation_mm.tif"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>elevation <span class="ot">&lt;-</span><span class="fu">raster</span>(<span class="st">"data/raster/elevation_m.tiff"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>twi <span class="ot">&lt;-</span><span class="fu">raster</span>(<span class="st">"data/raster/twi_.tif"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>lithology <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="at">dsn =</span> <span class="st">"./data/vector"</span>, <span class="at">layer =</span> <span class="st">"lithology_cat"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>profile_c <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="st">"data/raster/profile_curvature_cat.tif"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>plan_c <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="st">"data/raster/plan_curvature_cat.tif"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>slope <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="st">"data/raster/slope_degree.tif"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>distance_building <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="st">"data/raster/distance_to_building_m.tif"</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>distance_roads <span class="ot">&lt;-</span>  <span class="fu">raster</span>(<span class="st">"data/raster/distance_to_roads_m.tif"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>distance_river <span class="ot">&lt;-</span>  <span class="fu">raster</span>(<span class="st">"data/raster/distance_to_river_m.tif"</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>distance_faults <span class="ot">&lt;-</span>  <span class="fu">raster</span>(<span class="st">"data/raster/distance_to_faults_m.tif"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>aspect <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="st">"data/raster/aspect_cat.tif"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Some Layers Required Cropping and Masking</p>
 <div class="cell">

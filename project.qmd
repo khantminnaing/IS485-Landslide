@@ -69,6 +69,7 @@ In this section, I will import the necessary datasets (both spatial and geospati
 
 ```{r, code_folding=FALSE, warning=FALSE}
 valtellina <- read_sf(dsn = "./data/vector", layer = "valtellina")
+landslides <- read_sf(dsn = "./data/vector", layer = "landslide_inventory")
 precipitation <-raster("data/raster/avgprecipitation_mm.tif")
 elevation <-raster("data/raster/elevation_m.tiff")
 twi <-raster("data/raster/twi_.tif")
