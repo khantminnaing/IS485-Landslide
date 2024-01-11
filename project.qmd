@@ -84,6 +84,7 @@ aspect <- raster("data/raster/aspect_cat.tif")
 ```
 
 Some Layers Required Cropping and Masking
+
 ```{r}
 distance_building_cropped = crop(distance_building, valtellina)
 distance_building_final = mask(distance_building_cropped, valtellina)
@@ -105,7 +106,9 @@ distance_faults_final <- setExtent(distance_faults_final, ref, keepres=FALSE, sn
 Before creating thematic maps for each landslide parameter, a map is created to plot the study area of this project, Valtellina Valley in Italy using `ggplot` package.
 
 ```{r}
-ggplot(data = valtellina) +
+valtellina_transformed <- st_transform(valtellina, crs = "+proj=merc")
+
+ggplot(data = valtellina_transformed) +
   geom_sf()+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
@@ -132,9 +135,8 @@ ggplot(data = valtellina) +
 Map projection is an important property of a geospatial data. In order to perform geoprocessing using geospatial data, we need to ensure that data are projected using the appropriate and standard coordinate system. For this project, we use EPSG:32632 (WGS 84 / UTM zone 32N) for all the datasets.
 
 ```{r, code_folding=FALSE,results='hide'}
+precipitation <- projectRaster(precipitation, crs = "+proj=merc")
 
-valtellina <- st_set_crs(valtellina,32632)
-precipitation <- projectRaster(precipitation, crs = crs(valtellina))
 ```
 
 ::: {style="color: #603494;"}
@@ -171,7 +173,7 @@ distance_faults_df <- as.data.frame(distance_faults_final,xy=TRUE)%>%drop_na()
 
 ggplot()+
   geom_raster(aes(x=x,y=y,fill=avgprecipitation_mm),data=precipitation_df)+
-  geom_sf(fill='transparent',data=valtellina)+
+  geom_sf(fill='transparent',data=valtellina_transformed)+
   scale_fill_gradientn('avg precipitation \n(mm)', colours=c("#eff635","#e4c838","#99bf3e","#61adab","#5071ea","#4225df","#3310a2"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
@@ -241,6 +243,7 @@ ggplot()+
 ```
 
 Lithology
+
 ```{r}
 
 litho_colors <-c("#9cecfb","#fff204","#eed2c4","#ed6f05","#0d07e8",
@@ -273,7 +276,6 @@ ggplot()+
         legend.text = element_text(size = 9))
 
 ```
-
 
 ## 7.0 Reclassify Raster data
 
@@ -348,6 +350,7 @@ ggplot(data=plan_classifed_df)+
         legend.title = element_text(size = 10),
         legend.text = element_text(size = 9))
 ```
+
 ```{r}
 ggplot()+
   geom_raster(aes(x=x,y=y,fill=slope_degree),data=slope_df)+
@@ -374,6 +377,7 @@ ggplot()+
 ```
 
 Proximity Maps
+
 ```{r}
 
 ggplot()+
