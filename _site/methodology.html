@@ -83,20 +83,24 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./research.html" rel="" target="">
- <span class="menu-text">Research</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./studyarea.html" rel="" target="">
  <span class="menu-text">Study Area</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./project.html" rel="" target="">
- <span class="menu-text">Project</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link active" href="./methodology.html" rel="" target="" aria-current="page">
  <span class="menu-text">Methodology</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./project.html" rel="" target="">
+ <span class="menu-text">EDA</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gwsmodelling.html" rel="" target="">
+ <span class="menu-text">Model Development</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./research.html" rel="" target="">
+ <span class="menu-text">Research Paper</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
@@ -126,7 +130,11 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#explanatory-and-predictive-landslide-susceptibility-modelling-using-statistical-and-machine-learning-techniques-case-study-of-valtellina-valley-italy" id="toc-explanatory-and-predictive-landslide-susceptibility-modelling-using-statistical-and-machine-learning-techniques-case-study-of-valtellina-valley-italy" class="nav-link active" data-scroll-target="#explanatory-and-predictive-landslide-susceptibility-modelling-using-statistical-and-machine-learning-techniques-case-study-of-valtellina-valley-italy">Explanatory and Predictive Landslide Susceptibility Modelling Using Statistical and Machine Learning Techniques: Case Study of Valtellina Valley, Italy</a>
   <ul class="collapse">
-  <li><a href="#geographically-weighted-regression-gwr" id="toc-geographically-weighted-regression-gwr" class="nav-link" data-scroll-target="#geographically-weighted-regression-gwr">Geographically Weighted Regression, GWR</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">1.0 Overview</a></li>
+  <li><a href="#using-statistical-models-for-landslide-susceptibility" id="toc-using-statistical-models-for-landslide-susceptibility" class="nav-link" data-scroll-target="#using-statistical-models-for-landslide-susceptibility">2.0 Using Statistical Models for Landslide Susceptibility</a></li>
+  <li><a href="#using-machine-learning-models-for-landslide-susceptibility" id="toc-using-machine-learning-models-for-landslide-susceptibility" class="nav-link" data-scroll-target="#using-machine-learning-models-for-landslide-susceptibility">3.0 Using Machine Learning Models for Landslide Susceptibility</a></li>
+  <li><a href="#research-design" id="toc-research-design" class="nav-link" data-scroll-target="#research-design">4.0 Research Design</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">5.0 References</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -138,11 +146,49 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="explanatory-and-predictive-landslide-susceptibility-modelling-using-statistical-and-machine-learning-techniques-case-study-of-valtellina-valley-italy" class="level2">
 <h2 class="anchored" data-anchor-id="explanatory-and-predictive-landslide-susceptibility-modelling-using-statistical-and-machine-learning-techniques-case-study-of-valtellina-valley-italy">Explanatory and Predictive Landslide Susceptibility Modelling Using Statistical and Machine Learning Techniques: Case Study of Valtellina Valley, Italy</h2>
-<section id="geographically-weighted-regression-gwr" class="level3">
-<h3 class="anchored" data-anchor-id="geographically-weighted-regression-gwr">Geographically Weighted Regression, GWR</h3>
+<section id="overview" class="level3">
+<h3 class="anchored" data-anchor-id="overview">1.0 Overview</h3>
+<p>Landslide susceptibility assessment is an emerging research area of both importance and urgency and several approaches and models have been explored in scientific literature. These models can be generally categorized into four categories: expert-based, physically-based, statistical and machine learning-based.</p>
+<ul>
+<li><p>Physically-based models are of the highest utility in theory [d], but such models often face challenges and uncertainties for real-world application due to the limited availability of spatially differentiated geotechnical data .</p></li>
+<li><p>Compared to physically-based models, expert-based models are less data-intensive as they are developed with the expert knowledge of local interactions between landslide occurrences and its controlling factors. Due to its qualitative nature, such models often lack objectivity and reproducibility and are not commonly used in scientific research.</p></li>
+<li><p>Statistical landslide susceptibility modelling seeks to estimate the spatial likelihood or relative spatial probability of spatial units to coincide with future landslide occurrence. These models have been widely adopted for practical application due to their relatively lower input data demand (than physically based models) and quantitative modelling output (which expert-based models lack).</p></li>
+<li><p>Machine learning models have emerged as promising alternatives to statistical-driven models due to their flexibility and potential for high predictive accuracy.</p></li>
+</ul>
+<p>Nevertheless, previous research has demonstrated that each model type has its unique strengths and limitations, and choosing an appropriate model depends largely on various factors, such as interpretability, generalizability, and the specific research objectives.</p>
+<p>This study focuses on comparing the performance and applications of statistical and machine learning models in landslide susceptibility assessment.</p>
+<ul>
+<li><p><strong>Precition Task:</strong> The first part involves using both approaches to predict landslide susceptibility through binary classification. We will explore and critique whether data mining and machine learning performed better than statistical learning methods?</p></li>
+<li><p><strong>Analytical Task</strong>: Subsequently, the explanatory variables will be evaluated through global and local statistical models to understand the influence and significance of different landslide predisposing factors. We will identify (i) landform properties and (ii) human-environment interaction factors affecting landslide susceptibility results. We will also examine whether susceptibility is independent geospatially.</p></li>
+</ul>
+<p>The differentiation between spatial prediction tasks and analytical tasks provides comprehensive review of the model performance and applications.</p>
+</section>
+<section id="using-statistical-models-for-landslide-susceptibility" class="level3">
+<h3 class="anchored" data-anchor-id="using-statistical-models-for-landslide-susceptibility">2.0 Using Statistical Models for Landslide Susceptibility</h3>
+<section id="geographically-weighted-regression-gwr" class="level4">
+<h4 class="anchored" data-anchor-id="geographically-weighted-regression-gwr">Geographically Weighted Regression, GWR</h4>
 <p>GWR extends the ordinary least-sqaures regression framework by allowing local rather than global parameters to be estimated. That is, we allow a continuous surface of parameter values, and measurements of this surface are taken at certain points to denote the spatial variability of the surface. Thus, the GWR equation recognises that spatial variations in relationships might exist and provides a way in which they can be measured.&nbsp;</p>
 <p><strong>Spatial Weights</strong></p>
 <p>Spatial weights are a key component in any cross-sectional analysis of spatial dependence. They are an essential element in the construction of spatial autocorrelation statistics, and provide the means to create spatially explicit variables, such as spatially lagged variables and spatially smoothed rates. Formally, the weights express the neighbour structure between the observations as a n×n matrix, in which the elements w<sub>ij</sub> of the matrix are the spatial weights.</p>
+</section>
+</section>
+<section id="using-machine-learning-models-for-landslide-susceptibility" class="level3">
+<h3 class="anchored" data-anchor-id="using-machine-learning-models-for-landslide-susceptibility">3.0 Using Machine Learning Models for Landslide Susceptibility</h3>
+</section>
+<section id="research-design" class="level3">
+<h3 class="anchored" data-anchor-id="research-design">4.0 Research Design</h3>
+</section>
+<section id="references" class="level3">
+<h3 class="anchored" data-anchor-id="references">5.0 References</h3>
+<ul>
+<li><p>Steger, S., Kofler, C.: Statistical Modeling of Landslides: Landslide Susceptibility and Beyond. In: Pourghasemi, H.R. and Gokceoglu, C. (eds.) Spatial modeling in GIS and R for earth and environmental sciences. pp.&nbsp;519–546. Elsevier, Amsterdam, Netherlands (2019).</p></li>
+<li><p>Kuriakose, S.L., van Beek, L.P., van Westen, C.J.: Parameterizing a physically based shallow landslide model in a data poor region. Earth Surface Processes and Landforms. 34, 867–881 (2009).</p></li>
+<li><p>Ruff, M., Czurda, K.: Landslide susceptibility analysis with a heuristic approach in the eastern alps (Vorarlberg, Austria). Geomorphology. 94, 314–324 (2008).</p></li>
+<li><p>van Westen, C.J., Rengers, N. &amp; Soeters, R. Use of Geomorphological Information in Indirect Landslide Susceptibility Assessment. Natural Hazards 30, 399–419 (2003).</p></li>
+<li><p>Cascini, L.: Applicability of landslide susceptibility and hazard zoning at different scales. Engineering Geology. 102, 164–177 (2008). &nbsp;</p></li>
+<li><p>Frattini, P., Crosta, G., Carrara, A.: Techniques for evaluating the performance of landslide susceptibility models. Engineering Geology. 111, 62–72 (2010).</p></li>
+<li><p>Guzzetti, F., Carrara, A., Cardinali, M., Reichenbach, P.: Landslide hazard evaluation: A review of current techniques and their application in a multi-scale study, Central Italy. Geomorphology. 31, 181–216 (1999).</p></li>
+</ul>
 
 
 </section>

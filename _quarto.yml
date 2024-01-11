@@ -9,14 +9,17 @@ website:
         text: Home
       - about.qmd
     left:
-      - text: Research
-        href: research.qmd
+
       - text: Study Area
         href: studyarea.qmd
-      - text: Project
-        href: project.qmd
       - text: Methodology
         href: methodology.qmd
+      - text: EDA
+        href: project.qmd
+      - text: Model Development
+        href: gwsmodelling.qmd
+      - text: Research Paper
+        href: research.qmd
 
   page-footer:
     background: primary

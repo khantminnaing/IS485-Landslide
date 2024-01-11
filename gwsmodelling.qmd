@@ -1,0 +1,19 @@
+---
+title: "Landslide Susceptibility Model Development"
+author:
+  - name: Khant Min Naing
+  - name: Ann Mei Yi Victoria Grace
+date: 01-07-2024 
+date-modified: "last-modified"
+categories:
+  - R
+  - sf
+  - gwmodel
+output:
+  distill::distill_article:
+    code_folding: false
+    toc: true
+    self_contained: false
+---
+
+To develop a landslide susceptibility methodology framework, we will explore and calibrate different statistical and machine learning models.
