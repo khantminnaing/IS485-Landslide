@@ -1,8 +1,8 @@
 ## Explanatory and Predictive Landslide Susceptibility Modelling Using Statistical and Machine Learning Techniques: Case Study of Valtellina Valley, Italy
 
-### Geographically Weighted Regression
+### Geographically Weighted Regression, GWR
 
-GWR extends the ordinary least-sqaures regression framework by allowing local rather than global parameters to be estimated. That is, we allow there to be a continuous surface of parameter values, and measurements of this surface are taken at certain points to denote the spatial variability of the surface. Thus, the GWR equation recognises that spatial variations in relationships might exist and provides a way in which they can be measured. 
+GWR extends the ordinary least-sqaures regression framework by allowing local rather than global parameters to be estimated. That is, we allow a continuous surface of parameter values, and measurements of this surface are taken at certain points to denote the spatial variability of the surface. Thus, the GWR equation recognises that spatial variations in relationships might exist and provides a way in which they can be measured. 
 
 **Spatial Weights**
 

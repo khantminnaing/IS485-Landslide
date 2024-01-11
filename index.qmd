@@ -1,5 +1,5 @@
 ---
-title: "Explanatory and Predictive Landslide Susceptibility Modelling Using Statistical and Machine Learning Techniques: Case Study of Valtellina Valley, Italy"
+title: "Explanatory and Predictive Landslide Susceptibility Modelling Using Statistical and Machine Learning Techniques: Case Study of Valtellina Valley, Italy" 
 ---
 
 ![](images/landslides%20(4).png)

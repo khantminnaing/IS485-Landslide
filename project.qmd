@@ -2,8 +2,8 @@
 title: "Project"
 author:
   - name: Khant Min Naing
-  - name: Mei Yi Victoria Grace Ann
-date: 01-07-2024
+  - name: Ann Mei Yi Victoria Grace
+date: 01-07-2024 
 date-modified: "last-modified"
 categories:
   - R
