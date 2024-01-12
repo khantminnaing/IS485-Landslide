@@ -20,6 +20,10 @@ output:
 ## 1.0 Set Up {style="color: #603494;"}
 :::
 
+```{r}
+#| echo: false
+devtools::install_github("thomasp85/patchwork")
+```
 In this section, we set up the necessary R packages for data processing and exploratory spatial data analysis. The following packages are downloaded.
 
 -   [**sp**](https://cran.r-project.org/web/packages/sp/index.html) for handling and analysing spatial data, providing classes and methods for spatial data manipulation.
@@ -59,6 +63,7 @@ library(tidyr)
 library(paletteer)
 library(cowplot)
 library(dplyr)
+library(patchwork)
 ```
 
 ::: {style="color: #603494;"}
@@ -198,7 +203,7 @@ In this session, we will plot the various parametric data we prepared and proces
 
 -   [`geom_sf()`](https://ggplot2.tidyverse.org/reference/ggsf.html) automatically detects the geometry type of spatial objects stored in `sf` and draw maps accordingly.
 
-### 7.01  Average Precipitation
+#### 7.01  Average Precipitation
 
 ::: panel-tabset
 ## Plot
@@ -310,7 +315,7 @@ ggplot()+
 :::
 :::
 
-### 7.02  Toporgraphic Wetness Index
+#### 7.02  Toporgraphic Wetness Index
 Topographic wetness index (TWI) describe the impacts of topographic factors on the soil moisture content along the runoff areas and can be used to describe the hydrological influences on landslide occurrences.
 
 ::: panel-tabset
@@ -374,7 +379,7 @@ ggplot()+
 :::
 :::
 
-### 7.03  Lithology
+#### 7.03  Lithology
 Lithology refers to the type of rock that makes up a slope.
 
 ::: panel-tabset
@@ -389,7 +394,7 @@ litho_colors <-c("#9cecfb","#fff204","#eed2c4","#ed6f05","#0d07e8",
 
 
 # Plotting
-ggplot()+
+litho_map <- ggplot()+
   geom_sf(aes(fill=code),color='transparent',data=lithology)+
   scale_fill_manual(name = "lithology class",
                     values = litho_colors,
@@ -411,7 +416,7 @@ ggplot()+
         axis.text.y = element_text(size = 8),
         legend.title = element_text(size = 10),
         legend.text = element_text(size = 9))
-
+litho_map
 ```
 
 ## Code
@@ -452,7 +457,7 @@ ggplot()+
 :::
 :::
 
-### 7.04  Profile Curvature
+#### 7.04  Profile Curvature
 Profile curvature refers to curvature of a slope profile, which is the line that intersects the slope surface at right angles. It can be convex, concave, or linear.
 
 ::: panel-tabset
@@ -525,7 +530,7 @@ ggplot(data=profile_classifed_df)+
 :::
 :::
 
-### 7.05  Plan Curvature
+#### 7.05  Plan Curvature
 Plan (or planform) curvature refers to the curvature of a slope in the horizontal plane. It can be convex, concave, or linear.
 
 ::: panel-tabset
@@ -595,7 +600,7 @@ ggplot(data=plan_classifed_df)+
 :::
 :::
 
-### 7.06  Slope Angle
+#### 7.06  Slope Angle
 Slope angle refers to the angle of inclination of the slope surface, measured from the horizontal. It is usually expressed in degrees.
 
 ::: panel-tabset
@@ -658,7 +663,7 @@ ggplot()+
 :::
 :::
 
-### 7.07  Distance to Settlements
+#### 7.07  Distance to Settlements
 
 ::: panel-tabset
 ## Plot
@@ -720,7 +725,7 @@ ggplot()+
 :::
 :::
 
-### 7.08  Distance to Roads
+#### 7.08  Distance to Roads
 
 ::: panel-tabset
 ## Plot
@@ -782,7 +787,7 @@ ggplot()+
 :::
 :::
 
-### 7.09  Distance to Rivers/Streams
+#### 7.09  Distance to Rivers/Streams
 
 ::: panel-tabset
 ## Plot
@@ -842,7 +847,7 @@ ggplot()+
 :::
 :::
 
-### 7.10  Distance to Faults
+#### 7.10  Distance to Faults
 
 ::: panel-tabset
 ## Plot
@@ -900,7 +905,7 @@ ggplot()+
 :::
 :::
 
-### 7.11  Slope Aspect Direction
+#### 7.11  Slope Aspect Direction
 Slope aspect direction refers to the direction that a slope faces. It is usually expressed as a compass direction, such as north, south, east, or west.
 
 ::: panel-tabset
@@ -925,7 +930,7 @@ aspect_classifed_df <- as.data.frame(aspect_classifed,xy=TRUE)%>%drop_na()
 aspect_names <-c("N","NE","E","SE","S","SW","W","NW")
 aspect_colors <-c("#84d601","#08ab44","#0068c0","#6c00a3","#ca009d","#ff5668","#ffab47","#f4fa03")
 
-ggplot(data=aspect_classifed_df)+
+aspect_map <- ggplot(data=aspect_classifed_df)+
   geom_raster(aes(x=x,y=y,fill=as.character(aspect_cat)))+
   geom_sf(fill='transparent',data=valtellina)+
   scale_fill_manual(name = "direction",
@@ -950,6 +955,7 @@ ggplot(data=aspect_classifed_df)+
         axis.text.y = element_text(size = 8),
         legend.title = element_text(size = 10),
         legend.text = element_text(size = 9))
+aspect_map
 ```
 
 ## Code
@@ -1001,3 +1007,4 @@ ggplot(data=aspect_classifed_df)+
 ```
 :::
 :::
+
