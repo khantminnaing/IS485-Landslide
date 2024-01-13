@@ -302,7 +302,6 @@ ggplot()+
         legend.title = element_text(size = 10),
         legend.text = element_text(size = 9))
 ```
-:::
 
 ## Code
 
