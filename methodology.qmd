@@ -1,6 +1,6 @@
 ## Explanatory and Predictive Landslide Susceptibility Modelling Using Statistical and Machine Learning Techniques: Case Study of Valtellina Valley, Italy
 
-### 1.0  Overview
+### 1.0 Overview
 
 Landslide susceptibility assessment is an emerging research area of both importance and urgency and several approaches and models have been explored in scientific literature. These models can be generally categorized into four categories: expert-based, physically-based, statistical and machine learning-based.
 
@@ -22,7 +22,7 @@ This study focuses on comparing the performance and applications of statistical 
 
 The differentiation between spatial prediction tasks and analytical tasks provides comprehensive review of the model performance and applications.
 
-### 2.0  Using Statistical Models for Landslide Susceptibility
+### 2.0 Using Statistical Models for Landslide Susceptibility
 
 #### Geographically Weighted Regression, GWR
 
@@ -32,11 +32,11 @@ GWR extends the ordinary least-sqaures regression framework by allowing local ra
 
 Spatial weights are a key component in any cross-sectional analysis of spatial dependence. They are an essential element in the construction of spatial autocorrelation statistics, and provide the means to create spatially explicit variables, such as spatially lagged variables and spatially smoothed rates. Formally, the weights express the neighbour structure between the observations as a n×n matrix, in which the elements w~ij~ of the matrix are the spatial weights.
 
-### 3.0  Using Machine Learning Models for Landslide Susceptibility
+### 3.0 Using Machine Learning Models for Landslide Susceptibility
 
-### 4.0  Research Design
+### 4.0 Research Design
 
-### 5.0  References
+### 5.0 References
 
 -   Steger, S., Kofler, C.: Statistical Modeling of Landslides: Landslide Susceptibility and Beyond. In: Pourghasemi, H.R. and Gokceoglu, C. (eds.) Spatial modeling in GIS and R for earth and environmental sciences. pp. 519--546. Elsevier, Amsterdam, Netherlands (2019).
 
