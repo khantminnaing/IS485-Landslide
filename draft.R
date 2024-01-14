@@ -19,7 +19,7 @@ as.points(ext(utm), crs=crs(utm)) |> project("+proj=longlat") |> crds()
 st_area(valtellina)
 
 #Get Base Map
-register_google(key = 'AIzaSyDfRvq_xMPFGOJjMX4VO5gmQx1Cf6VvyRc')
+register_google(key = #Key)
 basemap <- get_map(location = c(lon = 10.7, lat = 46.64179),
                          color = "color", source = "google", 
                          maptype = "satellite", zoom = 12)
