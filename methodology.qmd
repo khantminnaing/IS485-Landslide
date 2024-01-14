@@ -4,21 +4,21 @@
 
 Landslide susceptibility assessment is an emerging research area of both importance and urgency and several approaches and models have been explored in scientific literature. These models can be generally categorized into four categories: expert-based, physically-based, statistical and machine learning-based.
 
--   Physically-based models are of the highest utility in theory \[d\], but such models often face challenges and uncertainties for real-world application due to the limited availability of spatially differentiated geotechnical data .
+-   Physically-based models are of the highest utility in theory \[d\], but such models often face challenges and uncertainties for real-world application due to the limited availability of spatially differentiated geotechnical data.
 
--   Compared to physically-based models, expert-based models are less data-intensive as they are developed with the expert knowledge of local interactions between landslide occurrences and its controlling factors. Due to its qualitative nature, such models often lack objectivity and reproducibility and are not commonly used in scientific research.
+-   Compared to physically-based models, expert-based models are less data-intensive as they are developed with the expert knowledge of local interactions between landslide occurrences and its controlling factors (Steger et al., 2019). Due to its qualitative nature, expert-based models often lack objectivity and reproducibility, and are not commonly used in scientific research.
 
--   Statistical landslide susceptibility modelling seeks to estimate the spatial likelihood or relative spatial probability of spatial units to coincide with future landslide occurrence. These models have been widely adopted for practical application due to their relatively lower input data demand (than physically based models) and quantitative modelling output (which expert-based models lack).
+-   Statistical landslide susceptibility modelling seeks to estimate the spatial likelihood or relative spatial probability of spatial units to coincide with future landslide occurrence (Steger et al., 2019). These models have been widely adopted for practical application due to their relatively lower input data demand (than physically based models) and quantitative modelling output (which expert-based models lack).
 
 -   Machine learning models have emerged as promising alternatives to statistical-driven models due to their flexibility and potential for high predictive accuracy.
 
 Nevertheless, previous research has demonstrated that each model type has its unique strengths and limitations, and choosing an appropriate model depends largely on various factors, such as interpretability, generalizability, and the specific research objectives.
 
-This study focuses on comparing the performance and applications of statistical and machine learning models in landslide susceptibility assessment.
+Our study focuses on comparing the performance and applications of statistical and machine learning models in landslide susceptibility assessment.
 
--   **Precition Task:** The first part involves using both approaches to predict landslide susceptibility through binary classification. We will explore and critique whether data mining and machine learning performed better than statistical learning methods?
+-   **Precition Task:** The first part involves using both approaches to predict landslide susceptibility through binary classification. We will explore and evaulate whether data mining and machine learning methods perform better than statistical learning methods?
 
--   **Analytical Task**: Subsequently, the explanatory variables will be evaluated through global and local statistical models to understand the influence and significance of different landslide predisposing factors. We will identify (i) landform properties and (ii) human-environment interaction factors affecting landslide susceptibility results. We will also examine whether susceptibility is independent geospatially.
+-   **Analytical Task**: Subsequently, the explanatory variables will be evaluated through global and local statistical models to understand the influence and significance of different landslide predisposing factors. We will identify (i) landform properties and (ii) human-environment interaction factors affecting landslide susceptibility results. We will also examine whether susceptibility is geospatially independent.
 
 The differentiation between spatial prediction tasks and analytical tasks provides comprehensive review of the model performance and applications.
 
@@ -26,7 +26,11 @@ The differentiation between spatial prediction tasks and analytical tasks provid
 
 #### Geographically Weighted Regression, GWR
 
-GWR extends the ordinary least-sqaures regression framework by allowing local rather than global parameters to be estimated. That is, we allow a continuous surface of parameter values, and measurements of this surface are taken at certain points to denote the spatial variability of the surface. Thus, the GWR equation recognises that spatial variations in relationships might exist and provides a way in which they can be measured. 
+In practice, relationships between variables may be nonstationary. However, traditional regression models assume that predictors and outcome variables are spatially homogeneous, or stationary.
+
+Ordinary least squares (OLS) linear regression is a standard global modelling technique that cannot detect nonstationarity, and thus using it may obscure regional variation in the relationships between predictors and the outcome variable.
+
+GWR extends the ordinary least-sqaures regression framework by allowing local rather than global parameters to be estimated. That is, we allow a continuous surface of parameter values, and measurements of this surface are taken at certain points to denote the spatial variability of the surface. Thus, GWR accounts for spatial variations in relationships might exist and provides a way in which they can be measured. 
 
 **Spatial Weights**
 
@@ -34,20 +38,40 @@ Spatial weights are a key component in any cross-sectional analysis of spatial d
 
 ### 3.0 Using Machine Learning Models for Landslide Susceptibility
 
+## *Strengths*
+
+Using machine learning models like Frequency Ratio (FR) and Analytic Hierarchy Process (AHP) can facilitate the adoption of appropriate mitigation measures against landslides (Goswami et. al, 2023).
+
+ML models have been favoured for its ability to solve nonlinear problems, improve predictive performance across various classifiers (Song et al., 2023) and capture non-linear relationships between variables (Achu et al., 2023).
+
+The compounding effect of ML models is that they can combine the predictions of multiple ML techniques which can improve the robustness and reliability of landslide susceptibility maps (Achu et al., 2023).
+
+## *Concerns*
+
+Despite its strengths, the performance of machine learning models can be affected by sample imbalances when landslide samples are much smaller than non-landslide samples, which can cause low recall rates and decreased predictive ability for landslide samples.
+
+Furthermore, machine learning models are at risk of poorer performance when faced with new or unseen data that differs significantly from the training data.
+
+-   Temporal Differences: Training data collected at different time periods than the new data lead to variations in environmental conditions, demographics and other factors that can affect relationships (Yao et al., 2023).
+
+-   Spatial Differences: When training data is collected from a specific location, new data from a different region with different characteristics and landslide distributions can challenge established underlying relationships (Yao et al., 2023).
+
+Particularly in landslide identification, machine learning models are lacking in the identification of landslide types and digital terrain model dominant landslide identification using machine learning has not been explored.
+
 ### 4.0 Research Design
 
 ### 5.0 References
 
--   Steger, S., Kofler, C.: Statistical Modeling of Landslides: Landslide Susceptibility and Beyond. In: Pourghasemi, H.R. and Gokceoglu, C. (eds.) Spatial modeling in GIS and R for earth and environmental sciences. pp. 519--546. Elsevier, Amsterdam, Netherlands (2019).
+-   Cascini, L.: Applicability of landslide susceptibility and hazard zoning at different scales. Engineering Geology. 102, 164--177 (2008).
+
+-   Frattini, P., Crosta, G., Carrara, A.: Techniques for evaluating the performance of landslide susceptibility models. Engineering Geology. 111, 62--72 (2010).
+
+-   Guzzetti, F., Carrara, A., Cardinali, M., Reichenbach, P.: Landslide hazard evaluation: A review of current techniques and their application in a multi-scale study, Central Italy. Geomorphology. 31, 181--216 (1999).
 
 -   Kuriakose, S.L., van Beek, L.P., van Westen, C.J.: Parameterizing a physically based shallow landslide model in a data poor region. Earth Surface Processes and Landforms. 34, 867--881 (2009).
 
 -   Ruff, M., Czurda, K.: Landslide susceptibility analysis with a heuristic approach in the eastern alps (Vorarlberg, Austria). Geomorphology. 94, 314--324 (2008).
 
--   van Westen, C.J., Rengers, N. & Soeters, R. Use of Geomorphological Information in Indirect Landslide Susceptibility Assessment. Natural Hazards 30, 399--419 (2003).
+-   Steger, S., Kofler, C.: Statistical Modeling of Landslides: Landslide Susceptibility and Beyond. In: Pourghasemi, H.R. and Gokceoglu, C. (eds.) Spatial modeling in GIS and R for earth and environmental sciences. pp. 519--546. Elsevier, Amsterdam, Netherlands (2019).
 
--   Cascini, L.: Applicability of landslide susceptibility and hazard zoning at different scales. Engineering Geology. 102, 164--177 (2008).  
-
--   Frattini, P., Crosta, G., Carrara, A.: Techniques for evaluating the performance of landslide susceptibility models. Engineering Geology. 111, 62--72 (2010).
-
--   Guzzetti, F., Carrara, A., Cardinali, M., Reichenbach, P.: Landslide hazard evaluation: A review of current techniques and their application in a multi-scale study, Central Italy. Geomorphology. 31, 181--216 (1999).
+-   van Westen, C.J., Rengers, N. & Soeters, R. Use of Geomorphological Information in Indirect Landslide Susceptibility Assessment. Natural Hazards 30, 399--419 (2003).  
