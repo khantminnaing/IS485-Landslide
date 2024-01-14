@@ -60,7 +60,7 @@ Particularly in landslide identification, machine learning models are lacking in
 
 ### 4.0 Research Design
 
-### 5.0 References
+### 5.0 References 
 
 -   Cascini, L.: Applicability of landslide susceptibility and hazard zoning at different scales. Engineering Geology. 102, 164--177 (2008).
 
