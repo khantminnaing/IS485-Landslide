@@ -16,7 +16,7 @@ Nevertheless, previous research has demonstrated that each model type has its un
 
 Our study focuses on comparing the performance and applications of statistical and machine learning models in landslide susceptibility assessment.
 
--   **Precition Task:** The first part involves using both approaches to predict landslide susceptibility through binary classification. We will explore and evaulate whether data mining and machine learning methods perform better than statistical learning methods?
+-   **Precition Task:** The first part involves using both approaches to predict landslide susceptibility through binary classification (landslide presence/absence). We will explore and evaulate whether data mining and machine learning methods perform better than stati
 
 -   **Analytical Task**: Subsequently, the explanatory variables will be evaluated through global and local statistical models to understand the influence and significance of different landslide predisposing factors. We will identify (i) landform properties and (ii) human-environment interaction factors affecting landslide susceptibility results. We will also examine whether susceptibility is geospatially independent.
 
@@ -60,7 +60,7 @@ Particularly in landslide identification, machine learning models are lacking in
 
 ### 4.0 Research Design
 
-### 5.0 References 
+### 5.0 References
 
 -   Cascini, L.: Applicability of landslide susceptibility and hazard zoning at different scales. Engineering Geology. 102, 164--177 (2008).
 
