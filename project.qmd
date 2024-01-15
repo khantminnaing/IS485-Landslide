@@ -22,6 +22,8 @@ output:
 
 ```{r}
 #| echo: false
+#| 
+pacman::p_load(ggnewscale)
 devtools::install_github("thomasp85/patchwork")
 ```
 
@@ -59,12 +61,13 @@ library(sf)
 library(RColorBrewer)
 library(classInt)
 library(ggplot2)
-library(terra)
 library(tidyr)
 library(paletteer)
 library(cowplot)
 library(dplyr)
 library(patchwork)
+library(terra)
+library(ggnewscale)
 ```
 
 ::: {style="color: #603494;"}
@@ -88,6 +91,7 @@ distance_roads <-  raster("data/raster/distance_to_roads_m.tif")
 distance_river <-  raster("data/raster/distance_to_river_m.tif")
 distance_faults <-  raster("data/raster/distance_to_faults_m.tif")
 aspect <- raster("data/raster/aspect_cat.tif")
+hillshade <- raster("data/raster/hillshade.tif")
 ```
 
 Some Layers Required Cropping and Masking
@@ -101,6 +105,8 @@ distance_river_cropped = crop(distance_river, valtellina)
 distance_river_final = mask(distance_river_cropped, valtellina)
 distance_faults_cropped = crop(distance_faults, valtellina)
 distance_faults_final = mask(distance_faults_cropped, valtellina)
+hillshade_cropped = crop(hillshade, valtellina)
+hillshade_final = mask(hillshade_cropped, valtellina)
 
 ref = extent(distance_building_final)
 distance_faults_final <- setExtent(distance_faults_final, ref, keepres=FALSE, snap=FALSE)
@@ -167,7 +173,7 @@ plan_classifed <- reclassify(plan_c,reclass_m)
 plan_classifed_df <- as.data.frame(plan_classifed,xy=TRUE)%>%drop_na()
 plan_codes <- unique(plan_classifed_df["plan_curvature_cat"])
 plan_names <-c("concave", "flat", "convex")
-plan_colors <-c("#65451F","#FEFAE0","#A9B388")
+plan_colors <-c("#65451F","#FEFAE0","#A9B388")stps
 ```
 
 ::: {style="color: #603494;"}
@@ -190,6 +196,7 @@ distance_building_df <- as.data.frame(distance_building_final,xy=TRUE)%>%drop_na
 distance_roads_df <- as.data.frame(distance_roads_final,xy=TRUE)%>%drop_na()
 distance_river_df <- as.data.frame(distance_river_final,xy=TRUE)%>%drop_na()
 distance_faults_df <- as.data.frame(distance_faults_final,xy=TRUE)%>%drop_na()
+hillshade_df <- as.data.frame(hillshade_final,xy=TRUE)%>%drop_na()
 ```
 
 ::: {style="color: #603494;"}
@@ -280,9 +287,14 @@ Elevation factor affects the landslide susceptibility in the way that higher ele
 ```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
 #| echo: false
 ggplot()+
-  geom_raster(aes(x=x,y=y,fill=elevation_m),data=elevation_df)+
+  geom_raster(data = hillshade_df,
+              aes(x, y, fill = hillshade),
+              show.legend = FALSE) +
+  scale_fill_distiller(palette = "Greys") +
+  new_scale_fill() +
+  geom_raster(aes(x=x,y=y,fill=elevation_m),data=elevation_df,alpha = .6)+
   geom_sf(fill='transparent',data=valtellina)+
-  scico::scale_fill_scico('elevation (m)',direction = -1,palette = "lajolla")+
+  scale_fill_gradientn('elevation (m)', colours=c("#cef5f1","#e3f2b8","#a3bf86","#d69068","#a77d6c","#c7bdb7","#f3f3f3"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Elevation Map",
@@ -309,9 +321,14 @@ ggplot()+
 ```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
 #| eval: false
 ggplot()+
-  geom_raster(aes(x=x,y=y,fill=elevation_m),data=elevation_df)+
+  geom_raster(data = hillshade_df,
+              aes(x, y, fill = hillshade),
+              show.legend = FALSE) +
+  scale_fill_distiller(palette = "Greys") +
+  new_scale_fill() +
+  geom_raster(aes(x=x,y=y,fill=elevation_m),data=elevation_df,alpha = .6)+
   geom_sf(fill='transparent',data=valtellina)+
-  scico::scale_fill_scico('elevation (m)',direction = -1,palette = "lajolla")+
+  scale_fill_gradientn('elevation (m)', colours=c("#cef5f1","#e3f2b8","#a3bf86","#d69068","#a77d6c","#c7bdb7","#f3f3f3"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Elevation Map",
@@ -350,7 +367,7 @@ Topographic wetness index (TWI) describe the impacts of topographic factors on t
 ggplot()+
   geom_raster(aes(x=x,y=y,fill=twi_),data=twi_df)+
   geom_sf(fill='transparent',data=valtellina)+
-  scale_fill_gradientn('twi', colours=c("#ffc803","#fe6b15","#ff2a36","#fd0275","#9d00d7","#0000fe"))+
+  scale_fill_gradientn('twi', colours=c("#d1ebff", "#37caec", "#2a93d5", "#125488"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Topographic Wetness Index Map",
@@ -379,7 +396,7 @@ ggplot()+
 ggplot()+
   geom_raster(aes(x=x,y=y,fill=twi_),data=twi_df)+
   geom_sf(fill='transparent',data=valtellina)+
-  scale_fill_gradientn('twi', colours=c("#ffc803","#fe6b15","#ff2a36","#fd0275","#9d00d7","#0000fe"))+
+  scale_fill_gradientn('twi', colours=c("#d1ebff", "#37caec", "#2a93d5", "#125488"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Topographic Wetness Index Map",
@@ -638,7 +655,7 @@ Slope angle refers to the angle of inclination of the slope surface, measured fr
 ggplot()+
   geom_raster(aes(x=x,y=y,fill=slope_degree),data=slope_df)+
   geom_sf(fill='transparent',data=valtellina)+
-  scale_fill_viridis_c('slope (degree)',direction = -1)+
+  scale_fill_gradientn('twi', colours=c("#79ab01", "#b7d300","#fffe00", "#fe9900","#ff6600", "#fc2200"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Slope Map",
@@ -667,7 +684,7 @@ ggplot()+
 ggplot()+
   geom_raster(aes(x=x,y=y,fill=slope_degree),data=slope_df)+
   geom_sf(fill='transparent',data=valtellina)+
-  scale_fill_viridis_c('slope (degree)',direction = -1)+
+  scale_fill_gradientn('twi', colours=c("#79ab01", "#b7d300","#fffe00", "#fe9900","#ff6600", "#fc2200"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Slope Map",
@@ -702,7 +719,7 @@ Distance to settlements refers to the Euclidean distance between the point of in
 ggplot()+
   geom_raster(aes(x=x,y=y,fill=distance_to_building_m),data=distance_building_df)+
   geom_sf(fill='transparent',data=valtellina)+
-  scale_fill_gradientn('proxmity (m)', colours=c("#A7226E","#EC2049","#F26B38","#F7DB4F","#DFD7BF"))+
+  scale_fill_gradientn('proxmity (m)', colours=c("#A7226E","#F26B38","#F7DB4F","#DFD7BF"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Distance to Settlements Map",
@@ -731,7 +748,7 @@ ggplot()+
 ggplot()+
   geom_raster(aes(x=x,y=y,fill=distance_to_building_m),data=distance_building_df)+
   geom_sf(fill='transparent',data=valtellina)+
-  scale_fill_gradientn('proxmity (m)', colours=c("#A7226E","#EC2049","#F26B38","#F7DB4F","#DFD7BF"))+
+  scale_fill_gradientn('proxmity (m)', colours=c("#A7226E","#F26B38","#F7DB4F","#DFD7BF"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Distance to Settlements Map",
@@ -766,7 +783,7 @@ Distance to roads refers to the Euclidean distance between the point of interest
 ggplot()+
   geom_raster(aes(x=x,y=y,fill=distance_to_roads_m),data=distance_roads_df)+
   geom_sf(fill='transparent',data=valtellina)+
-  scale_fill_gradientn('proximity (m)', colours=c("#f04e53","#f3a757","#f9d46f","#8ddccc","#00a797"))+
+  scale_fill_gradientn('proximity (m)', colours=c("#f5214e","#f5913e","#ffe201","#05a160","#0094d7","#6f69b0"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Distance to Roads Map",
@@ -795,7 +812,7 @@ ggplot()+
 ggplot()+
   geom_raster(aes(x=x,y=y,fill=distance_to_roads_m),data=distance_roads_df)+
   geom_sf(fill='transparent',data=valtellina)+
-  scale_fill_gradientn('proximity (m)', colours=c("#f04e53","#f3a757","#f9d46f","#8ddccc","#00a797"))+
+  scale_fill_gradientn('proximity (m)', colours=c("#f5214e","#f5913e","#ffe201","#05a160","#0094d7","#6f69b0"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Distance to Roads Map",
@@ -830,7 +847,7 @@ Distance to rivers/streams refers to the Euclidean distance between the point of
 ggplot()+
   geom_raster(aes(x=x,y=y,fill=distance_to_river_m),data=distance_river_df)+
   geom_sf(fill='transparent',data=valtellina)+
-  scale_fill_gradientn('proximity (m)', colours=c("#2D3F61","#10a6b1","#b6edf0"))+
+  scale_fill_gradientn('proximity (m)', colours=c("#4f659d","#5dabba","#56d39c","#5fee4f","#eef456","#fbde4e", "#edb174", "#d78272"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Distance to Rivers Map",
@@ -859,7 +876,7 @@ ggplot()+
 ggplot()+
   geom_raster(aes(x=x,y=y,fill=distance_to_river_m),data=distance_river_df)+
   geom_sf(fill='transparent',data=valtellina)+
-  scale_fill_gradientn('proximity (m)', colours=c("#2D3F61","#10a6b1","#b6edf0"))+
+  scale_fill_gradientn('proximity (m)', colours=c("#4f659d","#5dabba","#56d39c","#5fee4f","#eef456","#fbde4e", "#edb174", "#d78272"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Distance to Rivers Map",
@@ -894,7 +911,7 @@ Distance to rivers/streams refers to the Euclidean distance between the point of
 ggplot()+
   geom_raster(aes(x=x,y=y,fill=distance_to_faults_m_1),data=distance_faults_df)+
   geom_sf(fill='transparent',data=valtellina)+
-   scale_fill_gradientn('proximity (m)', colours=c("#a66119","#dfc37c","#f5f4f5","#80cdc1","#028571" ))+
+   scale_fill_gradientn('proximity (m)', colours=c("#f5214e","#f5913e","#ffe201","#05a160","#0094d7","#6f69b0"))+
   labs(x='Longitude',y='Latitude',
        title="Distance to Faults Map",
        subtitle='Valtellina Valley, Italy',
@@ -922,7 +939,7 @@ ggplot()+
 ggplot()+
   geom_raster(aes(x=x,y=y,fill=distance_to_faults_m_1),data=distance_faults_df)+
   geom_sf(fill='transparent',data=valtellina)+
-   scale_fill_gradientn('proximity (m)', colours=c("#a66119","#dfc37c","#f5f4f5","#80cdc1","#028571" ))+
+   scale_fill_gradientn('proximity (m)', colours=c("#f5214e","#f5913e","#ffe201","#05a160","#0094d7","#6f69b0"))+
   labs(x='Longitude',y='Latitude',
        title="Distance to Faults Map",
        subtitle='Valtellina Valley, Italy',
