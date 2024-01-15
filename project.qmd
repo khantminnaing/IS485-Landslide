@@ -167,13 +167,13 @@ profile_classifed <- reclassify(profile_c,reclass_m)
 profile_classifed_df <- as.data.frame(profile_classifed,xy=TRUE)%>%drop_na()
 profile_codes <- unique(profile_classifed_df["profile_curvature_cat"])
 profile_names <-c("convex", "flat", "concave")
-profile_colors <-c("#65451F","#FEFAE0","#A9B388")
+profile_colors <-c("#0d3d83","#eff635","#77d91d")
 
 plan_classifed <- reclassify(plan_c,reclass_m)
 plan_classifed_df <- as.data.frame(plan_classifed,xy=TRUE)%>%drop_na()
 plan_codes <- unique(plan_classifed_df["plan_curvature_cat"])
 plan_names <-c("concave", "flat", "convex")
-plan_colors <-c("#65451F","#FEFAE0","#A9B388")stps
+plan_colors <-c("#77d91d","#eff635","#0d3d83")
 ```
 
 ::: {style="color: #603494;"}
@@ -294,7 +294,7 @@ ggplot()+
   new_scale_fill() +
   geom_raster(aes(x=x,y=y,fill=elevation_m),data=elevation_df,alpha = .6)+
   geom_sf(fill='transparent',data=valtellina)+
-  scale_fill_gradientn('elevation (m)', colours=c("#cef5f1","#e3f2b8","#a3bf86","#d69068","#a77d6c","#c7bdb7","#f3f3f3"))+
+  scale_fill_gradientn('elevation (m)', colours=c("#aeede7","#cbe18d","#8cb066","#c87a4d","#936451","#dad3ce","#f3f3f3"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Elevation Map",
@@ -328,7 +328,7 @@ ggplot()+
   new_scale_fill() +
   geom_raster(aes(x=x,y=y,fill=elevation_m),data=elevation_df,alpha = .6)+
   geom_sf(fill='transparent',data=valtellina)+
-  scale_fill_gradientn('elevation (m)', colours=c("#cef5f1","#e3f2b8","#a3bf86","#d69068","#a77d6c","#c7bdb7","#f3f3f3"))+
+  scale_fill_gradientn('elevation (m)', colours=c("#aeede7","#cbe18d","#8cb066","#c87a4d","#936451","#dad3ce","#f3f3f3"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Elevation Map",
@@ -567,7 +567,6 @@ ggplot(data=profile_classifed_df)+
         axis.text.y = element_text(size = 8),
         legend.title = element_text(size = 10),
         legend.text = element_text(size = 9))
-
 ```
 :::
 :::
@@ -638,7 +637,6 @@ ggplot(data=plan_classifed_df)+
         axis.text.y = element_text(size = 8),
         legend.title = element_text(size = 10),
         legend.text = element_text(size = 9))
-
 ```
 :::
 :::
