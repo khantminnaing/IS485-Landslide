@@ -17,3 +17,160 @@ output:
 ---
 
 To develop a landslide susceptibility methodology framework, we will explore and calibrate different statistical and machine learning models.
+
+## Exploratory Spatial Data Analysis (ESDA)
+
+To calculate the summary statistics of `landslide_train` data frame, we use `st()`.
+
+```{r}
+#| eval: false
+st(landslide_train)
+```
+
+Next, we will create atrellis plot by using `ggarrange()` of [**ggpubr**](https://cran.r-project.org/web/packages/ggpubr/) package. In this way, we can see the distribution plots of different parameters at the same time.
+
+```{r}
+#| eval: false
+Elevation <- ggplot(data=landslide_train, aes(x= `Elevation`)) + 
+  geom_histogram(bins=10, color="black", fill="#e9531e")
+
+Slope_Angle <- ggplot(data=landslide_train, aes(x= `Slope_Angle`)) +
+  geom_histogram(bins=10, color="black", fill="#e9531e")
+
+Aspect <- ggplot(data=landslide_train, aes(x= `Aspect`)) +
+  geom_histogram(bins=10, color="black", fill="#e9531e")
+
+Profile_Curvature <- ggplot(data=landslide_train, aes(x= `Profile_Curvature`)) + 
+  geom_histogram(bins=10, color="black", fill="#DC375E")
+
+Plan_Curvature <- ggplot(data=landslide_train, aes(x= `Plan_Curvature`)) +
+  geom_histogram(bins=10, color="black", fill="#DC375E")
+
+Proximity_Settlement  <- ggplot(data=landslide_train, 
+                               aes(x= `Proximity_Settlement`)) +
+  geom_histogram(bins=10, color="black", fill="#DC375E")
+
+Proximity_Stream  <- ggplot(data=landslide_train, aes(x= `Proximity_Stream`)) +
+  geom_histogram(bins=10, color="black", fill="#AE4285")
+
+Proximity_Road <- ggplot(data=landslide_train, aes(x= `Proximity_Road`)) +
+  geom_histogram(bins=10, color="black", fill="#AE4285")
+
+Proximity_Fault <- ggplot(data=landslide_train, aes(x= `Proximity_Fault`)) +
+  geom_histogram(bins=10, color="black", fill="#AE4285")
+
+Precipitation <- ggplot(data=landslide_train, aes(x= `Precipitation`)) +
+  geom_histogram(bins=10, color="black", fill="#71508F")
+
+TWI <- ggplot(data=landslide_train, aes(x= `TWI`)) +
+  geom_histogram(bins=10, color="black", fill="#71508F")
+
+ggarrange(Elevation,Slope_Angle,Aspect,Profile_Curvature,Plan_Curvature,Proximity_Settlement,Proximity_Stream,Proximity_Road,Proximity_Fault,Precipitation,TWI,
+          ncol = 3, nrow = 4)
+```
+
+## Inflation Variance Test
+
+## Emerging Hot Spot Analysis
+
+```{r}
+#| eval: false
+pacman::p_load(sd,tmap,spdep,spData)
+coords <- cbind(longitude, latitude)
+```
+
+The function `knearneigh` returns a matrix with the indices of points belonging to the set of the k nearest neighbours of each other.
+
+The function `knn2nb` converts a `knn` object returned by `knearneigh` into a neighbours list of class `nb` with a list of integer vectors containing neighbour region number ids.
+
+The function `nbdists` returns the Euclidean distances along the spatial neighbour links in a list.
+
+```{r}
+#| eval: false
+k1 <- knn2nb(knearneigh(coords))
+k1dists <- unlist(nbdists(k1, coords, longlat = TRUE))
+summary(k1dists)
+```
+
+#### Computing fixed distance weight matrix
+
+```{r}
+#| eval: false
+weight_matrix <- dnearneigh(coords, 0, 106, longlat = TRUE)
+weight_matrix
+```
+
+## Spatial Neighbourhood
+
+Create Neighbourhood Matrix using Queen
+
+```{r}
+#| eval: false
+nb <- spdep::poly2nb(landslide_train, queen = TRUE)
+head(nb)
+plot(st_geometry(landslide_train), border = "lightgray")
+plot.nb(nb, st_geometry(landslide_train), add = TRUE)
+```
+
+Create a demo visual of how spatial neighbourhood works
+
+```{r}
+#| eval: false
+id <- 20 # custom area id 
+landslide_train$neighbors <- "other"
+landslide_train$neighbors[id] <- "point of interest"
+landslide_train$neighbors[nb[[id]]] <- "neighbours"
+ggplot(landslide_train) + geom_sf(aes(fill = neighbors)) + theme_bw() +
+  scale_fill_manual(values = c("gray30", "gray", "white"))
+```
+
+The function `nb2listw()` of the spdep package can be used to construct a spatial neighborhood matrix containing the spatial weights corresponding to a neighbors list. The neighbors can be binary or based on inverse distance values.
+
+```{r}
+#| eval: false
+spatial_w_matrix <- listw2mat(nbw)
+```
+
+We can visualize the spatial weight matrix by creating a matrix with the weights with `listw2mat()`, and using `lattice::levelplot()` to create the plot
+
+```{r}
+#| eval: false
+lattice::levelplot(t(m1),
+    scales = list(y = list(at = c(10, 20, 30, 40),
+    labels = c(10, 20, 30, 40))))
+```
+
+## Correlation Matrix
+
+Before building a multinomial logistic regression model, it is important to ensure that the indepdent variables used are **not highly correlated** to each other. If these highly correlated independent variables are used in building a regression model by mistake, the quality of the model will be compromised. This phenomenon is known as **multicollinearity** in statistics.
+
+Correlation matrix is commonly used to visualise the relationships between the independent variables. In this section, the [**corrplot**](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html) package will be used to display the correlation matrix of the independent variables in *condo_resale* data frame.
+
+```{r}
+#| eval: false
+corrplot(cor(landslide_train[, 5:23]), diag = FALSE, order = "AOE",
+         tl.pos = "td", tl.cex = 0.5,tl.col = "black", number.cex = 0.5, method = "number", type = "upper")
+
+corrplot(cor(landslide_train[, 5:23]), diag = FALSE, order = "AOE",
+         tl.pos = "td", tl.cex = 0.5,tl.col = "black", number.cex = 0.5, method = "ellipse", type = "upper")
+```
+
+## Logistic Regression
+
+```{r}
+#| eval: false
+set.seed(123)
+sample <- sample(c(TRUE, FALSE), nrow(default), replace = T, prob = c(0.6,0.4))
+train <- default[sample, ]
+test <- default[!sample, ]
+```
+
+## Simple Logistic Regression
+
+We will fit a logistic regression model in order to predict the probability of a customer defaulting based on the average balance carried by the customer. The `glm` function fits generalized linear models, a class of models that includes logistic regression. The syntax of the `glm` function is similar to that of `lm`, except that we must pass the argument `family = binomial` in order to tell R to run a logistic regression rather than some other type of generalized linear model.
+
+```{r}
+#| eval: false
+logit_model <- glm(landslide ~ ., family = "binomial", data = landslide_train)
+
+```

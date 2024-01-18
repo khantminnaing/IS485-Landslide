@@ -117,5 +117,54 @@
     "title": "",
     "section": "Concerns",
     "text": "Concerns\nDespite its strengths, the performance of machine learning models can be affected by sample imbalances when landslide samples are much smaller than non-landslide samples, which can cause low recall rates and decreased predictive ability for landslide samples.\nFurthermore, machine learning models are at risk of poorer performance when faced with new or unseen data that differs significantly from the training data.\n\nTemporal Differences: Training data collected at different time periods than the new data lead to variations in environmental conditions, demographics and other factors that can affect relationships (Yao et al., 2023).\nSpatial Differences: When training data is collected from a specific location, new data from a different region with different characteristics and landslide distributions can challenge established underlying relationships (Yao et al., 2023).\n\nParticularly in landslide identification, machine learning models are lacking in the identification of landslide types and digital terrain model dominant landslide identification using machine learning has not been explored.\n\n4.0 Research Design\n\n\n5.0 References\n\nCascini, L.: Applicability of landslide susceptibility and hazard zoning at different scales. Engineering Geology. 102, 164–177 (2008).\nFrattini, P., Crosta, G., Carrara, A.: Techniques for evaluating the performance of landslide susceptibility models. Engineering Geology. 111, 62–72 (2010).\nGuzzetti, F., Carrara, A., Cardinali, M., Reichenbach, P.: Landslide hazard evaluation: A review of current techniques and their application in a multi-scale study, Central Italy. Geomorphology. 31, 181–216 (1999).\nKuriakose, S.L., van Beek, L.P., van Westen, C.J.: Parameterizing a physically based shallow landslide model in a data poor region. Earth Surface Processes and Landforms. 34, 867–881 (2009).\nRuff, M., Czurda, K.: Landslide susceptibility analysis with a heuristic approach in the eastern alps (Vorarlberg, Austria). Geomorphology. 94, 314–324 (2008).\nSteger, S., Kofler, C.: Statistical Modeling of Landslides: Landslide Susceptibility and Beyond. In: Pourghasemi, H.R. and Gokceoglu, C. (eds.) Spatial modeling in GIS and R for earth and environmental sciences. pp. 519–546. Elsevier, Amsterdam, Netherlands (2019).\nvan Westen, C.J., Rengers, N. & Soeters, R. Use of Geomorphological Information in Indirect Landslide Susceptibility Assessment. Natural Hazards 30, 399–419 (2003)."
+  },
+  {
+    "objectID": "gwsmodelling.html#exploratory-spatial-data-analysis-esda",
+    "href": "gwsmodelling.html#exploratory-spatial-data-analysis-esda",
+    "title": "Landslide Susceptibility Model Development",
+    "section": "Exploratory Spatial Data Analysis (ESDA)",
+    "text": "Exploratory Spatial Data Analysis (ESDA)\nTo calculate the summary statistics of landslide_train data frame, we use st().\n\nst(landslide_train)\n\nNext, we will create atrellis plot by using ggarrange() of ggpubr package. In this way, we can see the distribution plots of different parameters at the same time.\n\nElevation &lt;- ggplot(data=landslide_train, aes(x= `Elevation`)) + \n  geom_histogram(bins=10, color=\"black\", fill=\"#e9531e\")\n\nSlope_Angle &lt;- ggplot(data=landslide_train, aes(x= `Slope_Angle`)) +\n  geom_histogram(bins=10, color=\"black\", fill=\"#e9531e\")\n\nAspect &lt;- ggplot(data=landslide_train, aes(x= `Aspect`)) +\n  geom_histogram(bins=10, color=\"black\", fill=\"#e9531e\")\n\nProfile_Curvature &lt;- ggplot(data=landslide_train, aes(x= `Profile_Curvature`)) + \n  geom_histogram(bins=10, color=\"black\", fill=\"#DC375E\")\n\nPlan_Curvature &lt;- ggplot(data=landslide_train, aes(x= `Plan_Curvature`)) +\n  geom_histogram(bins=10, color=\"black\", fill=\"#DC375E\")\n\nProximity_Settlement  &lt;- ggplot(data=landslide_train, \n                               aes(x= `Proximity_Settlement`)) +\n  geom_histogram(bins=10, color=\"black\", fill=\"#DC375E\")\n\nProximity_Stream  &lt;- ggplot(data=landslide_train, aes(x= `Proximity_Stream`)) +\n  geom_histogram(bins=10, color=\"black\", fill=\"#AE4285\")\n\nProximity_Road &lt;- ggplot(data=landslide_train, aes(x= `Proximity_Road`)) +\n  geom_histogram(bins=10, color=\"black\", fill=\"#AE4285\")\n\nProximity_Fault &lt;- ggplot(data=landslide_train, aes(x= `Proximity_Fault`)) +\n  geom_histogram(bins=10, color=\"black\", fill=\"#AE4285\")\n\nPrecipitation &lt;- ggplot(data=landslide_train, aes(x= `Precipitation`)) +\n  geom_histogram(bins=10, color=\"black\", fill=\"#71508F\")\n\nTWI &lt;- ggplot(data=landslide_train, aes(x= `TWI`)) +\n  geom_histogram(bins=10, color=\"black\", fill=\"#71508F\")\n\nggarrange(Elevation,Slope_Angle,Aspect,Profile_Curvature,Plan_Curvature,Proximity_Settlement,Proximity_Stream,Proximity_Road,Proximity_Fault,Precipitation,TWI,\n          ncol = 3, nrow = 4)"
+  },
+  {
+    "objectID": "gwsmodelling.html#inflation-variance-test",
+    "href": "gwsmodelling.html#inflation-variance-test",
+    "title": "Landslide Susceptibility Model Development",
+    "section": "Inflation Variance Test",
+    "text": "Inflation Variance Test"
+  },
+  {
+    "objectID": "gwsmodelling.html#emerging-hot-spot-analysis",
+    "href": "gwsmodelling.html#emerging-hot-spot-analysis",
+    "title": "Landslide Susceptibility Model Development",
+    "section": "Emerging Hot Spot Analysis",
+    "text": "Emerging Hot Spot Analysis\n\npacman::p_load(sd,tmap,spdep,spData)\ncoords &lt;- cbind(longitude, latitude)\n\nThe function knearneigh returns a matrix with the indices of points belonging to the set of the k nearest neighbours of each other.\nThe function knn2nb converts a knn object returned by knearneigh into a neighbours list of class nb with a list of integer vectors containing neighbour region number ids.\nThe function nbdists returns the Euclidean distances along the spatial neighbour links in a list.\n\nk1 &lt;- knn2nb(knearneigh(coords))\nk1dists &lt;- unlist(nbdists(k1, coords, longlat = TRUE))\nsummary(k1dists)\n\n\nComputing fixed distance weight matrix\n\nweight_matrix &lt;- dnearneigh(coords, 0, 106, longlat = TRUE)\nweight_matrix"
+  },
+  {
+    "objectID": "gwsmodelling.html#spatial-neighbourhood",
+    "href": "gwsmodelling.html#spatial-neighbourhood",
+    "title": "Landslide Susceptibility Model Development",
+    "section": "Spatial Neighbourhood",
+    "text": "Spatial Neighbourhood\nCreate Neighbourhood Matrix using Queen\n\nnb &lt;- spdep::poly2nb(landslide_train, queen = TRUE)\nhead(nb)\nplot(st_geometry(landslide_train), border = \"lightgray\")\nplot.nb(nb, st_geometry(landslide_train), add = TRUE)\n\nCreate a demo visual of how spatial neighbourhood works\n\nid &lt;- 20 # custom area id \nlandslide_train$neighbors &lt;- \"other\"\nlandslide_train$neighbors[id] &lt;- \"point of interest\"\nlandslide_train$neighbors[nb[[id]]] &lt;- \"neighbours\"\nggplot(landslide_train) + geom_sf(aes(fill = neighbors)) + theme_bw() +\n  scale_fill_manual(values = c(\"gray30\", \"gray\", \"white\"))\n\nThe function nb2listw() of the spdep package can be used to construct a spatial neighborhood matrix containing the spatial weights corresponding to a neighbors list. The neighbors can be binary or based on inverse distance values.\n\nspatial_w_matrix &lt;- listw2mat(nbw)\n\nWe can visualize the spatial weight matrix by creating a matrix with the weights with listw2mat(), and using lattice::levelplot() to create the plot\n\nlattice::levelplot(t(m1),\n    scales = list(y = list(at = c(10, 20, 30, 40),\n    labels = c(10, 20, 30, 40))))"
+  },
+  {
+    "objectID": "gwsmodelling.html#correlation-matrix",
+    "href": "gwsmodelling.html#correlation-matrix",
+    "title": "Landslide Susceptibility Model Development",
+    "section": "Correlation Matrix",
+    "text": "Correlation Matrix\nBefore building a multinomial logistic regression model, it is important to ensure that the indepdent variables used are not highly correlated to each other. If these highly correlated independent variables are used in building a regression model by mistake, the quality of the model will be compromised. This phenomenon is known as multicollinearity in statistics.\nCorrelation matrix is commonly used to visualise the relationships between the independent variables. In this section, the corrplot package will be used to display the correlation matrix of the independent variables in condo_resale data frame.\n\ncorrplot(cor(landslide_train[, 5:23]), diag = FALSE, order = \"AOE\",\n         tl.pos = \"td\", tl.cex = 0.5,tl.col = \"black\", number.cex = 0.5, method = \"number\", type = \"upper\")\n\ncorrplot(cor(landslide_train[, 5:23]), diag = FALSE, order = \"AOE\",\n         tl.pos = \"td\", tl.cex = 0.5,tl.col = \"black\", number.cex = 0.5, method = \"ellipse\", type = \"upper\")"
+  },
+  {
+    "objectID": "gwsmodelling.html#logistic-regression",
+    "href": "gwsmodelling.html#logistic-regression",
+    "title": "Landslide Susceptibility Model Development",
+    "section": "Logistic Regression",
+    "text": "Logistic Regression\n\nset.seed(123)\nsample &lt;- sample(c(TRUE, FALSE), nrow(default), replace = T, prob = c(0.6,0.4))\ntrain &lt;- default[sample, ]\ntest &lt;- default[!sample, ]"
+  },
+  {
+    "objectID": "gwsmodelling.html#simple-logistic-regression",
+    "href": "gwsmodelling.html#simple-logistic-regression",
+    "title": "Landslide Susceptibility Model Development",
+    "section": "Simple Logistic Regression",
+    "text": "Simple Logistic Regression\nWe will fit a logistic regression model in order to predict the probability of a customer defaulting based on the average balance carried by the customer. The glm function fits generalized linear models, a class of models that includes logistic regression. The syntax of the glm function is similar to that of lm, except that we must pass the argument family = binomial in order to tell R to run a logistic regression rather than some other type of generalized linear model.\n\nlogit_model &lt;- glm(landslide ~ ., family = \"binomial\", data = landslide_train)"
   }
 ]
