@@ -18,6 +18,17 @@ output:
 
 To develop a landslide susceptibility methodology framework, we will explore and calibrate different statistical and machine learning models.
 
+## Import Data
+```{r}
+pacman::p_load(sf, raster, spatstat, tmap, devtools)
+study_grids <- st_read(dsn = "~/IS485-Landslide/data/vector", 
+                layer = "valtellina_grid_15m")
+```
+
+```{r}
+
+```
+
 ## Exploratory Spatial Data Analysis (ESDA)
 
 To calculate the summary statistics of `landslide_train` data frame, we use `st()`.
@@ -172,5 +183,4 @@ We will fit a logistic regression model in order to predict the probability of a
 ```{r}
 #| eval: false
 logit_model <- glm(landslide ~ ., family = "binomial", data = landslide_train)
-
 ```
