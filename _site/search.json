@@ -166,5 +166,12 @@
     "title": "Landslide Susceptibility Model Development",
     "section": "Simple Logistic Regression",
     "text": "Simple Logistic Regression\nWe will fit a logistic regression model in order to predict the probability of a customer defaulting based on the average balance carried by the customer. The glm function fits generalized linear models, a class of models that includes logistic regression. The syntax of the glm function is similar to that of lm, except that we must pass the argument family = binomial in order to tell R to run a logistic regression rather than some other type of generalized linear model.\n\nlogit_model &lt;- glm(landslide ~ ., family = \"binomial\", data = landslide_train)"
+  },
+  {
+    "objectID": "gwsmodelling.html#import-data",
+    "href": "gwsmodelling.html#import-data",
+    "title": "Landslide Susceptibility Model Development",
+    "section": "Import Data",
+    "text": "Import Data\n\npacman::p_load(sf, raster, spatstat, tmap, devtools)\n#study_grids &lt;- st_read(dsn = \"~/IS485-Landslide/data/vector/grid.gpkg\")\n\n\nlength &lt;- length(study_grids)\n\n\ngrid_twi &lt;- raster::extract(twi, study_grids, fun = mean, sp = TRUE)"
   }
 ]
