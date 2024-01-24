@@ -19,14 +19,24 @@ output:
 To develop a landslide susceptibility methodology framework, we will explore and calibrate different statistical and machine learning models.
 
 ## Import Data
+
 ```{r}
+#| eval: false
+
 pacman::p_load(sf, raster, spatstat, tmap, devtools)
-study_grids <- st_read(dsn = "~/IS485-Landslide/data/vector", 
-                layer = "valtellina_grid_15m")
+study_grids <- st_read(dsn = "~/IS485-Landslide/data/vector/grid.gpkg")
 ```
 
 ```{r}
+#| eval: false
 
+length <- length(study_grids)
+```
+
+```{r}
+#| eval: false
+
+grid_twi <- raster::extract(twi, study_grids, fun = mean, sp = TRUE)
 ```
 
 ## Exploratory Spatial Data Analysis (ESDA)
