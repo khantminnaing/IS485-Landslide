@@ -650,15 +650,16 @@ Slope angle refers to the angle of inclination of the slope surface, measured fr
 
 ```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
 #| echo: false
+  
 ggplot()+
   geom_raster(data = hillshade_df,
               aes(x, y, fill = hillshade),
               show.legend = FALSE) +
   scale_fill_distiller(palette = "Greys") +
   new_scale_fill() +
-  geom_raster(aes(x=x,y=y,fill=slope_degree),data=slope_df)+
+  geom_raster(aes(x=x,y=y,fill=slope_degree),data=slope_df, alpha = .6)+
   geom_sf(fill='transparent',data=valtellina)+
-  scale_fill_gradientn('twi', colours=c("#ffc809", "#ff7d04","#ff163b", "#ff006f","#cc01b8", "#0000ff"))+
+  scale_fill_gradientn('twi', colours=c("#ffc809", "#ff7d04","#ff163b","#cc01b8", "#0000ff"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Slope Map",
@@ -690,9 +691,9 @@ ggplot()+
               show.legend = FALSE) +
   scale_fill_distiller(palette = "Greys") +
   new_scale_fill() +
-  geom_raster(aes(x=x,y=y,fill=slope_degree),data=slope_df)+
+  geom_raster(aes(x=x,y=y,fill=slope_degree),data=slope_df, alpha = .6)+
   geom_sf(fill='transparent',data=valtellina)+
-  scale_fill_gradientn('twi', colours=c("#ffc809", "#ff7d04","#ff163b", "#ff006f","#cc01b8", "#0000ff"))+
+  scale_fill_gradientn('twi', colours=c("#ffc809", "#ff7d04","#ff163b","#cc01b8", "#0000ff"))+
   coord_sf(expand=FALSE)+
   labs(x='Longitude',y='Latitude',
        title="Slope Map",

@@ -97,6 +97,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
 
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="logo.css">
@@ -168,11 +171,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#import-data" id="toc-import-data" class="nav-link active" data-scroll-target="#import-data">Import Data</a></li>
   <li><a href="#exploratory-spatial-data-analysis-esda" id="toc-exploratory-spatial-data-analysis-esda" class="nav-link" data-scroll-target="#exploratory-spatial-data-analysis-esda">Exploratory Spatial Data Analysis (ESDA)</a></li>
   <li><a href="#inflation-variance-test" id="toc-inflation-variance-test" class="nav-link" data-scroll-target="#inflation-variance-test">Inflation Variance Test</a></li>
-  <li><a href="#emerging-hot-spot-analysis" id="toc-emerging-hot-spot-analysis" class="nav-link" data-scroll-target="#emerging-hot-spot-analysis">Emerging Hot Spot Analysis</a></li>
-  <li><a href="#spatial-neighbourhood" id="toc-spatial-neighbourhood" class="nav-link" data-scroll-target="#spatial-neighbourhood">Spatial Neighbourhood</a></li>
-  <li><a href="#correlation-matrix" id="toc-correlation-matrix" class="nav-link" data-scroll-target="#correlation-matrix">Correlation Matrix</a></li>
+  <li><a href="#correlation-matrix" id="toc-correlation-matrix" class="nav-link" data-scroll-target="#correlation-matrix">Correlation Matrix</a>
+  <ul class="collapse">
+  <li><a href="#using-ggstats-method" id="toc-using-ggstats-method" class="nav-link" data-scroll-target="#using-ggstats-method">Using ggstats method</a></li>
+  </ul></li>
   <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression">Logistic Regression</a></li>
   <li><a href="#simple-logistic-regression" id="toc-simple-logistic-regression" class="nav-link" data-scroll-target="#simple-logistic-regression">Simple Logistic Regression</a></li>
+  <li><a href="#emerging-hot-spot-analysis" id="toc-emerging-hot-spot-analysis" class="nav-link" data-scroll-target="#emerging-hot-spot-analysis">Emerging Hot Spot Analysis</a></li>
+  <li><a href="#spatial-neighbourhood" id="toc-spatial-neighbourhood" class="nav-link" data-scroll-target="#spatial-neighbourhood">Spatial Neighbourhood</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
   </ul>
 </nav>
     </div>
@@ -211,7 +218,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 24, 2024</p>
+      <p class="date-modified">January 25, 2024</p>
     </div>
   </div>
     
@@ -224,127 +231,467 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="import-data" class="level2">
 <h2 class="anchored" data-anchor-id="import-data">Import Data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, raster, spatstat, tmap, devtools)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#study_grids &lt;- st_read(dsn = "~/IS485-Landslide/data/vector/grid.gpkg")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, st, raster, spatstat, tmap, devtools,vtable,ggplot2,egg, corrplot, patchwork, ggstats, ggstatsplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>length <span class="ot">&lt;-</span> <span class="fu">length</span>(study_grids)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>train_grids <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"~/IS485-Landslide/data/aspatial/train_grid.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>grid_twi <span class="ot">&lt;-</span> raster<span class="sc">::</span><span class="fu">extract</span>(twi, study_grids, <span class="at">fun =</span> mean, <span class="at">sp =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>length <span class="ot">&lt;-</span> <span class="fu">length</span>(train_grids)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>length</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 31</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(train_grids)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Train_ID"                 "Grid_ID"                 
+ [3] "X"                        "Y"                       
+ [5] "Landslide"                "Elevation"               
+ [7] "Slope_Angle"              "Aspect_North"            
+ [9] "Aspect_NorthEast"         "Aspect_East"             
+[11] "Aspect_SouthEast"         "Aspect_South"            
+[13] "Aspect_SouthWest"         "Aspect_West"             
+[15] "Aspect_NorthWest"         "Profile_Curvature"       
+[17] "Plan_Curvature"           "Lithology_Metamorphic"   
+[19] "Lithology_Sedimentary"    "Lithology_Volcanic"      
+[21] "Lithology_Plutonic"       "Lithology_Unconsolidated"
+[23] "Proximity_Settlement"     "Proximity_Stream"        
+[25] "Proximity_Road"           "Proximity_Fault"         
+[27] "Landuse_Nonvegetation"    "Landuse_Vegetation"      
+[29] "Landuse_Waterbody"        "Precipitation"           
+[31] "TWI"                     </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>train_grids.sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(train_grids,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="exploratory-spatial-data-analysis-esda" class="level2">
 <h2 class="anchored" data-anchor-id="exploratory-spatial-data-analysis-esda">Exploratory Spatial Data Analysis (ESDA)</h2>
 <p>To calculate the summary statistics of <code>landslide_train</code> data frame, we use <code>st()</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st</span>(landslide_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st</span>(train_grids)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Summary Statistics</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Variable</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">N</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Mean</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Std. Dev.</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Min</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Pctl. 25</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Pctl. 75</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Train_ID</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">25282</td>
+<td style="text-align: left;">14596</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">12642</td>
+<td style="text-align: left;">37922</td>
+<td style="text-align: left;">50563</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Grid_ID</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">7258576</td>
+<td style="text-align: left;">4280699</td>
+<td style="text-align: left;">154</td>
+<td style="text-align: left;">3455206</td>
+<td style="text-align: left;">11141722</td>
+<td style="text-align: left;">14724829</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">X</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">573312</td>
+<td style="text-align: left;">27325</td>
+<td style="text-align: left;">519097</td>
+<td style="text-align: left;">550687</td>
+<td style="text-align: left;">594547</td>
+<td style="text-align: left;">624487</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Y</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">5129116</td>
+<td style="text-align: left;">17040</td>
+<td style="text-align: left;">5095541</td>
+<td style="text-align: left;">5115266</td>
+<td style="text-align: left;">5143076</td>
+<td style="text-align: left;">5164991</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Landslide</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.83</td>
+<td style="text-align: left;">0.38</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Elevation</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">1913</td>
+<td style="text-align: left;">677</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1509</td>
+<td style="text-align: left;">2420</td>
+<td style="text-align: left;">3924</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Slope_Angle</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">42</td>
+<td style="text-align: left;">24</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">27</td>
+<td style="text-align: left;">48</td>
+<td style="text-align: left;">90</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_North</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.061</td>
+<td style="text-align: left;">0.24</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aspect_NorthEast</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.12</td>
+<td style="text-align: left;">0.32</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_East</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.14</td>
+<td style="text-align: left;">0.34</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aspect_SouthEast</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.15</td>
+<td style="text-align: left;">0.35</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_South</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.16</td>
+<td style="text-align: left;">0.36</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aspect_SouthWest</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.15</td>
+<td style="text-align: left;">0.36</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_West</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.13</td>
+<td style="text-align: left;">0.34</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aspect_NorthWest</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.099</td>
+<td style="text-align: left;">0.3</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Profile_Curvature</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">-0.00043</td>
+<td style="text-align: left;">0.0012</td>
+<td style="text-align: left;">-0.0066</td>
+<td style="text-align: left;">-0.0011</td>
+<td style="text-align: left;">0.00022</td>
+<td style="text-align: left;">0.0079</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Plan_Curvature</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">-0.00019</td>
+<td style="text-align: left;">0.0011</td>
+<td style="text-align: left;">-0.0056</td>
+<td style="text-align: left;">-0.00071</td>
+<td style="text-align: left;">0.00032</td>
+<td style="text-align: left;">0.0068</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lithology_Metamorphic</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.42</td>
+<td style="text-align: left;">0.49</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lithology_Sedimentary</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.24</td>
+<td style="text-align: left;">0.42</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lithology_Volcanic</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.00032</td>
+<td style="text-align: left;">0.018</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lithology_Plutonic</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.057</td>
+<td style="text-align: left;">0.23</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lithology_Unconsolidated</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.29</td>
+<td style="text-align: left;">0.45</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Proximity_Settlement</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">904</td>
+<td style="text-align: left;">764</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">328</td>
+<td style="text-align: left;">1288</td>
+<td style="text-align: left;">5600</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Proximity_Stream</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">3.1</td>
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">97</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Proximity_Road</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">26</td>
+<td style="text-align: left;">22</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">6.3</td>
+<td style="text-align: left;">40</td>
+<td style="text-align: left;">125</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Proximity_Fault</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">828</td>
+<td style="text-align: left;">1032</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">199</td>
+<td style="text-align: left;">1012</td>
+<td style="text-align: left;">7746</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Landuse_Nonvegetation</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.48</td>
+<td style="text-align: left;">0.5</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Landuse_Vegetation</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.51</td>
+<td style="text-align: left;">0.5</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Landuse_Waterbody</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.014</td>
+<td style="text-align: left;">0.12</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Precipitation</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.15</td>
+<td style="text-align: left;">0.048</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0.13</td>
+<td style="text-align: left;">0.17</td>
+<td style="text-align: left;">0.29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TWI</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">7.5</td>
+<td style="text-align: left;">2.3</td>
+<td style="text-align: left;">3.7</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">8.3</td>
+<td style="text-align: left;">23</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
 </div>
 <p>Next, we will create atrellis plot by using <code>ggarrange()</code> of <a href="https://cran.r-project.org/web/packages/ggpubr/"><strong>ggpubr</strong></a> package. In this way, we can see the distribution plots of different parameters at the same time.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Elevation <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>landslide_train, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Elevation</span><span class="st">`</span>)) <span class="sc">+</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">10</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>Slope_Angle <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>landslide_train, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">10</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>Aspect <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>landslide_train, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Aspect</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">10</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>Profile_Curvature <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>landslide_train, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Profile_Curvature</span><span class="st">`</span>)) <span class="sc">+</span> </span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">10</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#DC375E"</span>)</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>Plan_Curvature <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>landslide_train, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Plan_Curvature</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">10</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#DC375E"</span>)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>Proximity_Settlement  <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>landslide_train, </span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Settlement</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">10</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#DC375E"</span>)</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>Proximity_Stream  <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>landslide_train, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Stream</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">10</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#AE4285"</span>)</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>Proximity_Road <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>landslide_train, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Road</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">10</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#AE4285"</span>)</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>Proximity_Fault <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>landslide_train, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Fault</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">10</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#AE4285"</span>)</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>Precipitation <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>landslide_train, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Precipitation</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">10</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#71508F"</span>)</span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>TWI <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>landslide_train, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">TWI</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">10</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#71508F"</span>)</span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(Elevation,Slope_Angle,Aspect,Profile_Curvature,Plan_Curvature,Proximity_Settlement,Proximity_Stream,Proximity_Road,Proximity_Fault,Precipitation,TWI,</span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>          <span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">nrow =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Elevation <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Elevation</span><span class="st">`</span>)) <span class="sc">+</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>Slope_Angle <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>Profile_Curvature <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Profile_Curvature</span><span class="st">`</span>)) <span class="sc">+</span> </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#DC375E"</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>Plan_Curvature <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Plan_Curvature</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#DC375E"</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>Proximity_Settlement  <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Settlement</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#c4102c"</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>Proximity_Stream  <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Stream</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#c4102c"</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>Proximity_Road <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Road</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#AE4285"</span>)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>Proximity_Fault <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Fault</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#AE4285"</span>)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>Precipitation <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Precipitation</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#71508F"</span>)</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>TWI <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">TWI</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#71508F"</span>)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(Elevation,Slope_Angle,Profile_Curvature,Plan_Curvature,Proximity_Settlement,Proximity_Stream,Proximity_Road,Proximity_Fault,Precipitation,TWI,</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>          <span class="at">ncol =</span> <span class="dv">4</span>, <span class="at">nrow =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>adding dummy grobs</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="960"></p>
+</div>
 </div>
 </section>
 <section id="inflation-variance-test" class="level2">
 <h2 class="anchored" data-anchor-id="inflation-variance-test">Inflation Variance Test</h2>
-</section>
-<section id="emerging-hot-spot-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="emerging-hot-spot-analysis">Emerging Hot Spot Analysis</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sd,tmap,spdep,spData)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">cbind</span>(longitude, latitude)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The function <code>knearneigh</code> returns a matrix with the indices of points belonging to the set of the k nearest neighbours of each other.</p>
-<p>The function <code>knn2nb</code> converts a <code>knn</code> object returned by <code>knearneigh</code> into a neighbours list of class <code>nb</code> with a list of integer vectors containing neighbour region number ids.</p>
-<p>The function <code>nbdists</code> returns the Euclidean distances along the spatial neighbour links in a list.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>k1 <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords))</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>k1dists <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">nbdists</span>(k1, coords, <span class="at">longlat =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(k1dists)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<section id="computing-fixed-distance-weight-matrix" class="level4">
-<h4 class="anchored" data-anchor-id="computing-fixed-distance-weight-matrix">Computing fixed distance weight matrix</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>weight_matrix <span class="ot">&lt;-</span> <span class="fu">dnearneigh</span>(coords, <span class="dv">0</span>, <span class="dv">106</span>, <span class="at">longlat =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>weight_matrix</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-</section>
-<section id="spatial-neighbourhood" class="level2">
-<h2 class="anchored" data-anchor-id="spatial-neighbourhood">Spatial Neighbourhood</h2>
-<p>Create Neighbourhood Matrix using Queen</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nb <span class="ot">&lt;-</span> spdep<span class="sc">::</span><span class="fu">poly2nb</span>(landslide_train, <span class="at">queen =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(nb)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(landslide_train), <span class="at">border =</span> <span class="st">"lightgray"</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.nb</span>(nb, <span class="fu">st_geometry</span>(landslide_train), <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Create a demo visual of how spatial neighbourhood works</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>id <span class="ot">&lt;-</span> <span class="dv">20</span> <span class="co"># custom area id </span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>landslide_train<span class="sc">$</span>neighbors <span class="ot">&lt;-</span> <span class="st">"other"</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>landslide_train<span class="sc">$</span>neighbors[id] <span class="ot">&lt;-</span> <span class="st">"point of interest"</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>landslide_train<span class="sc">$</span>neighbors[nb[[id]]] <span class="ot">&lt;-</span> <span class="st">"neighbours"</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(landslide_train) <span class="sc">+</span> <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> neighbors)) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"gray30"</span>, <span class="st">"gray"</span>, <span class="st">"white"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The function <code>nb2listw()</code> of the spdep package can be used to construct a spatial neighborhood matrix containing the spatial weights corresponding to a neighbors list. The neighbors can be binary or based on inverse distance values.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>spatial_w_matrix <span class="ot">&lt;-</span> <span class="fu">listw2mat</span>(nbw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>We can visualize the spatial weight matrix by creating a matrix with the weights with <code>listw2mat()</code>, and using <code>lattice::levelplot()</code> to create the plot</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>lattice<span class="sc">::</span><span class="fu">levelplot</span>(<span class="fu">t</span>(m1),</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">scales =</span> <span class="fu">list</span>(<span class="at">y =</span> <span class="fu">list</span>(<span class="at">at =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>),</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 </section>
 <section id="correlation-matrix" class="level2">
 <h2 class="anchored" data-anchor-id="correlation-matrix">Correlation Matrix</h2>
 <p>Before building a multinomial logistic regression model, it is important to ensure that the indepdent variables used are <strong>not highly correlated</strong> to each other. If these highly correlated independent variables are used in building a regression model by mistake, the quality of the model will be compromised. This phenomenon is known as <strong>multicollinearity</strong> in statistics.</p>
 <p>Correlation matrix is commonly used to visualise the relationships between the independent variables. In this section, the <a href="https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html"><strong>corrplot</strong></a> package will be used to display the correlation matrix of the independent variables in <em>condo_resale</em> data frame.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(<span class="fu">cor</span>(landslide_train[, <span class="dv">5</span><span class="sc">:</span><span class="dv">23</span>]), <span class="at">diag =</span> <span class="cn">FALSE</span>, <span class="at">order =</span> <span class="st">"AOE"</span>,</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.pos =</span> <span class="st">"td"</span>, <span class="at">tl.cex =</span> <span class="fl">0.5</span>,<span class="at">tl.col =</span> <span class="st">"black"</span>, <span class="at">number.cex =</span> <span class="fl">0.5</span>, <span class="at">method =</span> <span class="st">"number"</span>, <span class="at">type =</span> <span class="st">"upper"</span>)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(<span class="fu">cor</span>(landslide_train[, <span class="dv">5</span><span class="sc">:</span><span class="dv">23</span>]), <span class="at">diag =</span> <span class="cn">FALSE</span>, <span class="at">order =</span> <span class="st">"AOE"</span>,</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.pos =</span> <span class="st">"td"</span>, <span class="at">tl.cex =</span> <span class="fl">0.5</span>,<span class="at">tl.col =</span> <span class="st">"black"</span>, <span class="at">number.cex =</span> <span class="fl">0.5</span>, <span class="at">method =</span> <span class="st">"ellipse"</span>, <span class="at">type =</span> <span class="st">"upper"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(<span class="fu">cor</span>(train_grids[, <span class="dv">6</span><span class="sc">:</span><span class="dv">31</span>]), <span class="at">diag =</span> <span class="cn">FALSE</span>, <span class="at">order =</span> <span class="st">"AOE"</span>,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">col=</span><span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"#50a8b4"</span>,<span class="st">"#e4c838"</span>,<span class="st">"#be804f"</span>))(<span class="dv">10</span>),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.pos =</span> <span class="st">"td"</span>, <span class="at">tl.cex =</span> <span class="fl">0.5</span>,<span class="at">tl.col =</span> <span class="st">"black"</span>, <span class="at">number.cex =</span> <span class="fl">0.5</span>, <span class="at">method =</span> <span class="st">"number"</span>, <span class="at">type =</span> <span class="st">"upper"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="960"></p>
 </div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(<span class="fu">cor</span>(train_grids[,<span class="dv">6</span><span class="sc">:</span><span class="dv">31</span>]), <span class="at">diag =</span> <span class="cn">FALSE</span>, <span class="at">order =</span> <span class="st">"AOE"</span>,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">col=</span><span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"#50a8b4"</span>,<span class="st">"#ffffdd"</span>,<span class="st">"#be804f"</span>))(<span class="dv">10</span>),</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.pos =</span> <span class="st">"td"</span>, <span class="at">tl.cex =</span> <span class="fl">0.5</span>,<span class="at">tl.col =</span> <span class="st">"black"</span>, <span class="at">number.cex =</span> <span class="fl">0.5</span>, <span class="at">method =</span> <span class="st">"ellipse"</span>, <span class="at">type =</span> <span class="st">"upper"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<section id="using-ggstats-method" class="level3">
+<h3 class="anchored" data-anchor-id="using-ggstats-method">Using ggstats method</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="do">## producing the correlation matrix</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrmat</span>(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train_grids[, <span class="dv">6</span><span class="sc">:</span><span class="dv">31</span>],  </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">matrix.type =</span> <span class="st">"upper"</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"parametric"</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">tr =</span> <span class="fl">0.2</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">tl.cex =</span> <span class="fl">0.1</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">partial =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> 2L,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">sig.level =</span> <span class="fl">0.05</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span>,</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">bf.prior =</span> <span class="fl">0.707</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
 </section>
 <section id="logistic-regression" class="level2">
 <h2 class="anchored" data-anchor-id="logistic-regression">Logistic Regression</h2>
@@ -361,6 +708,60 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>logit_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(landslide <span class="sc">~</span> ., <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> landslide_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="emerging-hot-spot-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="emerging-hot-spot-analysis">Emerging Hot Spot Analysis</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sd,tmap,spdep,spData)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">cbind</span>(longitude, latitude)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The function <code>knearneigh</code> returns a matrix with the indices of points belonging to the set of the k nearest neighbours of each other.</p>
+<p>The function <code>knn2nb</code> converts a <code>knn</code> object returned by <code>knearneigh</code> into a neighbours list of class <code>nb</code> with a list of integer vectors containing neighbour region number ids.</p>
+<p>The function <code>nbdists</code> returns the Euclidean distances along the spatial neighbour links in a list.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>k1 <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>k1dists <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">nbdists</span>(k1, coords, <span class="at">longlat =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(k1dists)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="computing-fixed-distance-weight-matrix" class="level4">
+<h4 class="anchored" data-anchor-id="computing-fixed-distance-weight-matrix">Computing fixed distance weight matrix</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>weight_matrix <span class="ot">&lt;-</span> <span class="fu">dnearneigh</span>(coords, <span class="dv">0</span>, <span class="dv">106</span>, <span class="at">longlat =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>weight_matrix</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="spatial-neighbourhood" class="level2">
+<h2 class="anchored" data-anchor-id="spatial-neighbourhood">Spatial Neighbourhood</h2>
+<p>Create Neighbourhood Matrix using Queen</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>nb <span class="ot">&lt;-</span> spdep<span class="sc">::</span><span class="fu">poly2nb</span>(landslide_train, <span class="at">queen =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(nb)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(landslide_train), <span class="at">border =</span> <span class="st">"lightgray"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.nb</span>(nb, <span class="fu">st_geometry</span>(landslide_train), <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Create a demo visual of how spatial neighbourhood works</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>id <span class="ot">&lt;-</span> <span class="dv">20</span> <span class="co"># custom area id </span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>landslide_train<span class="sc">$</span>neighbors <span class="ot">&lt;-</span> <span class="st">"other"</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>landslide_train<span class="sc">$</span>neighbors[id] <span class="ot">&lt;-</span> <span class="st">"point of interest"</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>landslide_train<span class="sc">$</span>neighbors[nb[[id]]] <span class="ot">&lt;-</span> <span class="st">"neighbours"</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(landslide_train) <span class="sc">+</span> <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> neighbors)) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"gray30"</span>, <span class="st">"gray"</span>, <span class="st">"white"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The function <code>nb2listw()</code> of the spdep package can be used to construct a spatial neighborhood matrix containing the spatial weights corresponding to a neighbors list. The neighbors can be binary or based on inverse distance values.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>spatial_w_matrix <span class="ot">&lt;-</span> <span class="fu">listw2mat</span>(nbw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can visualize the spatial weight matrix by creating a matrix with the weights with <code>listw2mat()</code>, and using <code>lattice::levelplot()</code> to create the plot</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>lattice<span class="sc">::</span><span class="fu">levelplot</span>(<span class="fu">t</span>(m1),</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">scales =</span> <span class="fu">list</span>(<span class="at">y =</span> <span class="fu">list</span>(<span class="at">at =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>),</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="section" class="level2">
+<h2 class="anchored" data-anchor-id="section"></h2>
 
 
 </section>
