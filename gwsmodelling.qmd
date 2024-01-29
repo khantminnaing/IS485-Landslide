@@ -164,7 +164,7 @@ train_point.sp <- as_Spatial(train_point)
 We will fit a logistic regression model in order to predict the probability of a customer defaulting based on the average balance carried by the customer. The `glm` function fits generalized linear models, a class of models that includes logistic regression. The syntax of the `glm` function is similar to that of `lm`, except that we must pass the argument `family = binomial` in order to tell R to run a logistic regression rather than some other type of generalized linear model.
 
 ```{r}
-landslide.lr <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Aspect_NorthWest + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Volcanic+Lithology_Plutonic+Lithology_Unconsolidated + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Nonvegetation+Landuse_Vegetation+Precipitation+TWI, family = "binomial", data = train_grids)
+landslide.lr <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Aspect_NorthWest + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Volcanic+Lithology_Plutonic+Lithology_Unconsolidated + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Nonvegetation+Landuse_Vegetation+Landuse_Waterbody+Precipitation+TWI, family = "binomial", data = train_grids)
 ```
 
 ```{r}
@@ -187,22 +187,36 @@ We can use the **`confint`** function to obtain confidence intervals for the coe
 confint(landslide.lr)
 ```
 
-### 3.6 Confidence Intervals Using Standard Errors
+### 3.6 Calculating Adjusted Odd Ratios and Confidence Intervals
 
 ```{r}
-confint.default(landslide.lr)
+OR.CI <- cbind("AOR" = exp(coef(landslide.lr)),
+                       exp(confint(landslide.lr)))[-1,]
+round(OR.CI, 3)
 ```
 
 ```{r}
+OR.CI
+```
+
+### 3.6 Variance Inflation Factor
+
+```{r}
+#| eval: false
 vif(landslide.lr)
 vif_values <- vif(landslide.lr)
 ```
 
+![](images/Screenshot 2024-01-29 at 2.33.57 PM.png){fig-align="center"}
+
 ```{r}
+#| eval: false
 vif_values
 ```
 
-## 
+### 3.7 Complete Separation
+
+Occasionally when running a logistic regression we would run into the problem of so-called complete separation or quasi-complete separation. A complete separation in a logistic regression, sometimes also referred as perfect prediction, happens when the outcome variable separates a predictor variable completely. (<https://www.bookdown.org/rwnahhas/RMPH/blr-separation.html>)
 
 ## 4.0 Exploratory Spatial Data Analysis (ESDA) - V2
 
@@ -335,15 +349,27 @@ We can use the **`confint`** function to obtain confidence intervals for the coe
 confint(landslide.lr_2)
 ```
 
-### 4.5 Confidence Intervals Using Standard Errors
+### 4.5 Calculating Adjusted Odd Ratios and Confidence Intervals
 
 ```{r}
-confint.default(landslide.lr_2)
+OR.CI_2 <- cbind("AOR" = exp(coef(landslide.lr_2)),
+                       exp(confint(landslide.lr_2)))[-1,]
+round(OR.CI_2, 3)
 ```
 
 ```{r}
-vif_values <- vif(landslide.lr_2)
-vif_values
+OR.CI_2
 ```
 
-## 
+### 4.6 Variance Inflation Factor
+
+```{r}
+vif(landslide.lr_2)
+vif_values_2 <- vif(landslide.lr_2)
+```
+
+```{r}
+vif_values_2
+```
+
+### 
