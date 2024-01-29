@@ -168,18 +168,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#import-data" id="toc-import-data" class="nav-link active" data-scroll-target="#import-data">Import Data</a></li>
-  <li><a href="#exploratory-spatial-data-analysis-esda" id="toc-exploratory-spatial-data-analysis-esda" class="nav-link" data-scroll-target="#exploratory-spatial-data-analysis-esda">Exploratory Spatial Data Analysis (ESDA)</a></li>
-  <li><a href="#inflation-variance-test" id="toc-inflation-variance-test" class="nav-link" data-scroll-target="#inflation-variance-test">Inflation Variance Test</a></li>
-  <li><a href="#correlation-matrix" id="toc-correlation-matrix" class="nav-link" data-scroll-target="#correlation-matrix">Correlation Matrix</a>
+  <li><a href="#import-packages" id="toc-import-packages" class="nav-link active" data-scroll-target="#import-packages">1.0 Import Packages</a></li>
+  <li><a href="#import-data" id="toc-import-data" class="nav-link" data-scroll-target="#import-data">2.0 Import Data</a></li>
+  <li><a href="#exploratory-spatial-data-analysis-esda---v1" id="toc-exploratory-spatial-data-analysis-esda---v1" class="nav-link" data-scroll-target="#exploratory-spatial-data-analysis-esda---v1">3.0 Exploratory Spatial Data Analysis (ESDA) - V1</a>
   <ul class="collapse">
-  <li><a href="#using-ggstats-method" id="toc-using-ggstats-method" class="nav-link" data-scroll-target="#using-ggstats-method">Using ggstats method</a></li>
+  <li><a href="#correlation-matrix-using-corrplot" id="toc-correlation-matrix-using-corrplot" class="nav-link" data-scroll-target="#correlation-matrix-using-corrplot">3.1 Correlation Matrix Using Corrplot</a></li>
+  <li><a href="#correlation-matrix-tusing-ggstats" id="toc-correlation-matrix-tusing-ggstats" class="nav-link" data-scroll-target="#correlation-matrix-tusing-ggstats">3.2 Correlation Matrix tUsing ggstats</a></li>
+  <li><a href="#test-for-spatial-autocorrelation" id="toc-test-for-spatial-autocorrelation" class="nav-link" data-scroll-target="#test-for-spatial-autocorrelation">3.3 Test for Spatial Autocorrelation</a></li>
+  <li><a href="#simple-logistic-regression" id="toc-simple-logistic-regression" class="nav-link" data-scroll-target="#simple-logistic-regression">3.4 Simple Logistic Regression</a></li>
+  <li><a href="#confidence-intervals-using-profiled-lag-likelihood" id="toc-confidence-intervals-using-profiled-lag-likelihood" class="nav-link" data-scroll-target="#confidence-intervals-using-profiled-lag-likelihood">3.5 Confidence Intervals Using Profiled Lag-Likelihood</a></li>
+  <li><a href="#confidence-intervals-using-standard-errors" id="toc-confidence-intervals-using-standard-errors" class="nav-link" data-scroll-target="#confidence-intervals-using-standard-errors">3.6 Confidence Intervals Using Standard Errors</a></li>
   </ul></li>
-  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression">Logistic Regression</a></li>
-  <li><a href="#simple-logistic-regression" id="toc-simple-logistic-regression" class="nav-link" data-scroll-target="#simple-logistic-regression">Simple Logistic Regression</a></li>
-  <li><a href="#emerging-hot-spot-analysis" id="toc-emerging-hot-spot-analysis" class="nav-link" data-scroll-target="#emerging-hot-spot-analysis">Emerging Hot Spot Analysis</a></li>
-  <li><a href="#spatial-neighbourhood" id="toc-spatial-neighbourhood" class="nav-link" data-scroll-target="#spatial-neighbourhood">Spatial Neighbourhood</a></li>
   <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  <li><a href="#exploratory-spatial-data-analysis-esda---v2" id="toc-exploratory-spatial-data-analysis-esda---v2" class="nav-link" data-scroll-target="#exploratory-spatial-data-analysis-esda---v2">4.0 Exploratory Spatial Data Analysis (ESDA) - V2</a>
+  <ul class="collapse">
+  <li><a href="#correlation-matrix-using-corrplot-1" id="toc-correlation-matrix-using-corrplot-1" class="nav-link" data-scroll-target="#correlation-matrix-using-corrplot-1">4.1 Correlation Matrix Using Corrplot</a></li>
+  <li><a href="#correlation-matrix-using-ggstats" id="toc-correlation-matrix-using-ggstats" class="nav-link" data-scroll-target="#correlation-matrix-using-ggstats">4.2 Correlation Matrix Using ggstats</a></li>
+  <li><a href="#simple-logistic-regression-1" id="toc-simple-logistic-regression-1" class="nav-link" data-scroll-target="#simple-logistic-regression-1">4.3 Simple Logistic Regression</a></li>
+  <li><a href="#confidence-intervals-using-profiled-lag-likelihood-1" id="toc-confidence-intervals-using-profiled-lag-likelihood-1" class="nav-link" data-scroll-target="#confidence-intervals-using-profiled-lag-likelihood-1">4.4 Confidence Intervals Using Profiled Lag-Likelihood</a></li>
+  <li><a href="#confidence-intervals-using-standard-errors-1" id="toc-confidence-intervals-using-standard-errors-1" class="nav-link" data-scroll-target="#confidence-intervals-using-standard-errors-1">4.5 Confidence Intervals Using Standard Errors</a></li>
+  </ul></li>
+  <li><a href="#section-1" id="toc-section-1" class="nav-link" data-scroll-target="#section-1"></a></li>
   </ul>
 </nav>
     </div>
@@ -218,7 +227,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 25, 2024</p>
+      <p class="date-modified">January 29, 2024</p>
     </div>
   </div>
     
@@ -228,13 +237,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 <p>To develop a landslide susceptibility methodology framework, we will explore and calibrate different statistical and machine learning models.</p>
-<section id="import-data" class="level2">
-<h2 class="anchored" data-anchor-id="import-data">Import Data</h2>
+<section id="import-packages" class="level2">
+<h2 class="anchored" data-anchor-id="import-packages">1.0 Import Packages</h2>
+<ul>
+<li><code>car</code> : Companion to Applied Regression</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, st, raster, spatstat, tmap, devtools,vtable,ggplot2,egg, corrplot, patchwork, ggstats, ggstatsplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, st, spdep, raster, spatstat, tmap, devtools,vtable,ggplot2,egg, corrplot, patchwork, ggstats, ggstatsplot, GWmodel, tidyverse, gtsummary,vtable, sjPlot, sjmisc, sjlabelled, tableHTML, olsrr, car)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="import-data" class="level2">
+<h2 class="anchored" data-anchor-id="import-data">2.0 Import Data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>train_grids <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"~/IS485-Landslide/data/aspatial/train_grid.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>train_grids <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"~/IS485-Landslide/data/aspatial/train_grid.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>train_grids_v2 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"~/IS485-Landslide/data/aspatial/train_grid_v2.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>length <span class="ot">&lt;-</span> <span class="fu">length</span>(train_grids)</span>
@@ -244,36 +260,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(train_grids)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] "Train_ID"                 "Grid_ID"                 
- [3] "X"                        "Y"                       
- [5] "Landslide"                "Elevation"               
- [7] "Slope_Angle"              "Aspect_North"            
- [9] "Aspect_NorthEast"         "Aspect_East"             
-[11] "Aspect_SouthEast"         "Aspect_South"            
-[13] "Aspect_SouthWest"         "Aspect_West"             
-[15] "Aspect_NorthWest"         "Profile_Curvature"       
-[17] "Plan_Curvature"           "Lithology_Metamorphic"   
-[19] "Lithology_Sedimentary"    "Lithology_Volcanic"      
-[21] "Lithology_Plutonic"       "Lithology_Unconsolidated"
-[23] "Proximity_Settlement"     "Proximity_Stream"        
-[25] "Proximity_Road"           "Proximity_Fault"         
-[27] "Landuse_Nonvegetation"    "Landuse_Vegetation"      
-[29] "Landuse_Waterbody"        "Precipitation"           
-[31] "TWI"                     </code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>train_grids.sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(train_grids,</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>train_grids.sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(train_grids,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>train_grid_v2.sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(train_grids_v2,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="exploratory-spatial-data-analysis-esda" class="level2">
-<h2 class="anchored" data-anchor-id="exploratory-spatial-data-analysis-esda">Exploratory Spatial Data Analysis (ESDA)</h2>
+<section id="exploratory-spatial-data-analysis-esda---v1" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-spatial-data-analysis-esda---v1">3.0 Exploratory Spatial Data Analysis (ESDA) - V1</h2>
 <p>To calculate the summary statistics of <code>landslide_train</code> data frame, we use <code>st()</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st</span>(train_grids)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st</span>(train_grids)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
 <caption>Summary Statistics</caption>
@@ -608,160 +605,2679 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Next, we will create atrellis plot by using <code>ggarrange()</code> of <a href="https://cran.r-project.org/web/packages/ggpubr/"><strong>ggpubr</strong></a> package. In this way, we can see the distribution plots of different parameters at the same time.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Elevation <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Elevation</span><span class="st">`</span>)) <span class="sc">+</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>Slope_Angle <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>Profile_Curvature <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Profile_Curvature</span><span class="st">`</span>)) <span class="sc">+</span> </span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#DC375E"</span>)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>Plan_Curvature <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Plan_Curvature</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#DC375E"</span>)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>Proximity_Settlement  <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, </span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Settlement</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#c4102c"</span>)</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>Proximity_Stream  <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Stream</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#c4102c"</span>)</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>Proximity_Road <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Road</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#AE4285"</span>)</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>Proximity_Fault <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Fault</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#AE4285"</span>)</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>Precipitation <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Precipitation</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#71508F"</span>)</span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>TWI <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">TWI</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#71508F"</span>)</span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(Elevation,Slope_Angle,Profile_Curvature,Plan_Curvature,Proximity_Settlement,Proximity_Stream,Proximity_Road,Proximity_Fault,Precipitation,TWI,</span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>          <span class="at">ncol =</span> <span class="dv">4</span>, <span class="at">nrow =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Elevation <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Elevation</span><span class="st">`</span>)) <span class="sc">+</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>Slope_Angle <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>Profile_Curvature <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Profile_Curvature</span><span class="st">`</span>)) <span class="sc">+</span> </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#DC375E"</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>Plan_Curvature <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Plan_Curvature</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#DC375E"</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>Proximity_Settlement  <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Settlement</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#c4102c"</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>Proximity_Stream  <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Stream</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#c4102c"</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>Proximity_Road <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Road</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#AE4285"</span>)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>Proximity_Fault <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Fault</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#AE4285"</span>)</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>Precipitation <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Precipitation</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#71508F"</span>)</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>TWI <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">TWI</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#71508F"</span>)</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(Elevation,Slope_Angle,Profile_Curvature,Plan_Curvature,Proximity_Settlement,Proximity_Stream,Proximity_Road,Proximity_Fault,Precipitation,TWI,</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>          <span class="at">ncol =</span> <span class="dv">4</span>, <span class="at">nrow =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>adding dummy grobs</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="960"></p>
+<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="960"></p>
 </div>
 </div>
-</section>
-<section id="inflation-variance-test" class="level2">
-<h2 class="anchored" data-anchor-id="inflation-variance-test">Inflation Variance Test</h2>
-</section>
-<section id="correlation-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="correlation-matrix">Correlation Matrix</h2>
-<p>Before building a multinomial logistic regression model, it is important to ensure that the indepdent variables used are <strong>not highly correlated</strong> to each other. If these highly correlated independent variables are used in building a regression model by mistake, the quality of the model will be compromised. This phenomenon is known as <strong>multicollinearity</strong> in statistics.</p>
+<section id="correlation-matrix-using-corrplot" class="level3">
+<h3 class="anchored" data-anchor-id="correlation-matrix-using-corrplot">3.1 Correlation Matrix Using Corrplot</h3>
+<p>Before building a logistic regression model, it is important to ensure that the indepdent variables used are <strong>not highly correlated</strong> to each other. If these highly correlated independent variables are used in building a regression model by mistake, the quality of the model will be compromised. This phenomenon is known as <strong>multicollinearity</strong> in statistics.</p>
 <p>Correlation matrix is commonly used to visualise the relationships between the independent variables. In this section, the <a href="https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html"><strong>corrplot</strong></a> package will be used to display the correlation matrix of the independent variables in <em>condo_resale</em> data frame.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(<span class="fu">cor</span>(train_grids[, <span class="dv">6</span><span class="sc">:</span><span class="dv">31</span>]), <span class="at">diag =</span> <span class="cn">FALSE</span>, <span class="at">order =</span> <span class="st">"AOE"</span>,</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">col=</span><span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"#50a8b4"</span>,<span class="st">"#e4c838"</span>,<span class="st">"#be804f"</span>))(<span class="dv">10</span>),</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.pos =</span> <span class="st">"td"</span>, <span class="at">tl.cex =</span> <span class="fl">0.5</span>,<span class="at">tl.col =</span> <span class="st">"black"</span>, <span class="at">number.cex =</span> <span class="fl">0.5</span>, <span class="at">method =</span> <span class="st">"number"</span>, <span class="at">type =</span> <span class="st">"upper"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(<span class="fu">cor</span>(train_grids[, <span class="dv">6</span><span class="sc">:</span><span class="dv">31</span>]), <span class="at">diag =</span> <span class="cn">FALSE</span>, <span class="at">order =</span> <span class="st">"AOE"</span>,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">col=</span><span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"#50a8b4"</span>,<span class="st">"#e4c838"</span>,<span class="st">"#be804f"</span>))(<span class="dv">10</span>),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.pos =</span> <span class="st">"td"</span>, <span class="at">tl.cex =</span> <span class="fl">0.5</span>,<span class="at">tl.col =</span> <span class="st">"black"</span>, <span class="at">number.cex =</span> <span class="fl">0.5</span>, <span class="at">method =</span> <span class="st">"number"</span>, <span class="at">type =</span> <span class="st">"upper"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="960"></p>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(<span class="fu">cor</span>(train_grids[,<span class="dv">6</span><span class="sc">:</span><span class="dv">31</span>]), <span class="at">diag =</span> <span class="cn">FALSE</span>, <span class="at">order =</span> <span class="st">"AOE"</span>,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">col=</span><span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"#50a8b4"</span>,<span class="st">"#ffffdd"</span>,<span class="st">"#be804f"</span>))(<span class="dv">10</span>),</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.pos =</span> <span class="st">"td"</span>, <span class="at">tl.cex =</span> <span class="fl">0.5</span>,<span class="at">tl.col =</span> <span class="st">"black"</span>, <span class="at">number.cex =</span> <span class="fl">0.5</span>, <span class="at">method =</span> <span class="st">"ellipse"</span>, <span class="at">type =</span> <span class="st">"upper"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>Matrix reorder is very important for mining the hiden structure and patter in the matrix. There are four methods in corrplot (parameter order), named “AOE”, “FPC”, “hclust”, “alphabet”. In the code chunk above, AOE order is used. It orders the variables by using the <em>angular order of the eigenvectors</em> method suggested by <a href="https://www.datavis.ca/papers/corrgram.pdf">Michael Friendly</a>.</p>
+</section>
+<section id="correlation-matrix-tusing-ggstats" class="level3">
+<h3 class="anchored" data-anchor-id="correlation-matrix-tusing-ggstats">3.2 Correlation Matrix tUsing ggstats</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="do">## producing the correlation matrix</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrmat</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train_grids[, <span class="dv">6</span><span class="sc">:</span><span class="dv">31</span>],  </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">matrix.type =</span> <span class="st">"upper"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"parametric"</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">tr =</span> <span class="fl">0.2</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">partial =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> 2L,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">sig.level =</span> <span class="fl">0.05</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">bf.prior =</span> <span class="fl">0.707</span>,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggcorrplot.args =</span> <span class="fu">list</span>(</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">tl.cex =</span> <span class="dv">10</span>,</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch.cex =</span> <span class="dv">5</span>,</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">lab_size =</span> <span class="dv">3</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span> <span class="do">## modification outside `{ggstatsplot}` using `{ggplot2}` functions</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">margin =</span> ggplot2<span class="sc">::</span><span class="fu">margin</span>(<span class="at">t =</span> <span class="fl">0.15</span>, <span class="at">r =</span> <span class="fl">0.15</span>, <span class="at">b =</span> <span class="fl">0.15</span>, <span class="at">l =</span> <span class="fl">0.15</span>, <span class="at">unit =</span> <span class="st">"cm"</span>)</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="gwsmodelling_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="960"></p>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(<span class="fu">cor</span>(train_grids[,<span class="dv">6</span><span class="sc">:</span><span class="dv">31</span>]), <span class="at">diag =</span> <span class="cn">FALSE</span>, <span class="at">order =</span> <span class="st">"AOE"</span>,</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">col=</span><span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"#50a8b4"</span>,<span class="st">"#ffffdd"</span>,<span class="st">"#be804f"</span>))(<span class="dv">10</span>),</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.pos =</span> <span class="st">"td"</span>, <span class="at">tl.cex =</span> <span class="fl">0.5</span>,<span class="at">tl.col =</span> <span class="st">"black"</span>, <span class="at">number.cex =</span> <span class="fl">0.5</span>, <span class="at">method =</span> <span class="st">"ellipse"</span>, <span class="at">type =</span> <span class="st">"upper"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid" width="960"></p>
 </div>
-</div>
-<section id="using-ggstats-method" class="level3">
-<h3 class="anchored" data-anchor-id="using-ggstats-method">Using ggstats method</h3>
+</section>
+<section id="test-for-spatial-autocorrelation" class="level3">
+<h3 class="anchored" data-anchor-id="test-for-spatial-autocorrelation">3.3 Test for Spatial Autocorrelation</h3>
+<p>First, we will import the dataset.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="do">## producing the correlation matrix</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrmat</span>(</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train_grids[, <span class="dv">6</span><span class="sc">:</span><span class="dv">31</span>],  </span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">matrix.type =</span> <span class="st">"upper"</span>,</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"parametric"</span>,</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">tr =</span> <span class="fl">0.2</span>,</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">tl.cex =</span> <span class="fl">0.1</span>,</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">partial =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> 2L,</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">sig.level =</span> <span class="fl">0.05</span>,</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span>,</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">bf.prior =</span> <span class="fl">0.707</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>train_point <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="at">dsn =</span> <span class="st">"./data/vector"</span>, <span class="at">layer =</span> <span class="st">"train_point"</span>) <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32632</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>train_point</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 50563 features and 31 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: 519097.5 ymin: 5095541 xmax: 624487.5 ymax: 5164991
+Projected CRS: WGS 84 / UTM zone 32N
+# A tibble: 50,563 × 32
+   Train_ID Grid_ID       X        Y Landslide Elevation Slope_Angl Aspect_Nor
+ *    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;     &lt;dbl&gt;      &lt;dbl&gt;      &lt;int&gt;
+ 1    29037 8236207 584767. 5160491.         1     2621        11.1          0
+ 2    28534 8092089 585232. 5159711.         0     2737.       90.0          0
+ 3    29021 8232815 584782. 5160866.         0     2721        90.0          0
+ 4    27434 7755202 586222. 5160581.         1     2237        28.5          0
+ 5    27468 7762804 586192. 5160626.         1     2200        27.7          1
+ 6    27469 7762811 586192. 5160521.         1     2271        35.5          0
+ 7    27482 7766683 586177. 5160776.         1     2119.       31.9          0
+ 8    27553 7792961 586117. 5160071.         1     2607        47.5          0
+ 9    27567 7796978 586102. 5161031.         1     2188.       27.6          0
+10    27568 7797002 586102. 5161151.         1     2296        32.7          0
+# ℹ 50,553 more rows
+# ℹ 24 more variables: Aspect_N_1 &lt;int&gt;, Aspect_Eas &lt;int&gt;, Aspect_Sou &lt;int&gt;,
+#   Aspect_S_1 &lt;int&gt;, Aspect_S_2 &lt;int&gt;, Aspect_Wes &lt;int&gt;, Aspect_N_2 &lt;int&gt;,
+#   Profile_Cu &lt;dbl&gt;, Plan_Curva &lt;dbl&gt;, Lithology_ &lt;int&gt;, Litholog_1 &lt;int&gt;,
+#   Litholog_2 &lt;int&gt;, Litholog_3 &lt;int&gt;, Litholog_4 &lt;int&gt;, Proximity_ &lt;dbl&gt;,
+#   Proximit_1 &lt;dbl&gt;, Proximit_2 &lt;dbl&gt;, Proximit_3 &lt;dbl&gt;, Landuse_No &lt;int&gt;,
+#   Landuse_Ve &lt;int&gt;, Landuse_Wa &lt;int&gt;, Precipitat &lt;dbl&gt;, TWI &lt;dbl&gt;, …</code></pre>
 </div>
 </div>
-</section>
-</section>
-<section id="logistic-regression" class="level2">
-<h2 class="anchored" data-anchor-id="logistic-regression">Logistic Regression</h2>
+<p>In order to perform spatial autocorrelation test, we need to convert <em>train_point</em> from sf data frame into a <strong>SpatialPointsDataFrame</strong>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="fu">nrow</span>(default), <span class="at">replace =</span> T, <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.6</span>,<span class="fl">0.4</span>))</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> default[sample, ]</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> default[<span class="sc">!</span>sample, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>train_point.sp <span class="ot">&lt;-</span> <span class="fu">as_Spatial</span>(train_point)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="simple-logistic-regression" class="level2">
-<h2 class="anchored" data-anchor-id="simple-logistic-regression">Simple Logistic Regression</h2>
+<section id="simple-logistic-regression" class="level3">
+<h3 class="anchored" data-anchor-id="simple-logistic-regression">3.4 Simple Logistic Regression</h3>
 <p>We will fit a logistic regression model in order to predict the probability of a customer defaulting based on the average balance carried by the customer. The <code>glm</code> function fits generalized linear models, a class of models that includes logistic regression. The syntax of the <code>glm</code> function is similar to that of <code>lm</code>, except that we must pass the argument <code>family = binomial</code> in order to tell R to run a logistic regression rather than some other type of generalized linear model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>logit_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(landslide <span class="sc">~</span> ., <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> landslide_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>landslide.lr <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Elevation <span class="sc">+</span> Slope_Angle <span class="sc">+</span> Aspect_North <span class="sc">+</span> Aspect_NorthEast <span class="sc">+</span> Aspect_East<span class="sc">+</span>Aspect_SouthEast<span class="sc">+</span>Aspect_South <span class="sc">+</span> Aspect_SouthWest <span class="sc">+</span>Aspect_West <span class="sc">+</span> Aspect_NorthWest <span class="sc">+</span> Profile_Curvature <span class="sc">+</span>Plan_Curvature <span class="sc">+</span> Lithology_Metamorphic<span class="sc">+</span>Lithology_Sedimentary <span class="sc">+</span> Lithology_Volcanic<span class="sc">+</span>Lithology_Plutonic<span class="sc">+</span>Lithology_Unconsolidated <span class="sc">+</span> Proximity_Settlement<span class="sc">+</span>Proximity_Stream<span class="sc">+</span>Proximity_Road<span class="sc">+</span>Proximity_Fault<span class="sc">+</span>Landuse_Nonvegetation<span class="sc">+</span>Landuse_Vegetation<span class="sc">+</span>Precipitation<span class="sc">+</span>TWI, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> train_grids)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(landslide.lr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Landslide ~ Elevation + Slope_Angle + Aspect_North + 
+    Aspect_NorthEast + Aspect_East + Aspect_SouthEast + Aspect_South + 
+    Aspect_SouthWest + Aspect_West + Aspect_NorthWest + Profile_Curvature + 
+    Plan_Curvature + Lithology_Metamorphic + Lithology_Sedimentary + 
+    Lithology_Volcanic + Lithology_Plutonic + Lithology_Unconsolidated + 
+    Proximity_Settlement + Proximity_Stream + Proximity_Road + 
+    Proximity_Fault + Landuse_Nonvegetation + Landuse_Vegetation + 
+    Precipitation + TWI, family = "binomial", data = train_grids)
+
+Coefficients:
+                           Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)               1.102e+01  3.786e+02   0.029  0.97678    
+Elevation                -2.351e-04  2.647e-04  -0.889  0.37427    
+Slope_Angle              -3.258e-01  1.057e-02 -30.823  &lt; 2e-16 ***
+Aspect_North              5.051e+00  3.786e+02   0.013  0.98935    
+Aspect_NorthEast          4.373e+00  3.786e+02   0.012  0.99078    
+Aspect_East               4.686e+00  3.786e+02   0.012  0.99012    
+Aspect_SouthEast          4.789e+00  3.786e+02   0.013  0.98991    
+Aspect_South              5.148e+00  3.786e+02   0.014  0.98915    
+Aspect_SouthWest          3.868e+00  3.786e+02   0.010  0.99185    
+Aspect_West               5.002e+00  3.786e+02   0.013  0.98946    
+Aspect_NorthWest          4.286e+00  3.786e+02   0.011  0.99097    
+Profile_Curvature        -1.298e+02  9.874e+01  -1.314  0.18869    
+Plan_Curvature           -4.644e+02  1.139e+02  -4.077 4.56e-05 ***
+Lithology_Metamorphic     3.492e-01  5.146e-01   0.679  0.49740    
+Lithology_Sedimentary     1.765e-01  5.592e-01   0.316  0.75229    
+Lithology_Volcanic       -1.312e+00  1.428e+01  -0.092  0.92680    
+Lithology_Plutonic        6.301e-01  4.821e-01   1.307  0.19123    
+Lithology_Unconsolidated -1.201e+00  5.973e-01  -2.010  0.04440 *  
+Proximity_Settlement      4.150e-05  2.170e-04   0.191  0.84833    
+Proximity_Stream         -4.436e-02  1.381e-02  -3.213  0.00131 ** 
+Proximity_Road            2.163e-03  6.986e-03   0.310  0.75684    
+Proximity_Fault           2.676e-05  9.690e-05   0.276  0.78240    
+Landuse_Nonvegetation     1.347e+01  8.486e-01  15.874  &lt; 2e-16 ***
+Landuse_Vegetation        1.356e+01  8.232e-01  16.473  &lt; 2e-16 ***
+Precipitation             2.266e-01  3.292e+00   0.069  0.94512    
+TWI                      -6.193e-01  6.837e-02  -9.058  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 46691.00  on 50562  degrees of freedom
+Residual deviance:   665.85  on 50537  degrees of freedom
+AIC: 717.85
+
+Number of Fisher Scoring iterations: 12</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(landslide.lr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model: binomial, link: logit
+
+Response: Landslide
+
+Terms added sequentially (first to last)
+
+                         Df Deviance Resid. Df Resid. Dev
+NULL                                     50562      46691
+Elevation                 1      198     50561      46493
+Slope_Angle               1    45342     50560       1150
+Aspect_North              1        0     50559       1150
+Aspect_NorthEast          1        0     50558       1150
+Aspect_East               1        1     50557       1149
+Aspect_SouthEast          1        0     50556       1149
+Aspect_South              1        5     50555       1144
+Aspect_SouthWest          1        3     50554       1142
+Aspect_West               1        2     50553       1140
+Aspect_NorthWest          1        0     50552       1140
+Profile_Curvature         1        7     50551       1133
+Plan_Curvature            1        1     50550       1132
+Lithology_Metamorphic     1       15     50549       1117
+Lithology_Sedimentary     1        7     50548       1110
+Lithology_Volcanic        1        0     50547       1110
+Lithology_Plutonic        1       23     50546       1087
+Lithology_Unconsolidated  1       15     50545       1072
+Proximity_Settlement      1        1     50544       1071
+Proximity_Stream          1        2     50543       1069
+Proximity_Road            1        4     50542       1065
+Proximity_Fault           1        0     50541       1065
+Landuse_Nonvegetation     1        1     50540       1064
+Landuse_Vegetation        1      311     50539        753
+Precipitation             1        0     50538        753
+TWI                       1       88     50537        666</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tbl_regression</span>(landslide.lr, <span class="at">intercept =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="osncjrvket" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#osncjrvket table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#osncjrvket thead, #osncjrvket tbody, #osncjrvket tfoot, #osncjrvket tr, #osncjrvket td, #osncjrvket th {
+  border-style: none;
+}
+
+#osncjrvket p {
+  margin: 0;
+  padding: 0;
+}
+
+#osncjrvket .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#osncjrvket .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#osncjrvket .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#osncjrvket .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#osncjrvket .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#osncjrvket .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#osncjrvket .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#osncjrvket .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#osncjrvket .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#osncjrvket .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#osncjrvket .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#osncjrvket .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#osncjrvket .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#osncjrvket .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#osncjrvket .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#osncjrvket .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#osncjrvket .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#osncjrvket .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#osncjrvket .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#osncjrvket .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#osncjrvket .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#osncjrvket .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#osncjrvket .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#osncjrvket .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#osncjrvket .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#osncjrvket .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#osncjrvket .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#osncjrvket .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#osncjrvket .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#osncjrvket .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#osncjrvket .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#osncjrvket .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#osncjrvket .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#osncjrvket .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#osncjrvket .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#osncjrvket .gt_left {
+  text-align: left;
+}
+
+#osncjrvket .gt_center {
+  text-align: center;
+}
+
+#osncjrvket .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#osncjrvket .gt_font_normal {
+  font-weight: normal;
+}
+
+#osncjrvket .gt_font_bold {
+  font-weight: bold;
+}
+
+#osncjrvket .gt_font_italic {
+  font-style: italic;
+}
+
+#osncjrvket .gt_super {
+  font-size: 65%;
+}
+
+#osncjrvket .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#osncjrvket .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#osncjrvket .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#osncjrvket .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#osncjrvket .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#osncjrvket .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#osncjrvket .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="<strong>Characteristic</strong>"><strong>Characteristic</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>log(OR)</strong><span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>"><strong>log(OR)</strong><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>95% CI</strong><span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>"><strong>95% CI</strong><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>p-value</strong>"><strong>p-value</strong></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="label" class="gt_row gt_left">(Intercept)</td>
+<td headers="estimate" class="gt_row gt_center">11</td>
+<td headers="ci" class="gt_row gt_center">-46, NA</td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Elevation</td>
+<td headers="estimate" class="gt_row gt_center">0.00</td>
+<td headers="ci" class="gt_row gt_center">0.00, 0.00</td>
+<td headers="p.value" class="gt_row gt_center">0.4</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Slope_Angle</td>
+<td headers="estimate" class="gt_row gt_center">-0.33</td>
+<td headers="ci" class="gt_row gt_center">-0.35, -0.31</td>
+<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_North</td>
+<td headers="estimate" class="gt_row gt_center">5.1</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_NorthEast</td>
+<td headers="estimate" class="gt_row gt_center">4.4</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_East</td>
+<td headers="estimate" class="gt_row gt_center">4.7</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_SouthEast</td>
+<td headers="estimate" class="gt_row gt_center">4.8</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_South</td>
+<td headers="estimate" class="gt_row gt_center">5.1</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_SouthWest</td>
+<td headers="estimate" class="gt_row gt_center">3.9</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_West</td>
+<td headers="estimate" class="gt_row gt_center">5.0</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_NorthWest</td>
+<td headers="estimate" class="gt_row gt_center">4.3</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Profile_Curvature</td>
+<td headers="estimate" class="gt_row gt_center">-130</td>
+<td headers="ci" class="gt_row gt_center">-325, 62</td>
+<td headers="p.value" class="gt_row gt_center">0.2</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Plan_Curvature</td>
+<td headers="estimate" class="gt_row gt_center">-464</td>
+<td headers="ci" class="gt_row gt_center">-688, -242</td>
+<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Lithology_Metamorphic</td>
+<td headers="estimate" class="gt_row gt_center">0.35</td>
+<td headers="ci" class="gt_row gt_center">-0.62, 1.4</td>
+<td headers="p.value" class="gt_row gt_center">0.5</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Lithology_Sedimentary</td>
+<td headers="estimate" class="gt_row gt_center">0.18</td>
+<td headers="ci" class="gt_row gt_center">-0.90, 1.3</td>
+<td headers="p.value" class="gt_row gt_center">0.8</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Lithology_Volcanic</td>
+<td headers="estimate" class="gt_row gt_center">-1.3</td>
+<td headers="ci" class="gt_row gt_center">-9.4, 6.3</td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Lithology_Plutonic</td>
+<td headers="estimate" class="gt_row gt_center">0.63</td>
+<td headers="ci" class="gt_row gt_center">-0.34, 1.5</td>
+<td headers="p.value" class="gt_row gt_center">0.2</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Lithology_Unconsolidated</td>
+<td headers="estimate" class="gt_row gt_center">-1.2</td>
+<td headers="ci" class="gt_row gt_center">-2.4, -0.02</td>
+<td headers="p.value" class="gt_row gt_center">0.044</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Proximity_Settlement</td>
+<td headers="estimate" class="gt_row gt_center">0.00</td>
+<td headers="ci" class="gt_row gt_center">0.00, 0.00</td>
+<td headers="p.value" class="gt_row gt_center">0.8</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Proximity_Stream</td>
+<td headers="estimate" class="gt_row gt_center">-0.04</td>
+<td headers="ci" class="gt_row gt_center">-0.07, -0.02</td>
+<td headers="p.value" class="gt_row gt_center">0.001</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Proximity_Road</td>
+<td headers="estimate" class="gt_row gt_center">0.00</td>
+<td headers="ci" class="gt_row gt_center">-0.01, 0.02</td>
+<td headers="p.value" class="gt_row gt_center">0.8</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Proximity_Fault</td>
+<td headers="estimate" class="gt_row gt_center">0.00</td>
+<td headers="ci" class="gt_row gt_center">0.00, 0.00</td>
+<td headers="p.value" class="gt_row gt_center">0.8</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Landuse_Nonvegetation</td>
+<td headers="estimate" class="gt_row gt_center">13</td>
+<td headers="ci" class="gt_row gt_center">12, 15</td>
+<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Landuse_Vegetation</td>
+<td headers="estimate" class="gt_row gt_center">14</td>
+<td headers="ci" class="gt_row gt_center">12, 15</td>
+<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Precipitation</td>
+<td headers="estimate" class="gt_row gt_center">0.23</td>
+<td headers="ci" class="gt_row gt_center">-6.1, 6.7</td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">TWI</td>
+<td headers="estimate" class="gt_row gt_center">-0.62</td>
+<td headers="ci" class="gt_row gt_center">-0.75, -0.49</td>
+<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
+  </tbody>
+  
+  <tfoot class="gt_footnotes">
+    <tr>
+      <td class="gt_footnote" colspan="4"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span> OR = Odds Ratio, CI = Confidence Interval</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+</div>
+</div>
+<p>We can use the <strong><code>confint</code></strong> function to obtain confidence intervals for the coefficient estimates. Note that for logistic models, confidence intervals are based on the profiled log-likelihood function. We can also get CIs based on just the standard errors by using the default method.</p>
+</section>
+<section id="confidence-intervals-using-profiled-lag-likelihood" class="level3">
+<h3 class="anchored" data-anchor-id="confidence-intervals-using-profiled-lag-likelihood">3.5 Confidence Intervals Using Profiled Lag-Likelihood</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(landslide.lr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Waiting for profiling to be done...</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in regularize.values(x, y, ties, missing(ties), na.rm = na.rm):
+collapsing to unique 'x' values</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                 2.5 %        97.5 %
+(Intercept)              -4.578837e+01            NA
+Elevation                -7.446006e-04  2.917354e-04
+Slope_Angle              -3.476943e-01 -3.061644e-01
+Aspect_North                        NA  6.362108e+01
+Aspect_NorthEast                    NA  6.283865e+01
+Aspect_East                         NA  6.290397e+01
+Aspect_SouthEast                    NA  6.303990e+01
+Aspect_South                        NA  6.340708e+01
+Aspect_SouthWest                    NA  6.215392e+01
+Aspect_West                         NA  6.321866e+01
+Aspect_NorthWest                    NA  6.243074e+01
+Profile_Curvature        -3.248917e+02  6.192717e+01
+Plan_Curvature           -6.878036e+02 -2.416659e+02
+Lithology_Metamorphic    -6.169337e-01  1.392539e+00
+Lithology_Sedimentary    -8.980252e-01  1.290333e+00
+Lithology_Volcanic       -9.351856e+00  6.280925e+00
+Lithology_Plutonic       -3.443813e-01  1.535994e+00
+Lithology_Unconsolidated -2.357793e+00 -1.985018e-02
+Proximity_Settlement     -3.881714e-04  4.601502e-04
+Proximity_Stream         -7.069830e-02 -1.680806e-02
+Proximity_Road           -1.144369e-02  1.592567e-02
+Proximity_Fault          -1.635671e-04  2.152552e-04
+Landuse_Nonvegetation     1.182535e+01  1.516564e+01
+Landuse_Vegetation        1.196405e+01  1.520533e+01
+Precipitation            -6.101024e+00  6.736896e+00
+TWI                      -7.549989e-01 -4.864574e-01</code></pre>
+</div>
 </div>
 </section>
-<section id="emerging-hot-spot-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="emerging-hot-spot-analysis">Emerging Hot Spot Analysis</h2>
+<section id="confidence-intervals-using-standard-errors" class="level3">
+<h3 class="anchored" data-anchor-id="confidence-intervals-using-standard-errors">3.6 Confidence Intervals Using Standard Errors</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sd,tmap,spdep,spData)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">cbind</span>(longitude, latitude)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint.default</span>(landslide.lr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                 2.5 %        97.5 %
+(Intercept)              -7.309724e+02  7.530147e+02
+Elevation                -7.538849e-04  2.835756e-04
+Slope_Angle              -3.464938e-01 -3.050624e-01
+Aspect_North             -7.369355e+02  7.470380e+02
+Aspect_NorthEast         -7.376139e+02  7.463600e+02
+Aspect_East              -7.373019e+02  7.466733e+02
+Aspect_SouthEast         -7.371985e+02  7.467767e+02
+Aspect_South             -7.368398e+02  7.471353e+02
+Aspect_SouthWest         -7.381199e+02  7.458551e+02
+Aspect_West              -7.369859e+02  7.469894e+02
+Aspect_NorthWest         -7.377014e+02  7.462743e+02
+Profile_Curvature        -3.233263e+02  6.373994e+01
+Plan_Curvature           -6.876058e+02 -2.411236e+02
+Lithology_Metamorphic    -6.594386e-01  1.357892e+00
+Lithology_Sedimentary    -9.195610e-01  1.272574e+00
+Lithology_Volcanic       -2.930214e+01  2.667828e+01
+Lithology_Plutonic       -3.148250e-01  1.575045e+00
+Lithology_Unconsolidated -2.371326e+00 -3.004185e-02
+Proximity_Settlement     -3.838286e-04  4.668352e-04
+Proximity_Stream         -7.142219e-02 -1.729931e-02
+Proximity_Road           -1.153004e-02  1.585649e-02
+Proximity_Fault          -1.631651e-04  2.166946e-04
+Landuse_Nonvegetation     1.180729e+01  1.513360e+01
+Landuse_Vegetation        1.194616e+01  1.517288e+01
+Precipitation            -6.225465e+00  6.678670e+00
+TWI                      -7.532597e-01 -4.852618e-01</code></pre>
 </div>
-<p>The function <code>knearneigh</code> returns a matrix with the indices of points belonging to the set of the k nearest neighbours of each other.</p>
-<p>The function <code>knn2nb</code> converts a <code>knn</code> object returned by <code>knearneigh</code> into a neighbours list of class <code>nb</code> with a list of integer vectors containing neighbour region number ids.</p>
-<p>The function <code>nbdists</code> returns the Euclidean distances along the spatial neighbour links in a list.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>k1 <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords))</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>k1dists <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">nbdists</span>(k1, coords, <span class="at">longlat =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(k1dists)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="computing-fixed-distance-weight-matrix" class="level4">
-<h4 class="anchored" data-anchor-id="computing-fixed-distance-weight-matrix">Computing fixed distance weight matrix</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>weight_matrix <span class="ot">&lt;-</span> <span class="fu">dnearneigh</span>(coords, <span class="dv">0</span>, <span class="dv">106</span>, <span class="at">longlat =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>weight_matrix</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(landslide.lr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               Elevation              Slope_Angle             Aspect_North 
+            2.496475e+00             3.082875e+00             5.651372e+05 
+        Aspect_NorthEast              Aspect_East         Aspect_SouthEast 
+            9.261234e+05             1.143354e+06             1.342778e+06 
+            Aspect_South         Aspect_SouthWest              Aspect_West 
+            1.549134e+06             1.147701e+06             1.005647e+06 
+        Aspect_NorthWest        Profile_Curvature           Plan_Curvature 
+            5.820995e+05             1.364287e+00             1.532299e+00 
+   Lithology_Metamorphic    Lithology_Sedimentary       Lithology_Volcanic 
+            4.443174e+00             3.273455e+00             1.001869e+00 
+      Lithology_Plutonic Lithology_Unconsolidated     Proximity_Settlement 
+            1.931894e+00             3.238535e+00             1.735109e+00 
+        Proximity_Stream           Proximity_Road          Proximity_Fault 
+            1.384212e+00             1.944758e+00             1.267459e+00 
+   Landuse_Nonvegetation       Landuse_Vegetation            Precipitation 
+            1.147712e+01             9.919192e+00             1.240604e+00 
+                     TWI 
+            2.709255e+00 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>vif_values <span class="ot">&lt;-</span> <span class="fu">vif</span>(landslide.lr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>vif_values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               Elevation              Slope_Angle             Aspect_North 
+            2.496475e+00             3.082875e+00             5.651372e+05 
+        Aspect_NorthEast              Aspect_East         Aspect_SouthEast 
+            9.261234e+05             1.143354e+06             1.342778e+06 
+            Aspect_South         Aspect_SouthWest              Aspect_West 
+            1.549134e+06             1.147701e+06             1.005647e+06 
+        Aspect_NorthWest        Profile_Curvature           Plan_Curvature 
+            5.820995e+05             1.364287e+00             1.532299e+00 
+   Lithology_Metamorphic    Lithology_Sedimentary       Lithology_Volcanic 
+            4.443174e+00             3.273455e+00             1.001869e+00 
+      Lithology_Plutonic Lithology_Unconsolidated     Proximity_Settlement 
+            1.931894e+00             3.238535e+00             1.735109e+00 
+        Proximity_Stream           Proximity_Road          Proximity_Fault 
+            1.384212e+00             1.944758e+00             1.267459e+00 
+   Landuse_Nonvegetation       Landuse_Vegetation            Precipitation 
+            1.147712e+01             9.919192e+00             1.240604e+00 
+                     TWI 
+            2.709255e+00 </code></pre>
+</div>
 </div>
 </section>
-</section>
-<section id="spatial-neighbourhood" class="level2">
-<h2 class="anchored" data-anchor-id="spatial-neighbourhood">Spatial Neighbourhood</h2>
-<p>Create Neighbourhood Matrix using Queen</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>nb <span class="ot">&lt;-</span> spdep<span class="sc">::</span><span class="fu">poly2nb</span>(landslide_train, <span class="at">queen =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(nb)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(landslide_train), <span class="at">border =</span> <span class="st">"lightgray"</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.nb</span>(nb, <span class="fu">st_geometry</span>(landslide_train), <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Create a demo visual of how spatial neighbourhood works</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>id <span class="ot">&lt;-</span> <span class="dv">20</span> <span class="co"># custom area id </span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>landslide_train<span class="sc">$</span>neighbors <span class="ot">&lt;-</span> <span class="st">"other"</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>landslide_train<span class="sc">$</span>neighbors[id] <span class="ot">&lt;-</span> <span class="st">"point of interest"</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>landslide_train<span class="sc">$</span>neighbors[nb[[id]]] <span class="ot">&lt;-</span> <span class="st">"neighbours"</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(landslide_train) <span class="sc">+</span> <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> neighbors)) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"gray30"</span>, <span class="st">"gray"</span>, <span class="st">"white"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The function <code>nb2listw()</code> of the spdep package can be used to construct a spatial neighborhood matrix containing the spatial weights corresponding to a neighbors list. The neighbors can be binary or based on inverse distance values.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>spatial_w_matrix <span class="ot">&lt;-</span> <span class="fu">listw2mat</span>(nbw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>We can visualize the spatial weight matrix by creating a matrix with the weights with <code>listw2mat()</code>, and using <code>lattice::levelplot()</code> to create the plot</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>lattice<span class="sc">::</span><span class="fu">levelplot</span>(<span class="fu">t</span>(m1),</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">scales =</span> <span class="fu">list</span>(<span class="at">y =</span> <span class="fu">list</span>(<span class="at">at =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>),</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 </section>
 <section id="section" class="level2">
 <h2 class="anchored" data-anchor-id="section"></h2>
+</section>
+<section id="exploratory-spatial-data-analysis-esda---v2" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-spatial-data-analysis-esda---v2">4.0 Exploratory Spatial Data Analysis (ESDA) - V2</h2>
+<p>To calculate the summary statistics of <code>landslide_train</code> data frame, we use <code>st()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st</span>(train_grids_v2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Summary Statistics</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Variable</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">N</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Mean</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Std. Dev.</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Min</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Pctl. 25</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Pctl. 75</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Train_ID</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">25282</td>
+<td style="text-align: left;">14596</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">12642</td>
+<td style="text-align: left;">37922</td>
+<td style="text-align: left;">50563</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Grid_ID</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">7258576</td>
+<td style="text-align: left;">4280699</td>
+<td style="text-align: left;">154</td>
+<td style="text-align: left;">3455206</td>
+<td style="text-align: left;">11141722</td>
+<td style="text-align: left;">14724829</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">X</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">573312</td>
+<td style="text-align: left;">27325</td>
+<td style="text-align: left;">519097</td>
+<td style="text-align: left;">550687</td>
+<td style="text-align: left;">594547</td>
+<td style="text-align: left;">624487</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Y</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">5129116</td>
+<td style="text-align: left;">17040</td>
+<td style="text-align: left;">5095541</td>
+<td style="text-align: left;">5115266</td>
+<td style="text-align: left;">5143076</td>
+<td style="text-align: left;">5164991</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Landslide</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.83</td>
+<td style="text-align: left;">0.38</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Elevation</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">1913</td>
+<td style="text-align: left;">677</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1509</td>
+<td style="text-align: left;">2420</td>
+<td style="text-align: left;">3924</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Slope_Angle</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">42</td>
+<td style="text-align: left;">24</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">27</td>
+<td style="text-align: left;">48</td>
+<td style="text-align: left;">90</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_North</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.061</td>
+<td style="text-align: left;">0.24</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aspect_NorthEast</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.12</td>
+<td style="text-align: left;">0.32</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_East</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.14</td>
+<td style="text-align: left;">0.34</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aspect_SouthEast</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.15</td>
+<td style="text-align: left;">0.35</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_South</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.16</td>
+<td style="text-align: left;">0.36</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aspect_SouthWest</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.15</td>
+<td style="text-align: left;">0.36</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_West</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.13</td>
+<td style="text-align: left;">0.34</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aspect_NorthWest</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.099</td>
+<td style="text-align: left;">0.3</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Profile_Curvature</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">-0.00043</td>
+<td style="text-align: left;">0.0012</td>
+<td style="text-align: left;">-0.0066</td>
+<td style="text-align: left;">-0.0011</td>
+<td style="text-align: left;">0.00022</td>
+<td style="text-align: left;">0.0079</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Plan_Curvature</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">-0.00019</td>
+<td style="text-align: left;">0.0011</td>
+<td style="text-align: left;">-0.0056</td>
+<td style="text-align: left;">-0.00071</td>
+<td style="text-align: left;">0.00032</td>
+<td style="text-align: left;">0.0068</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lithology_Metamorphic</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.42</td>
+<td style="text-align: left;">0.49</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lithology_Sedimentary</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.24</td>
+<td style="text-align: left;">0.42</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lithology_Volcanic</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.00032</td>
+<td style="text-align: left;">0.018</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lithology_Plutonic</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.057</td>
+<td style="text-align: left;">0.23</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lithology_Unconsolidated</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.29</td>
+<td style="text-align: left;">0.45</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Proximity_Settlement</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">904</td>
+<td style="text-align: left;">764</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">328</td>
+<td style="text-align: left;">1288</td>
+<td style="text-align: left;">5600</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Proximity_Stream</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">3.1</td>
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">97</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Proximity_Road</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">26</td>
+<td style="text-align: left;">22</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">6.3</td>
+<td style="text-align: left;">40</td>
+<td style="text-align: left;">125</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Proximity_Fault</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">828</td>
+<td style="text-align: left;">1032</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">199</td>
+<td style="text-align: left;">1012</td>
+<td style="text-align: left;">7746</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Landuse_Nonvegetation</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.48</td>
+<td style="text-align: left;">0.5</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Landuse_Vegetation</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.51</td>
+<td style="text-align: left;">0.5</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Landuse_Waterbody</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.014</td>
+<td style="text-align: left;">0.12</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Precipitation</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.15</td>
+<td style="text-align: left;">0.048</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0.13</td>
+<td style="text-align: left;">0.17</td>
+<td style="text-align: left;">0.29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TWI</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">7.5</td>
+<td style="text-align: left;">2.3</td>
+<td style="text-align: left;">3.7</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">8.3</td>
+<td style="text-align: left;">23</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SPI</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.0065</td>
+<td style="text-align: left;">0.029</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0.00024</td>
+<td style="text-align: left;">0.0032</td>
+<td style="text-align: left;">1.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STI</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">7.7</td>
+<td style="text-align: left;">27</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">5.8</td>
+<td style="text-align: left;">877</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>Next, we will create atrellis plot by using <code>ggarrange()</code> of <a href="https://cran.r-project.org/web/packages/ggpubr/"><strong>ggpubr</strong></a> package. In this way, we can see the distribution plots of different parameters at the same time.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>Elevation <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids_v2, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Elevation</span><span class="st">`</span>)) <span class="sc">+</span> </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>Slope_Angle <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids_v2, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>Profile_Curvature <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids_v2, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Profile_Curvature</span><span class="st">`</span>)) <span class="sc">+</span> </span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>Plan_Curvature <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids_v2, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Plan_Curvature</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#DC375E"</span>)</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>Proximity_Settlement  <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids_v2, </span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Settlement</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#DC375E"</span>)</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>Proximity_Stream  <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Stream</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#DC375E"</span>)</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>Proximity_Road <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids_v2, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Road</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#c4102c"</span>)</span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>Proximity_Fault <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids_v2, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Proximity_Fault</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#c4102c"</span>)</span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a>Precipitation <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids_v2, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Precipitation</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#c4102c"</span>)</span>
+<span id="cb34-28"><a href="#cb34-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-29"><a href="#cb34-29" aria-hidden="true" tabindex="-1"></a>TWI <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids_v2, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">TWI</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb34-30"><a href="#cb34-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#AE4285"</span>)</span>
+<span id="cb34-31"><a href="#cb34-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-32"><a href="#cb34-32" aria-hidden="true" tabindex="-1"></a>SPI <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids_v2, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">SPI</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb34-33"><a href="#cb34-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#AE4285"</span>)</span>
+<span id="cb34-34"><a href="#cb34-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-35"><a href="#cb34-35" aria-hidden="true" tabindex="-1"></a>STI <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>train_grids_v2, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">STI</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb34-36"><a href="#cb34-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">7</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#AE4285"</span>)</span>
+<span id="cb34-37"><a href="#cb34-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-38"><a href="#cb34-38" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(Elevation,Slope_Angle,Profile_Curvature,Plan_Curvature,Proximity_Settlement,Proximity_Stream,Proximity_Road,Proximity_Fault,Precipitation,TWI,SPI,STI,</span>
+<span id="cb34-39"><a href="#cb34-39" aria-hidden="true" tabindex="-1"></a>          <span class="at">ncol =</span> <span class="dv">4</span>, <span class="at">nrow =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>adding dummy grobs</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<section id="correlation-matrix-using-corrplot-1" class="level3">
+<h3 class="anchored" data-anchor-id="correlation-matrix-using-corrplot-1">4.1 Correlation Matrix Using Corrplot</h3>
+<p>Before building a logistic regression model, it is important to ensure that the indepdent variables used are <strong>not highly correlated</strong> to each other. If these highly correlated independent variables are used in building a regression model by mistake, the quality of the model will be compromised. This phenomenon is known as <strong>multicollinearity</strong> in statistics.</p>
+<p>Correlation matrix is commonly used to visualise the relationships between the independent variables. In this section, the <a href="https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html"><strong>corrplot</strong></a> package will be used to display the correlation matrix of the independent variables in <em>condo_resale</em> data frame.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(<span class="fu">cor</span>(train_grids_v2[, <span class="dv">6</span><span class="sc">:</span><span class="dv">33</span>]), <span class="at">diag =</span> <span class="cn">FALSE</span>, <span class="at">order =</span> <span class="st">"AOE"</span>,</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">col=</span><span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"#50a8b4"</span>,<span class="st">"#e4c838"</span>,<span class="st">"#be804f"</span>))(<span class="dv">10</span>),</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.pos =</span> <span class="st">"td"</span>, <span class="at">tl.cex =</span> <span class="fl">0.5</span>,<span class="at">tl.col =</span> <span class="st">"black"</span>, <span class="at">number.cex =</span> <span class="fl">0.5</span>, <span class="at">method =</span> <span class="st">"number"</span>, <span class="at">type =</span> <span class="st">"upper"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="960"></p>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(<span class="fu">cor</span>(train_grids_v2[,<span class="dv">6</span><span class="sc">:</span><span class="dv">33</span>]), <span class="at">diag =</span> <span class="cn">FALSE</span>, <span class="at">order =</span> <span class="st">"AOE"</span>,</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">col=</span><span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"#50a8b4"</span>,<span class="st">"#ffffdd"</span>,<span class="st">"#be804f"</span>))(<span class="dv">10</span>),</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.pos =</span> <span class="st">"td"</span>, <span class="at">tl.cex =</span> <span class="fl">0.5</span>,<span class="at">tl.col =</span> <span class="st">"black"</span>, <span class="at">number.cex =</span> <span class="fl">0.5</span>, <span class="at">method =</span> <span class="st">"ellipse"</span>, <span class="at">type =</span> <span class="st">"upper"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-21-2.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>Matrix reorder is very important for mining the hiden structure and patter in the matrix. There are four methods in corrplot (parameter order), named “AOE”, “FPC”, “hclust”, “alphabet”. In the code chunk above, AOE order is used. It orders the variables by using the <em>angular order of the eigenvectors</em> method suggested by <a href="https://www.datavis.ca/papers/corrgram.pdf">Michael Friendly</a>.</p>
+</section>
+<section id="correlation-matrix-using-ggstats" class="level3">
+<h3 class="anchored" data-anchor-id="correlation-matrix-using-ggstats">4.2 Correlation Matrix Using ggstats</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="do">## producing the correlation matrix</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrmat</span>(</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train_grids_v2[, <span class="dv">6</span><span class="sc">:</span><span class="dv">33</span>],  </span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">matrix.type =</span> <span class="st">"upper"</span>,</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"parametric"</span>,</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">tr =</span> <span class="fl">0.2</span>,</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">partial =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> 2L,</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">sig.level =</span> <span class="fl">0.05</span>,</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span>,</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">bf.prior =</span> <span class="fl">0.707</span>,</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggcorrplot.args =</span> <span class="fu">list</span>(</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">tl.cex =</span> <span class="dv">10</span>,</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch.cex =</span> <span class="dv">5</span>,</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">lab_size =</span> <span class="dv">3</span></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span> <span class="do">## modification outside `{ggstatsplot}` using `{ggplot2}` functions</span></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">margin =</span> ggplot2<span class="sc">::</span><span class="fu">margin</span>(<span class="at">t =</span> <span class="fl">0.15</span>, <span class="at">r =</span> <span class="fl">0.15</span>, <span class="at">b =</span> <span class="fl">0.15</span>, <span class="at">l =</span> <span class="fl">0.15</span>, <span class="at">unit =</span> <span class="st">"cm"</span>)</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+</section>
+<section id="simple-logistic-regression-1" class="level3">
+<h3 class="anchored" data-anchor-id="simple-logistic-regression-1">4.3 Simple Logistic Regression</h3>
+<p>We will fit a logistic regression model in order to predict the probability of a customer defaulting based on the average balance carried by the customer. The <code>glm</code> function fits generalized linear models, a class of models that includes logistic regression. The syntax of the <code>glm</code> function is similar to that of <code>lm</code>, except that we must pass the argument <code>family = binomial</code> in order to tell R to run a logistic regression rather than some other type of generalized linear model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>landslide.lr_2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Elevation <span class="sc">+</span> Slope_Angle <span class="sc">+</span> Aspect_North <span class="sc">+</span> Aspect_NorthEast <span class="sc">+</span> Aspect_East<span class="sc">+</span>Aspect_SouthEast<span class="sc">+</span>Aspect_South <span class="sc">+</span> Aspect_SouthWest <span class="sc">+</span>Aspect_West <span class="sc">+</span> Aspect_NorthWest <span class="sc">+</span> Profile_Curvature <span class="sc">+</span>Plan_Curvature <span class="sc">+</span> Lithology_Metamorphic<span class="sc">+</span>Lithology_Sedimentary <span class="sc">+</span> Lithology_Volcanic<span class="sc">+</span>Lithology_Plutonic<span class="sc">+</span>Lithology_Unconsolidated <span class="sc">+</span> Proximity_Settlement<span class="sc">+</span>Proximity_Stream<span class="sc">+</span>Proximity_Road<span class="sc">+</span>Proximity_Fault<span class="sc">+</span>Landuse_Nonvegetation<span class="sc">+</span>Landuse_Vegetation<span class="sc">+</span>Precipitation<span class="sc">+</span>TWI<span class="sc">+</span>SPI<span class="sc">+</span>STI, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> train_grids_v2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(landslide.lr_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Landslide ~ Elevation + Slope_Angle + Aspect_North + 
+    Aspect_NorthEast + Aspect_East + Aspect_SouthEast + Aspect_South + 
+    Aspect_SouthWest + Aspect_West + Aspect_NorthWest + Profile_Curvature + 
+    Plan_Curvature + Lithology_Metamorphic + Lithology_Sedimentary + 
+    Lithology_Volcanic + Lithology_Plutonic + Lithology_Unconsolidated + 
+    Proximity_Settlement + Proximity_Stream + Proximity_Road + 
+    Proximity_Fault + Landuse_Nonvegetation + Landuse_Vegetation + 
+    Precipitation + TWI + SPI + STI, family = "binomial", data = train_grids_v2)
+
+Coefficients:
+                           Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)               1.206e+01  6.242e+02   0.019  0.98459    
+Elevation                -2.360e-04  2.650e-04  -0.891  0.37312    
+Slope_Angle              -3.258e-01  1.058e-02 -30.804  &lt; 2e-16 ***
+Aspect_North              4.050e+00  6.242e+02   0.006  0.99482    
+Aspect_NorthEast          3.374e+00  6.242e+02   0.005  0.99569    
+Aspect_East               3.692e+00  6.242e+02   0.006  0.99528    
+Aspect_SouthEast          3.794e+00  6.242e+02   0.006  0.99515    
+Aspect_South              4.150e+00  6.242e+02   0.007  0.99470    
+Aspect_SouthWest          2.868e+00  6.242e+02   0.005  0.99633    
+Aspect_West               4.011e+00  6.242e+02   0.006  0.99487    
+Aspect_NorthWest          3.291e+00  6.242e+02   0.005  0.99579    
+Profile_Curvature        -1.285e+02  9.876e+01  -1.301  0.19325    
+Plan_Curvature           -4.649e+02  1.140e+02  -4.079 4.52e-05 ***
+Lithology_Metamorphic     3.382e-01  5.143e-01   0.658  0.51076    
+Lithology_Sedimentary     1.691e-01  5.585e-01   0.303  0.76206    
+Lithology_Volcanic       -1.327e+00  1.430e+01  -0.093  0.92607    
+Lithology_Plutonic        6.295e-01  4.812e-01   1.308  0.19086    
+Lithology_Unconsolidated -1.205e+00  5.971e-01  -2.018  0.04362 *  
+Proximity_Settlement      4.209e-05  2.171e-04   0.194  0.84625    
+Proximity_Stream         -4.458e-02  1.382e-02  -3.225  0.00126 ** 
+Proximity_Road            2.302e-03  7.001e-03   0.329  0.74232    
+Proximity_Fault           2.517e-05  9.702e-05   0.259  0.79532    
+Landuse_Nonvegetation     1.346e+01  8.501e-01  15.838  &lt; 2e-16 ***
+Landuse_Vegetation        1.356e+01  8.244e-01  16.444  &lt; 2e-16 ***
+Precipitation             1.512e-01  3.301e+00   0.046  0.96346    
+TWI                      -6.202e-01  6.839e-02  -9.068  &lt; 2e-16 ***
+SPI                       2.045e+00  5.036e+00   0.406  0.68471    
+STI                      -2.508e-03  6.954e-03  -0.361  0.71829    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 46691.00  on 50562  degrees of freedom
+Residual deviance:   665.66  on 50535  degrees of freedom
+AIC: 721.66
+
+Number of Fisher Scoring iterations: 13</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(landslide.lr_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model: binomial, link: logit
+
+Response: Landslide
+
+Terms added sequentially (first to last)
+
+                         Df Deviance Resid. Df Resid. Dev
+NULL                                     50562      46691
+Elevation                 1      198     50561      46493
+Slope_Angle               1    45342     50560       1150
+Aspect_North              1        0     50559       1150
+Aspect_NorthEast          1        0     50558       1150
+Aspect_East               1        1     50557       1149
+Aspect_SouthEast          1        0     50556       1149
+Aspect_South              1        5     50555       1144
+Aspect_SouthWest          1        3     50554       1142
+Aspect_West               1        2     50553       1140
+Aspect_NorthWest          1        0     50552       1140
+Profile_Curvature         1        7     50551       1133
+Plan_Curvature            1        1     50550       1132
+Lithology_Metamorphic     1       15     50549       1117
+Lithology_Sedimentary     1        7     50548       1110
+Lithology_Volcanic        1        0     50547       1110
+Lithology_Plutonic        1       23     50546       1087
+Lithology_Unconsolidated  1       15     50545       1072
+Proximity_Settlement      1        1     50544       1071
+Proximity_Stream          1        2     50543       1069
+Proximity_Road            1        4     50542       1065
+Proximity_Fault           1        0     50541       1065
+Landuse_Nonvegetation     1        1     50540       1064
+Landuse_Vegetation        1      311     50539        753
+Precipitation             1        0     50538        753
+TWI                       1       88     50537        666
+SPI                       1        0     50536        666
+STI                       1        0     50535        666</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tbl_regression</span>(landslide.lr_2, <span class="at">intercept =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="osncjrvket" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#osncjrvket table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#osncjrvket thead, #osncjrvket tbody, #osncjrvket tfoot, #osncjrvket tr, #osncjrvket td, #osncjrvket th {
+  border-style: none;
+}
+
+#osncjrvket p {
+  margin: 0;
+  padding: 0;
+}
+
+#osncjrvket .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#osncjrvket .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#osncjrvket .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#osncjrvket .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#osncjrvket .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#osncjrvket .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#osncjrvket .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#osncjrvket .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#osncjrvket .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#osncjrvket .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#osncjrvket .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#osncjrvket .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#osncjrvket .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#osncjrvket .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#osncjrvket .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#osncjrvket .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#osncjrvket .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#osncjrvket .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#osncjrvket .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#osncjrvket .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#osncjrvket .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#osncjrvket .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#osncjrvket .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#osncjrvket .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#osncjrvket .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#osncjrvket .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#osncjrvket .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#osncjrvket .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#osncjrvket .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#osncjrvket .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#osncjrvket .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#osncjrvket .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#osncjrvket .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#osncjrvket .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#osncjrvket .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#osncjrvket .gt_left {
+  text-align: left;
+}
+
+#osncjrvket .gt_center {
+  text-align: center;
+}
+
+#osncjrvket .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#osncjrvket .gt_font_normal {
+  font-weight: normal;
+}
+
+#osncjrvket .gt_font_bold {
+  font-weight: bold;
+}
+
+#osncjrvket .gt_font_italic {
+  font-style: italic;
+}
+
+#osncjrvket .gt_super {
+  font-size: 65%;
+}
+
+#osncjrvket .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#osncjrvket .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#osncjrvket .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#osncjrvket .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#osncjrvket .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#osncjrvket .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#osncjrvket .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="<strong>Characteristic</strong>"><strong>Characteristic</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>log(OR)</strong><span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>"><strong>log(OR)</strong><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>95% CI</strong><span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>"><strong>95% CI</strong><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>p-value</strong>"><strong>p-value</strong></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="label" class="gt_row gt_left">(Intercept)</td>
+<td headers="estimate" class="gt_row gt_center">12</td>
+<td headers="ci" class="gt_row gt_center">-82, NA</td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Elevation</td>
+<td headers="estimate" class="gt_row gt_center">0.00</td>
+<td headers="ci" class="gt_row gt_center">0.00, 0.00</td>
+<td headers="p.value" class="gt_row gt_center">0.4</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Slope_Angle</td>
+<td headers="estimate" class="gt_row gt_center">-0.33</td>
+<td headers="ci" class="gt_row gt_center">-0.35, -0.31</td>
+<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_North</td>
+<td headers="estimate" class="gt_row gt_center">4.1</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_NorthEast</td>
+<td headers="estimate" class="gt_row gt_center">3.4</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_East</td>
+<td headers="estimate" class="gt_row gt_center">3.7</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_SouthEast</td>
+<td headers="estimate" class="gt_row gt_center">3.8</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_South</td>
+<td headers="estimate" class="gt_row gt_center">4.1</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_SouthWest</td>
+<td headers="estimate" class="gt_row gt_center">2.9</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_West</td>
+<td headers="estimate" class="gt_row gt_center">4.0</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Aspect_NorthWest</td>
+<td headers="estimate" class="gt_row gt_center">3.3</td>
+<td headers="ci" class="gt_row gt_center"><br></td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Profile_Curvature</td>
+<td headers="estimate" class="gt_row gt_center">-128</td>
+<td headers="ci" class="gt_row gt_center">-324, 63</td>
+<td headers="p.value" class="gt_row gt_center">0.2</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Plan_Curvature</td>
+<td headers="estimate" class="gt_row gt_center">-465</td>
+<td headers="ci" class="gt_row gt_center">-689, -242</td>
+<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Lithology_Metamorphic</td>
+<td headers="estimate" class="gt_row gt_center">0.34</td>
+<td headers="ci" class="gt_row gt_center">-0.63, 1.4</td>
+<td headers="p.value" class="gt_row gt_center">0.5</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Lithology_Sedimentary</td>
+<td headers="estimate" class="gt_row gt_center">0.17</td>
+<td headers="ci" class="gt_row gt_center">-0.90, 1.3</td>
+<td headers="p.value" class="gt_row gt_center">0.8</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Lithology_Volcanic</td>
+<td headers="estimate" class="gt_row gt_center">-1.3</td>
+<td headers="ci" class="gt_row gt_center">-9.4, 6.3</td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Lithology_Plutonic</td>
+<td headers="estimate" class="gt_row gt_center">0.63</td>
+<td headers="ci" class="gt_row gt_center">-0.34, 1.5</td>
+<td headers="p.value" class="gt_row gt_center">0.2</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Lithology_Unconsolidated</td>
+<td headers="estimate" class="gt_row gt_center">-1.2</td>
+<td headers="ci" class="gt_row gt_center">-2.4, -0.02</td>
+<td headers="p.value" class="gt_row gt_center">0.044</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Proximity_Settlement</td>
+<td headers="estimate" class="gt_row gt_center">0.00</td>
+<td headers="ci" class="gt_row gt_center">0.00, 0.00</td>
+<td headers="p.value" class="gt_row gt_center">0.8</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Proximity_Stream</td>
+<td headers="estimate" class="gt_row gt_center">-0.04</td>
+<td headers="ci" class="gt_row gt_center">-0.07, -0.02</td>
+<td headers="p.value" class="gt_row gt_center">0.001</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Proximity_Road</td>
+<td headers="estimate" class="gt_row gt_center">0.00</td>
+<td headers="ci" class="gt_row gt_center">-0.01, 0.02</td>
+<td headers="p.value" class="gt_row gt_center">0.7</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Proximity_Fault</td>
+<td headers="estimate" class="gt_row gt_center">0.00</td>
+<td headers="ci" class="gt_row gt_center">0.00, 0.00</td>
+<td headers="p.value" class="gt_row gt_center">0.8</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Landuse_Nonvegetation</td>
+<td headers="estimate" class="gt_row gt_center">13</td>
+<td headers="ci" class="gt_row gt_center">12, 15</td>
+<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Landuse_Vegetation</td>
+<td headers="estimate" class="gt_row gt_center">14</td>
+<td headers="ci" class="gt_row gt_center">12, 15</td>
+<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Precipitation</td>
+<td headers="estimate" class="gt_row gt_center">0.15</td>
+<td headers="ci" class="gt_row gt_center">-6.2, 6.7</td>
+<td headers="p.value" class="gt_row gt_center">&gt;0.9</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">TWI</td>
+<td headers="estimate" class="gt_row gt_center">-0.62</td>
+<td headers="ci" class="gt_row gt_center">-0.76, -0.49</td>
+<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">SPI</td>
+<td headers="estimate" class="gt_row gt_center">2.0</td>
+<td headers="ci" class="gt_row gt_center">-7.7, 9.0</td>
+<td headers="p.value" class="gt_row gt_center">0.7</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">STI</td>
+<td headers="estimate" class="gt_row gt_center">0.00</td>
+<td headers="ci" class="gt_row gt_center">-0.01, 0.01</td>
+<td headers="p.value" class="gt_row gt_center">0.7</td></tr>
+  </tbody>
+  
+  <tfoot class="gt_footnotes">
+    <tr>
+      <td class="gt_footnote" colspan="4"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span> OR = Odds Ratio, CI = Confidence Interval</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+</div>
+</div>
+<p>We can use the <strong><code>confint</code></strong> function to obtain confidence intervals for the coefficient estimates. Note that for logistic models, confidence intervals are based on the profiled log-likelihood function. We can also get CIs based on just the standard errors by using the default method.</p>
+</section>
+<section id="confidence-intervals-using-profiled-lag-likelihood-1" class="level3">
+<h3 class="anchored" data-anchor-id="confidence-intervals-using-profiled-lag-likelihood-1">4.4 Confidence Intervals Using Profiled Lag-Likelihood</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(landslide.lr_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Waiting for profiling to be done...</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: algorithm did not converge</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: algorithm did not converge</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in regularize.values(x, y, ties, missing(ties), na.rm = na.rm):
+collapsing to unique 'x' values
+
+Warning in regularize.values(x, y, ties, missing(ties), na.rm = na.rm):
+collapsing to unique 'x' values
+
+Warning in regularize.values(x, y, ties, missing(ties), na.rm = na.rm):
+collapsing to unique 'x' values</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                 2.5 %        97.5 %
+(Intercept)              -8.158256e+01            NA
+Elevation                -7.461252e-04  2.915194e-04
+Slope_Angle              -3.477449e-01 -3.061858e-01
+Aspect_North                        NA  1.006039e+02
+Aspect_NorthEast                    NA  9.975993e+01
+Aspect_East                         NA  9.966791e+01
+Aspect_SouthEast                    NA  9.982527e+01
+Aspect_South                        NA  1.001941e+02
+Aspect_SouthWest                    NA  9.896509e+01
+Aspect_West                         NA  9.998411e+01
+Aspect_NorthWest                    NA  9.914411e+01
+Profile_Curvature        -3.236243e+02  6.325448e+01
+Plan_Curvature           -6.885266e+02 -2.421111e+02
+Lithology_Metamorphic    -6.273234e-01  1.381219e+00
+Lithology_Sedimentary    -9.040477e-01  1.281853e+00
+Lithology_Volcanic       -9.362281e+00  6.266087e+00
+Lithology_Plutonic       -3.434943e-01  1.533808e+00
+Lithology_Unconsolidated -2.361455e+00 -2.407740e-02
+Proximity_Settlement     -3.878050e-04  4.607450e-04
+Proximity_Stream         -7.094925e-02 -1.699791e-02
+Proximity_Road           -1.132993e-02  1.609597e-02
+Proximity_Fault          -1.653999e-04  2.138841e-04
+Landuse_Nonvegetation     1.181636e+01  1.516273e+01
+Landuse_Vegetation        1.195956e+01  1.520587e+01
+Precipitation            -6.196101e+00  6.677619e+00
+TWI                      -7.559746e-01 -4.873378e-01
+SPI                      -7.724428e+00  9.029004e+00
+STI                      -1.214518e-02  7.434241e-03</code></pre>
+</div>
+</div>
+</section>
+<section id="confidence-intervals-using-standard-errors-1" class="level3">
+<h3 class="anchored" data-anchor-id="confidence-intervals-using-standard-errors-1">4.5 Confidence Intervals Using Standard Errors</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint.default</span>(landslide.lr_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                 2.5 %        97.5 %
+(Intercept)              -1.211266e+03  1.235379e+03
+Elevation                -7.554011e-04  2.833626e-04
+Slope_Angle              -3.465419e-01 -3.050816e-01
+Aspect_North             -1.219268e+03  1.227369e+03
+Aspect_NorthEast         -1.219945e+03  1.226692e+03
+Aspect_East              -1.219627e+03  1.227011e+03
+Aspect_SouthEast         -1.219525e+03  1.227113e+03
+Aspect_South             -1.219169e+03  1.227468e+03
+Aspect_SouthWest         -1.220451e+03  1.226186e+03
+Aspect_West              -1.219308e+03  1.227329e+03
+Aspect_NorthWest         -1.220028e+03  1.226609e+03
+Profile_Curvature        -3.220473e+02  6.507488e+01
+Plan_Curvature           -6.883224e+02 -2.415436e+02
+Lithology_Metamorphic    -6.697909e-01  1.346269e+00
+Lithology_Sedimentary    -9.255993e-01  1.263826e+00
+Lithology_Volcanic       -2.934604e+01  2.669301e+01
+Lithology_Plutonic       -3.137282e-01  1.572703e+00
+Lithology_Unconsolidated -2.374961e+00 -3.447192e-02
+Proximity_Settlement     -3.833341e-04  4.675102e-04
+Proximity_Stream         -7.167528e-02 -1.749068e-02
+Proximity_Road           -1.141934e-02  1.602279e-02
+Proximity_Fault          -1.649930e-04  2.153304e-04
+Landuse_Nonvegetation     1.179770e+01  1.513010e+01
+Landuse_Vegetation        1.194102e+01  1.517279e+01
+Precipitation            -6.318374e+00  6.620816e+00
+TWI                      -7.542351e-01 -4.861503e-01
+SPI                      -7.825680e+00  1.191540e+01
+STI                      -1.613725e-02  1.112034e-02</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>vif_values <span class="ot">&lt;-</span> <span class="fu">vif</span>(landslide.lr_2)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>vif_values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               Elevation              Slope_Angle             Aspect_North 
+            2.501102e+00             3.087283e+00             1.541353e+06 
+        Aspect_NorthEast              Aspect_East         Aspect_SouthEast 
+            2.515025e+06             3.112624e+06             3.651730e+06 
+            Aspect_South         Aspect_SouthWest              Aspect_West 
+            4.207102e+06             3.114811e+06             2.732233e+06 
+        Aspect_NorthWest        Profile_Curvature           Plan_Curvature 
+            1.581317e+06             1.366683e+00             1.534472e+00 
+   Lithology_Metamorphic    Lithology_Sedimentary       Lithology_Volcanic 
+            4.437017e+00             3.272387e+00             1.001872e+00 
+      Lithology_Plutonic Lithology_Unconsolidated     Proximity_Settlement 
+            1.924330e+00             3.237634e+00             1.737808e+00 
+        Proximity_Stream           Proximity_Road          Proximity_Fault 
+            1.387149e+00             1.949753e+00             1.268713e+00 
+   Landuse_Nonvegetation       Landuse_Vegetation            Precipitation 
+            1.151197e+01             9.940654e+00             1.246260e+00 
+                     TWI                      SPI                      STI 
+            2.712135e+00             1.305812e+00             1.302463e+00 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="section-1" class="level2">
+<h2 class="anchored" data-anchor-id="section-1"></h2>
 
 
 </section>
