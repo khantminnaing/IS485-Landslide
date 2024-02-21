@@ -19,9 +19,9 @@ website:
       - text: "Model Development"
         menu:
         - href: gwsmodelling.qmd
-          text: "Model Development"      
+          text: "Model Building"      
         - href: slopesampling.qmd
-          text: Slope Sampling
+          text: "Slope Sampling"
       - text: Research Paper
         href: research.qmd
 
