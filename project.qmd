@@ -95,6 +95,10 @@ aspect <- raster("data/raster/aspect_cat.tif")
 hillshade <- raster("data/raster/hillshade.tif")
 ```
 
+```{r}
+crs(valtellina)
+```
+
 Some Layers Required Cropping and Masking
 
 ```{r}

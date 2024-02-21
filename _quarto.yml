@@ -19,7 +19,7 @@ website:
       - text: "Model Development"
         menu:
         - href: gwsmodelling.qmd
-          text: "Model Building"      
+          text: "Parametric Testing"      
         - href: slopesampling.qmd
           text: "Slope Sampling"
       - text: Research Paper
