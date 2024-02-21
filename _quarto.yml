@@ -16,8 +16,12 @@ website:
         href: methodology.qmd
       - text: EDA
         href: project.qmd
-      - text: Model Development
-        href: gwsmodelling.qmd
+      - text: "Model Development"
+        menu:
+        - href: gwsmodelling.qmd
+          text: "Model Development"      
+        - href: slopesampling.qmd
+          text: Slope Sampling
       - text: Research Paper
         href: research.qmd
 
