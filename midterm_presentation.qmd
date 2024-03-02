@@ -1,0 +1,1090 @@
+---
+title: "IS Project Experience (SMT Research) <br>"
+author: "Khant Min Naing, Victoria Grace Ann"
+institute: "School of Computing and Information Systems, <br/> Singapore Management University"
+format: 
+  revealjs:
+    width: 1600
+    height: 900
+    incremental: false
+    slide-number: 'c/t'
+date: "5 March 2024"
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  message: false
+editor: visual
+---
+
+<section>
+
+<div style="display: flex; justify-content: center; align-items: center;">
+
+::: {style="text-align: center;"}
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br> <br>
+
+<h1 style="font-size: 1em;">
+
+Explanatory Landslide Susceptibility Modelling Using Global Logistic and Geographically Weighted Logistic Regression Methods
+
+</h1>
+
+<h2 style="font-size: 1em;">
+
+Case Study of Valtellina Valley, Northern Italy
+
+</h2>
+
+<h2 style="font-size: 1em;">
+
+Presented by: Spatialigent (Khant Min Naing, Victoria Grace Ann)
+
+</h2>
+
+```{=html}
+<img src="images/Spatialilengt.png" style="display: block; margin-left: auto; margin-right: auto; max-width: auto; height: 500px;"
+/>
+```
+:::
+
+</section>
+
+<section>
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/>
+
+<div style="display: flex; justify-content: center; align-items: center; height: 150vh;">
+
+::: {style="text-align: center;"}
+<h1 style="font-size: 3em;">
+
+Introduction
+
+</h1>
+:::
+
+## Introduction
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/>
+
+### Significance
+
+::: {style="font-size: 0.75em"}
+-   Landslides refer to the geomorphic phenomenon of slope failure and mass movement.
+
+-   In the last five decades, the frequency of landslide events has increased tenfold \[1\]
+
+-   Despite comparatively lower casualty than other disasters, their impacts on urban development can be severely detrimental.
+
+-   Commonly-used extensive engineering prevention works are costly and challenging.
+
+-   Landslide susceptibility modelling enables decision-supporting for identifying highest-risk areas and conducting preventive measures
+:::
+
+<img src="images/landslides.png" height="350px/"/>
+
+</section>
+
+<section>
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/>
+
+<div style="display: flex; justify-content: center; align-items: center; height: 150vh;">
+
+::: {style="text-align: center;"}
+<h1 style="font-size: 3em;">
+
+Literature Review
+
+</h1>
+:::
+
+## Landslide Susceptibility Modelling Approaches
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/>
+
+::: columns
+::: {.column width="50%"}
+::: {style="font-size: 0.7em"}
+<h3 style="color: #FFC300">
+
+Physically-based Modelling
+
+</h3>
+
+-   Analytical outcomes from physical and mechanical principles
+
+-   Systeme Hydrologique Eropeen Transport (SHETRAN), TOPOG
+
+-   **Uncertainties** mainly due to limited availability of spatially differentiated geotechnical data in real-world scenarios
+
+<br> <br> <br>
+
+<h3 style="color: #FFC300">
+
+Expert-based Modelling
+
+</h3>
+
+-   Developed with the expert knowledge of local interactions between landslide occurrences and its controlling factors
+
+-   Qualitative multicriteria analysis (Abella & Western); Heuristics based on index (Ruff and Czurda)
+
+-   **Limited reproducibility or comparability** from one study to another due to subjectivity
+:::
+:::
+
+::: {.column width="50%"}
+::: {style="font-size: 0.7em"}
+<h3 style="color: #FFC300">
+
+Statistical Modelling
+
+</h3>
+
+-   Estimate the relative spatial probability of spatial units aligning with future landslide incidents
+
+-   Information Value (Thein, et al., 2023), Logistic Regression (Regmi et al., 2014; Sun et al., 2018), Maximum Entropy (Boussouf et al., 2023), Frequency Ratio (Wubalem, 2021; Ibrahim et al., 2021)
+
+-   Reliance on numerical **abstraction** and statistical **assumptions**
+
+<h3 style="color: #FFC300">
+
+Machine Learning Modelling
+
+</h3>
+
+-   Learnt from trial-and-error without explicit programmed logic
+
+-   Support Vector Machines (Ibrahim et al., 2021), Convolutional Neural Network (Wang et al, 2021), Random Forest (Kavzoglu & Teke, 2022), Decision Tree (Saha et al, 2021)​
+
+-   **Limited interpretability and explainability** due to the model complexity
+:::
+:::
+:::
+
+</section>
+
+<section>
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/>
+
+<div style="display: flex; justify-content: center; align-items: center; height: 150vh;">
+
+::: {style="text-align: center;"}
+<h1 style="font-size: 3em;">
+
+Research Methodology
+
+</h1>
+:::
+
+## Research Design
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/>
+
+<br> <img src="images/research_design.png" style="width= 5760; height= 2342;"/>
+
+</section>
+
+<section>
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/>
+
+<div style="display: flex; justify-content: center; align-items: center; height: 150vh;">
+
+::: {style="text-align: center;"}
+<h1 style="font-size: 3em;">
+
+Data Collection & Processing
+
+</h1>
+:::
+
+## Study Area
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/>
+
+::: columns
+::: {.column width="40%"}
+### General Information
+
+::: {style="font-size: 0.75em"}
+-   Valtellina Valley, located in the Central Alps of Northern Italy
+
+-   Between 9.24°E to 10.63°E in longitude, and 46.00°N to 46.64°N in latitude
+
+-   Total area of 3308 square kilometers
+
+-   Characterized by a superimposed fluvial morphology and high, steep slopes, akin to typical alpine glacial valleys
+
+-   Experienced significant damage and destruction caused by landslides such as the historic Valpola landslide and floods.
+
+-   Surge in economic activities and human settlements (wine agriculture & ski-towns)
+:::
+:::
+
+::: {.column width="60%"}
+<br> <img src="images/landslide_inventory_map.png" width="950" height="auto" style="position: absolute; right: 0;"/>
+:::
+:::
+
+## Landslide Susceptibility Factors
+
+::: {style="font-size: 0.75em"}
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br>
+
+| Factor                                                | Source                                            | Scale     | Type        |
+|---------------|---------------------------|---------------|---------------|
+| <b style="color: #FFC300;">Topographic Factors</b>    |                                                   |           |             |
+| \(1\) Elevation                                       | Geoportale della Lombardia, DEM Derived (Raster)​  | 15 x 15 m | Continuous  |
+| \(2\) Slope Angle                                     | Geoportale della Lombardia, DEM Derived (Raster)​  | 15 x 15 m | Continuous  |
+| \(3\) Aspect                                          | Geoportale della Lombardia, DEM Derived (Raster)​  | 15 x 15 m | Categorical |
+| \(4\) Profile Curvature                               | Geoportale della Lombardia, DEM Derived (Raster)​  | 15 x 15 m | Continuous  |
+| \(5\) Plan Curvature                                  | Geoportale della Lombardia, DEM Derived (Raster)​  | 15 x 15 m | Continuous  |
+| <b style="color: #FFC300;">Geological Factors</b>     |                                                   |           |             |
+| \(6\) Lithology                                       | Bucci et al., 2021 (Raster)​                       | 15 x 15 m | Categorical​ |
+| \(7\) Distance to Fault                               | Geoportale della Lombardia, DEM Derived (Raster) ​ | 15 x 15 m | Continuous​  |
+| <b style="color: #FFC300;">Meteorological Factors</b> |                                                   |           |             |
+| \(8\) Average Precipitation                           | ARPA Lombardia (Raster)                           | 15 x 15 m | Continuous  |
+:::
+
+## Landslide Susceptibility Factors
+
+::: {style="font-size: 0.75em"}
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br>
+
+| Factor                                               | Source                                           | Scale     | Type        |
+|---------------|---------------------------|---------------|---------------|
+| <b style="color: #FFC300;">Hydrological Factors</b>  |                                                  |           |             |
+| \(9\) Distance to Streams                            | Geoportale della Lombardia, DEM Derived (Raster) | 15 x 15 m | Continuous  |
+| \(10\) Topographic Wetness Index                     | Geoportale della Lombardia, DEM Derived (Raster) | 15 x 15 m | Continuous  |
+| \(11\) Steam Power Index                             | Geoportale della Lombardia, DEM Derived (Raster) | 15 x 15 m | Categorical |
+| \(12\) Sediment Transport Index                      | Geoportale della Lombardia, DEM Derived (Raster) | 15 x 15 m | Continuous  |
+| <b style="color: #FFC300;">Anthropogenic Factors</b> |                                                  |           |             |
+| \(13\) Distance to Settlements                       | OpenStreetMap (Raster)                           | 15 x 15 m | Categorical |
+| \(14\) Distance to Road Networks                     | OpenStreetMap (Raster)                           | 15 x 15 m | Continuous  |
+| \(15\) Land Use Land Cover                           | Geoportale della Lombardia, DEM Derived (Raster) | 15 x 15 m | Continuous  |
+:::
+
+## Data Pre-Processing
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br>
+
+<h3 style="text-align: center;">
+
+Tools and Applications Used
+
+</h3>
+
+::: columns
+::: {.column width="50%"}
+```{=html}
+<img src="images/rstudio_saga.png" width="600"/
+style="display: block; margin-left: auto; margin-right: auto;">
+```
+:::
+
+::: {.column width="50%"}
+```{=html}
+<img src="images/qgis_arcgis.png" width="600"/
+style="display: block; margin-left: auto; margin-right: auto;">
+```
+:::
+:::
+
+## Data Pre-Processing
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/>
+
+<br>
+
+::: columns
+::: {.column width="50%"}
+<h3 style="color:#FFC300">
+
+Data Extraction
+
+</h3>
+
+::: {style="font-size: 0.75em"}
+-   Download DEM and Raster Images
+-   Clip the DEM image to confine the study area
+-   Run algorithms on QGIS, SAGA and ArcGIS Pro to extract topographic annd hydrological index values from DEM image
+:::
+
+<h3 style="color:#FFC300">
+
+Data Wrangling
+
+</h3>
+
+::: {style="font-size: 0.75em"}
+-   Recategorise vector layers (lithology, landuse landcover using R)
+-   Raster vector layers (fault, stream, settlement) using R
+-   Generate proximity maps using QGIS
+-   Rescale and standardise the resolution of all the layers using QGIS
+:::
+:::
+
+::: {.column width="50%"}
+<br> <br> <img src="images/data_extractions_dem.png" width="3500"/>
+:::
+:::
+
+## Landslide Sampling
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br>
+
+::: columns
+::: {.column width="33.333%"}
+<img src="images/body_mass_sampling.png" style="float: right;"/> <br>
+
+<p style="float: left;">
+
+Body Mass Sampling
+
+</p>
+:::
+
+::: {.column width="33.333%"}
+<img src="images/mass_centre_sampling.png" style="float: right;"/> <br>
+
+<p style="float: left;">
+
+Mass Center Sampling
+
+</p>
+:::
+
+::: {.column width="33.333%"}
+<img src="images/random_point_sampling.png" style="float: right;"/> <br>
+
+<p style="float: left;">
+
+Random Point Sampling
+
+</p>
+:::
+:::
+
+## Landslide Sampling
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/>
+
+::: columns
+::: {.column width="50%"}
+<h3 style="color:#FFC300">
+
+Methodology
+
+</h3>
+
+::: {style="font-size: 0.75em"}
+-   Generate a total of **5 random** sampling points within each landslide and non-landslide area using *QGIS* <img src="images/random_points_qgis_dialogue.png" height="250px"/>
+-   Create 15m by 15m grids per landslide sample point <img src="images/grids_screenshot.jpg" height="250px"/>
+:::
+:::
+
+::: {.column width="50%"}
+<br> ![](images/landslide_sampling.png){width="2500"}
+
+*Resultant Randomly Selected Points*
+:::
+:::
+
+## Data Pre-Processing
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br>
+
+::: columns
+::: {.column width="45%"}
+<h3 style="color:#FFC300">
+
+Zonal Statistic
+
+</h3>
+
+::: {style="font-size: 0.75em"}
+-   Calculating zonal statistics for each variable for each landslide zone on QGIS using *mean* value for raster layers and *majority* for vector layers
+-   Compiling all zonal statistics columns into a single dataset using R
+:::
+
+<h3 style="color:#FFC300">
+
+One-Hot Encoding & <br> Binary Logic
+
+</h3>
+
+::: {style="font-size: 0.75em"}
+-   Use one-hot encoding to convert categorical data into numerical data to fit for model training using R
+-   One resultant column from binary assignment for each categorical variable removed to avoid complete or quasi-complete separation and variance inflation
+:::
+:::
+
+::: {.column width="55%"}
+```{=html}
+<img src="images/zonal_statistic_diagram.png" style="display: block; margin: 0 auto;"
+height="300"/>
+```
+<br>
+
+```{=html}
+<img src="images/one_hot_encoding.jpg"
+style="display: block; margin: 0 auto;"
+height="300"/>
+```
+:::
+:::
+
+## Landslide Susceptibility Factors
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br>
+
+```{=html}
+<style>
+  .column {
+    text-align: center; 
+  }
+
+  img, p {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+</style>
+```
+::: columns
+::: {.column width="50%"}
+<img src="images/elevation_m.png"/> <br>
+
+<p style="text-align: center; font-size: 10em;">
+
+Elevation
+
+</p>
+:::
+
+::: {.column width="50%"}
+<img src="images/slope_degree.png"/> <br>
+
+<p style="text-align: center; font-size: 10em;">
+
+Slope Degree
+
+</p>
+:::
+:::
+
+## Landslide Susceptibility Factors
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br>
+
+```{=html}
+<style>
+  .column {
+    text-align: center; 
+  }
+
+  img, p {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+</style>
+```
+::: columns
+::: {.column width="50%"}
+<img src="images/aspect.png"/> <br>
+
+<p style="text-align: center;">
+
+Aspect
+
+</p>
+:::
+
+::: {.column width="50%"}
+<img src="images/lithology.png"/> <br>
+
+<p style="text-align: center;">
+
+Lithology
+
+</p>
+:::
+:::
+
+## Landslide Susceptibility Factors
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br>
+
+```{=html}
+<style>
+  .column {
+    text-align: center; 
+  }
+
+  img, p {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+</style>
+```
+::: columns
+::: {.column width="50%"}
+<img src="images/profile_curvature.png"/> <br>
+
+<p style="text-align: center;">
+
+Profile Curvature
+
+</p>
+:::
+
+::: {.column width="50%"}
+<img src="images/plan_curvature.png"/> <br>
+
+<p style="text-align: center;">
+
+Plan Curvature
+
+</p>
+:::
+:::
+
+## Landslide Susceptibility Factors
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br>
+
+```{=html}
+<style>
+  .column {
+    text-align: center; 
+  }
+
+  img, p {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+</style>
+```
+::: columns
+::: {.column width="50%"}
+<img src="images/precipitation.png"/> <br>
+
+<p style="text-align: center;">
+
+Average Precipitation
+
+</p>
+:::
+
+::: {.column width="50%"}
+<img src="images/distance_fault.png"/> <br>
+
+<p style="text-align: center;">
+
+Distance to Fault
+
+</p>
+:::
+:::
+
+## Landslide Susceptibility Factors
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br>
+
+```{=html}
+<style>
+  .column {
+    text-align: center; 
+  }
+
+  img, p {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+</style>
+```
+::: columns
+::: {.column width="50%"}
+<img src="images/distance_streams.png"/> <br>
+
+<p style="text-align: center;">
+
+Distance to Stream
+
+</p>
+:::
+
+::: {.column width="50%"}
+<img src="images/twi.png"/> <br>
+
+<p style="text-align: center;">
+
+Topographic Wetness Index
+
+</p>
+:::
+:::
+
+## Landslide Susceptibility Factors
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br>
+
+```{=html}
+<style>
+  .column {
+    text-align: center; 
+  }
+
+  img, p {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+</style>
+```
+::: columns
+::: {.column width="50%"}
+<img src="images/spi.png"/> <br>
+
+<p style="text-align: center;">
+
+Steam Power Index
+
+</p>
+:::
+
+::: {.column width="50%"}
+<img src="images/sti.png"/> <br>
+
+<p style="text-align: center;">
+
+Sediment Transport Index
+
+</p>
+:::
+:::
+
+## Landslide Susceptibility Factors
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br>
+
+```{=html}
+<style>
+  .column {
+    text-align: center; 
+  }
+
+  img, p {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+</style>
+```
+::: columns
+::: {.column width="50%"}
+<img src="images/distance_settlement.png"/> <br>
+
+<p style="text-align: center;">
+
+Distance to Settlement
+
+</p>
+:::
+
+::: {.column width="50%"}
+<img src="images/distance_road.png"/> <br>
+
+<p style="text-align: center;">
+
+Distance to Road
+
+</p>
+:::
+:::
+
+## Landslide Susceptibility Factors
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br>
+
+```{=html}
+<style>
+  .column {
+    text-align: center; 
+  }
+
+  img, p { 
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+</style>
+```
+::: columns
+::: {.column width="50%"}
+<img src="images/lulc.png"/> <br>
+
+<p style="text-align: center;">
+
+Landuse Landcover
+
+</p>
+:::
+:::
+
+</section>
+
+<section>
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; max-width: 900px; height: auto; z-index: 9999;"/>
+
+<div style="display: flex; justify-content: center; align-items: center; height: 150vh;">
+
+::: {style="text-align: center;"}
+<h1 style="font-size: 3em;">
+
+Parametric Testing
+
+</h1>
+:::
+
+## Correlation Matrix
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/>
+
+::: columns
+::: {.column width="40%"}
+::: {style="font-size: 0.6em"}
+Slope Angle Distribution
+:::
+
+```{r}
+#| echo: false
+pacman::p_load(sp, sf, st, spdep, raster, spatstat, tmap, devtools,vtable,ggplot2,egg, corrplot, patchwork, ggstats, ggstatsplot, GWmodel, tidyverse, gtsummary,vtable, sjPlot, sjmisc, sjlabelled, tableHTML, olsrr, car, blorr,ISLR, klaR,pROC)
+
+valtellina <- read_sf(dsn = "data/vector", 
+                      layer = "valtellina")
+train_grids_v4 <- read.csv("data/aspatial/train_grid_v4.csv")
+
+slope_angle <- train_grids_v4$Slope_Angle
+quantile(slope_angle, probs = seq(0, 1, 1/4))
+
+sample_Q1 <- subset(train_grids_v4,Slope_Angle < 18.41368)
+new_train <- subset(train_grids_v4,Slope_Angle >= 18.41368)
+sample_Q2 <- subset(new_train,Slope_Angle < 30.34639)
+new_train <- subset(new_train,Slope_Angle >= 30.34639)
+sample_Q3 <- subset(new_train,Slope_Angle < 38.54599)
+new_train <- subset(new_train,Slope_Angle >= 38.54599)
+sample_Q4 <- subset(new_train,Slope_Angle <= 82.91669)
+#nrow(sample_Q1)
+#nrow(sample_Q2)
+#nrow(sample_Q3)
+#nrow(sample_Q4)
+ggplot(data=sample_Q3, aes(x= `Slope_Angle`)) +
+  geom_histogram(bins=10, color="black", fill="#e9531e")
+```
+
+::: {style="font-size: 0.6em"}
+Correlation Matrix Code
+:::
+
+```{r}
+#| eval: false
+set.seed(123)
+ggcorrmat(
+  data = sample_Q3[, 6:29],  
+          matrix.type = "upper",
+  type = "parametric",
+  tr = 0.2,
+  partial = FALSE,
+  k = 2L,
+  sig.level = 0.05,
+  conf.level = 0.95,
+  bf.prior = 0.707,
+  ggcorrplot.args = list(
+     tl.cex = 10, pch.cex = 5, lab_size = 3
+  )) + 
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(
+      margin = ggplot2::margin(t = 0.15, r = 0.15, b = 0.15, l = 0.15, unit = "cm")
+    )
+  )
+```
+:::
+
+::: {.column width="60%"}
+::: {style="font-size: 0.6em"}
+Correlation Matrix Output
+:::
+
+```{=html}
+<img src="images/corr_matrix.png"
+height=700px>
+```
+:::
+:::
+
+## Variance Inflation Test
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br>
+
+::: columns
+::: {.column width="50%"}
+::: {style="font-size: 0.75em"}
+| <b style="color: #FFC300;">Landslide Factors</b> | <b style="color: #FFC300;">VIF</b> | <b style="color: #FFC300;"> TOLerance</b> |
+|-------------------------------------|-----------------|-----------------|
+| Elevation                                        | 2.488950                           | 0.401776                                  |
+| Slope Angle                                      | 1.596051                           | 0.626546                                  |
+| Aspect (N)                                       | 1.837785                           | 0.544133                                  |
+| Aspect (NE)                                      | 2.420200                           | 0.413189                                  |
+| Aspect (E)                                       | 2.739139                           | 0.365078                                  |
+| Aspect (SE)                                      | 2.914264                           | 0.365078                                  |
+| Aspect (S)                                       | 3.200430                           | 0.312458                                  |
+| Aspect (SW)                                      | 2.497585                           | 0.400387                                  |
+| Aspect (W)                                       | 2.478521                           | 0.403466                                  |
+| Profile Curvature                                | 1.316536                           | 0.759569                                  |
+| Plan Curvature                                   | 1.624930                           | 0.759569                                  |
+| Lithology (Metamorphic)                          | 4.437094                           | 0.225373                                  |
+:::
+:::
+
+::: {.column width="50%"}
+::: {style="font-size: 0.75em"}
+| <b style="color: #FFC300;">Landslide Factors</b> | <b style="color: #FFC300;">VIF</b> | <b style="color: #FFC300;"> TOLerance</b> |
+|---------------------------------------|-----------------|-----------------|
+| Lithology (Sedimentary)                          | 3.238282                           | 0.308806                                  |
+| Lithology (Plutonic)                             | 1.909478                           | 0.523703                                  |
+| Lithology (Unconsolidated)                       | 4.437094                           | 0.225373                                  |
+| Distance to Settlements                          | 1.733509                           | 0.576865                                  |
+| Distance to Streams                              | 1.357373                           | 0.736717                                  |
+| Distance to Road Networks                        | 1.871975                           | 0.534195                                  |
+| Distance to Faults                               | 1.279720                           | 0.781421                                  |
+| Landuse (Vegetation)                             | 1.580992                           | 0.632514                                  |
+| Average Precipitation                            | 1.242173                           | 0.805041                                  |
+| TWI                                              | 2.548388                           | 0.392405                                  |
+| SPI                                              | 1.182007                           | 0.846019                                  |
+| STI                                              | 1.178955                           | 0.848209                                  |
+:::
+:::
+:::
+
+</section>
+
+<section>
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; max-width: 900px; height: auto; z-index: 9999;"/>
+
+<div style="display: flex; justify-content: center; align-items: center; height: 150vh;">
+
+::: {style="text-align: center;"}
+<h1 style="font-size: 3em;">
+
+Model Building & Calibration
+
+</h1>
+:::
+
+## Logistic Regression
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/>
+
+::: columns
+::: {.column width="40%"}
+::: {style="font-size: 1em"}
+-   Dichotomous/binary nature of the dependent variable (presence or absence of a landslide)
+-   Independent variables can be either discrete or continuous, and are not required to satisfy normal distribution
+-   Estimate the probability of landslide occurrences, with values ranging from 0 (absence of a landslide) to 1 (presence of a landslide)
+:::
+:::
+
+::: {.column width="60%"}
+<img src="images/log_reg_formula.png" width="1000"/>
+
+::: {style="font-size: 0.75em"}
+Logistic Regression Formula
+:::
+:::
+:::
+
+## Geographically Weighted Regression
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; width: 300px; height: auto; z-index: 9999;"/> <br>
+
+::: {style="font-size: 1.5em"}
+-   Extends traditional and global regression frameworks such as OLS and LR by incorporating local parameters and spatial weights
+
+-   GWR is used to capture spatial heterogeneity of different landslide factors by generating coefficient estimates which vary based on location
+
+-   Calibrate the global LR model by assigning spatial weight to an observation determined by its proximity to location *i*
+:::
+
+</section>
+
+<section>
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; max-width: 900px; height: auto; z-index: 9999;"/>
+
+<div style="display: flex; justify-content: center; align-items: center; height: 150vh;">
+
+::: {style="text-align: center;"}
+<h1 style="font-size: 3em;">
+
+Project Management
+
+</h1>
+:::
+
+## Project Timeline
+
+<img src="images/scis_slides_logo.png" style="position: absolute; top: 10px; right: 10px; max-width: 900px; height: auto; z-index: 9999;"/> <br> <img src="images/project_timeline.png" width="1500"/>
+
+</section>
+
+<section>
+
+::: {style="text-align: center;"}
+<h1 style="font-size: 3em;">
+
+Future Plans and Directions
+
+</h1>
+:::
+
+</section>
+
+<section>
+
+::: {style="text-align: center;"}
+<h1 style="font-size: 3em;">
+
+Learning Journey
+
+</h1>
+:::
+
+</section>
+
+## Hello Plot
+
+```{r}
+#| echo: false
+pacman::p_load(tidyverse)
+
+exam_data <- read_csv("C:/guacodemoleh/IS415-GAA/data/revealjs/Exam_data.csv")
+
+ggplot(data = exam_data,aes(x=MATHS)) +
+  geom_histogram(bins=10,
+                 boundary=100,
+                 color='black',
+                 fill="light blue") +
+  ggtitle("Distribution of Maths Scores")
+```
+
+------------------------------------------------------------------------
+
+### Dual columns slide
+
+::: columns
+::: {.column width="50%"}
+The code chunk.
+
+::: {style="font-size: 1.2em"}
+```{r}
+#| eval: false
+pacman::p_load(tidyverse)
+
+exam_data <- read_csv("C:/guacodemoleh/IS415-GAA/data/revealjs/Exam_data.csv")
+
+ggplot(data = exam_data,aes(x=MATHS)) +
+  geom_histogram(bins=10,
+                 boundary=100,
+                 color='black',
+                 fill="light blue") +
+  ggtitle("Distribution of Maths Scores")
+```
+:::
+:::
+
+::: {.column width="50%"}
+The plot
+
+```{r}
+#| echo: false
+#| fig-height: 8
+pacman::p_load(tidyverse)
+
+exam_data <- read_csv("C:/guacodemoleh/IS415-GAA/data/revealjs/Exam_data.csv")
+
+ggplot(data = exam_data,aes(x=MATHS)) +
+  geom_histogram(bins=10,
+                 boundary=100,
+                 color='black',
+                 fill="light blue") +
+  ggtitle("Distribution of Maths Scores")
+```
+:::
+:::
+
+## Working with tabsets
+
+::: panel-tabset
+## The code chunk
+
+::: {style="font-size: 1.35em"}
+```{r}
+#| eval: false
+#| code-line-numbers: "6,7,8,9"
+pacman::p_load(tidyverse)
+
+exam_data <- read_csv("C:/guacodemoleh/IS415-GAA/data/revealjs/Exam_data.csv")
+
+ggplot(data = exam_data,aes(x=MATHS)) +
+  geom_histogram(bins=10,
+                 boundary=100,
+                 color='black',
+                 fill="light blue") +
+  ggtitle("Distribution of Maths Scores")
+```
+:::
+
+## The plot
+
+```{r}
+#| echo: false
+#| fig-height: 6
+pacman::p_load(tidyverse)
+
+exam_data <- read_csv("C:/guacodemoleh/IS415-GAA/data/revealjs/Exam_data.csv")
+
+ggplot(data = exam_data,aes(x=MATHS)) +
+  geom_histogram(bins=10,
+                 boundary=100,
+                 color='black',
+                 fill="light blue") +
+  ggtitle("Distribution of Maths Scores")
+```
+:::
+
+## Adding a Static Table
+
+```{r}
+#| echo: false
+head(exam_data, n=8) %>%
+  knitr::kable(format="html")
+```
+
+```{r}
+#| eval: false
+#| echo: false
+renderthis::to_pdf(
+  from = "_site/midterm_presentation.html",
+  to = "pdf/midterm_presentation.pdf") 
+```
