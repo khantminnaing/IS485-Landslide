@@ -21,7 +21,7 @@ output:
 ## 1.0 Import Packages
 
 ```{r}
-pacman::p_load(sp, sf, st, spdep, raster, spatstat, tmap, devtools,vtable,ggplot2,egg, corrplot, patchwork, ggstats, ggstatsplot, GWmodel, tidyverse, gtsummary,vtable, sjPlot, sjmisc, sjlabelled, tableHTML, olsrr, car, blorr,ISLR, klaR,pROC)
+pacman::p_load(sp, sf, st, spdep, terra, raster, spatstat, tmap, devtools,vtable,ggplot2, corrplot, ggstats, ggstatsplot, GWmodel, tidyverse, gtsummary, blorr, car, ISLR, klaR,pROC)
 ```
 
 ## 2.0 Import Data
@@ -98,9 +98,9 @@ ggplot(data=sample_Q4, aes(x= `Slope_Angle`)) +
 
 Next, we will use the **`ggcorrmat`** function from the **`ggstatsplot`** package to create a correlation matrix for each dataset.
 
--   We set **`matrix.type`** to \"upper\", which means it will only show the upper triangle of the correlation matrix.
+-   We set **`matrix.type`** to "upper", which means it will only show the upper triangle of the correlation matrix.
 
--   We set **`type`** to \"parametric\", which means it will calculating the correlations using a parametric method (Pearson\'s correlation).
+-   We set **`type`** to "parametric", which means it will calculating the correlations using a parametric method (Pearson's correlation).
 
 -   We set **`k`** to 2, **`sig.level`** to 0.05, **`conf.level`** to 0.95, and **`bf.prior`** to 0.707. These are parameters for the statistical tests that **`ggcorrmat`** performs
 
@@ -110,7 +110,7 @@ Next, we will use the **`ggcorrmat`** function from the **`ggstatsplot`** packag
 set.seed(123)
 
 ggcorrmat(
-  data = sample_Q3[, 6:29],  
+  data = sample_Q6[, 6:29],  
           matrix.type = "upper",
   type = "parametric",
   tr = 0.2,
@@ -201,7 +201,7 @@ Next, we will generate a confusion matrix for the model predictions using `blr_c
 blr_confusion_matrix(log_model_1, cutoff = 0.5)
 ```
 
-#### 4.1.4 Ploting ROC Curve and Calculating AUC 
+#### 4.1.4 Ploting ROC Curve and Calculating AUC
 
 Finally, we will plot the ROC curve and calculate the AUC. The ROC curve is a plot of the true positive rate against the false positive rate for different cutoff values, and the AUC is the area under the ROC curve. These are common metrics for evaluating the performance of a binary classifier. The **`roc`** function from the **`pROC`** package is used to calculate the ROC curve, and the **`auc`** function is used to calculate the AUC.
 
@@ -237,7 +237,7 @@ summary(log_model_2)
 blr_confusion_matrix(log_model_2, cutoff = 0.5)
 ```
 
-#### 4.2.4 Ploting ROC Curve and Calculating AUC 
+#### 4.2.4 Ploting ROC Curve and Calculating AUC
 
 ```{r}
 predicted <- predict(log_model_2, Q2_test[, 6:29], type="response")
@@ -273,7 +273,7 @@ summary(log_model_3)
 blr_confusion_matrix(log_model_3, cutoff = 0.5)
 ```
 
-#### 4.3.4 Ploting ROC Curve and Calculating AUC 
+#### 4.3.4 Ploting ROC Curve and Calculating AUC
 
 ```{r}
 predicted <- predict(log_model_3, Q3_test[, 6:29], type="response")
@@ -309,7 +309,7 @@ summary(log_model_4)
 blr_confusion_matrix(log_model_4, cutoff = 0.5)
 ```
 
-#### 4.4.4 Ploting ROC Curve and Calculating AUC 
+#### 4.4.4 Ploting ROC Curve and Calculating AUC
 
 ```{r}
 predicted <- predict(log_model_4, Q4_test[, 6:29], type="response")
@@ -357,7 +357,7 @@ summary(log_model_5)
 blr_confusion_matrix(log_model_5, cutoff = 0.5)
 ```
 
-#### 4.5.4 Ploting ROC Curve and Calculating AUC 
+#### 4.5.4 Ploting ROC Curve and Calculating AUC
 
 ```{r}
 predicted <- predict(log_model_5, Q5_test[, 6:29], type="response")
@@ -372,6 +372,8 @@ cat("AUC:", auc_value, "\n")
 ### 4.6 Logistic Regression Model 6 (Slope Cut-off = 20)
 
 ```{r}
+set.seed(123)
+
 sample_Q6 <- subset(train_grids_v4,Slope_Angle < 20)
 nrow(sample_Q6)
 
@@ -406,7 +408,7 @@ summary(log_model_6)
 blr_confusion_matrix(log_model_6, cutoff = 0.5)
 ```
 
-#### 4.6.4 Ploting ROC Curve and Calculating AUC 
+#### 4.6.4 Ploting ROC Curve and Calculating AUC
 
 ```{r}
 predicted <- predict(log_model_6, Q6_test[, 6:29], type="response")
@@ -421,6 +423,8 @@ cat("AUC:", auc_value, "\n")
 ### 4.7 Logistic Regression Model 7 (Slope Cut-off = 15)
 
 ```{r}
+set.seed(123)
+
 sample_Q7 <- subset(train_grids_v4,Slope_Angle < 15)
 nrow(sample_Q7)
 
@@ -435,7 +439,7 @@ Q7_test   <- sample_Q7[!sample, ]
 ```
 
 ```{r}
-log_model_7 <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic+Lithology_Unconsolidated + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, family = "binomial", data = Q7_train)
+log_model_7 <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, family = "binomial", data = sample_Q7)
 ```
 
 #### 4.7.1 Generating Model Summary
@@ -456,7 +460,11 @@ summary(log_model_7)
 blr_confusion_matrix(log_model_7, cutoff = 0.5)
 ```
 
-#### 4.7.4 Ploting ROC Curve and Calculating AUC 
+```{r}
+vif(log_model_7)
+```
+
+#### 4.7.4 Ploting ROC Curve and Calculating AUC
 
 ```{r}
 predicted <- predict(log_model_7, Q7_test[, 6:29], type="response")
@@ -468,48 +476,101 @@ auc_value <- auc(roc_curve)
 cat("AUC:", auc_value, "\n")
 ```
 
+#### 4.7.5 Stepwise Selection
+
+For the initial/ first cut model, all the independent variables are put into the model. Our goal is to include a limited number of independent variables (5-15) which are all significant, without sacrificing too much on the model performance. The rationale behind not-including too many variables is that the model would be over fitted and would become unstable when tested on the validation sample. The variable reduction is done using forward or backward or stepwise variable selection procedures. We will use blr_step_aic_both() to shortlist predictors for our model.
+
+```{r}
+blr_step_aic_both(log_model_7)
+```
+
+```{r}
+log_model_7 %>%
+  blr_step_aic_both() %>%
+  plot()
+```
+
+#### 4.7.6 Model Update
+
+```{r}
+log_model_7_modified <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_SouthEast + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic + Proximity_Road+ Landuse_Vegetation+Precipitation, family = "binomial", data = sample_Q7)
+```
+
+```{r}
+summary(log_model_7_modified)
+```
+
+```{r}
+vif(log_model_7_modified)
+```
+
 ## 5.0 Geographically Weighted Logistic Regression
 
 Next, we will run Geographically Weighted Logistic Regression (GWLR) models using `sample_Q5` dataset and `GWmodel` package. In order to perform GWLR modelling in `GWmodel`, we will first need to convert *t*he datasets into a **SpatialPointsDataFrame**.
 
+### 20%
+
 ```{r}
-sample_Q5.sf <- st_as_sf(sample_Q5,
-                            coords = c("X", "Y"))
-sample_Q5.sf <- st_set_crs(sample_Q5.sf, 32632)
-sample_Q5.sp <- sample_Q5.sf %>% as_Spatial()
+set.seed(123)
+# Model 6 Slope Cut-off = 20
+sample <- sample(c(TRUE, FALSE), nrow(sample_Q6), replace=TRUE, prob=c(0.20,0.80))
+Q6_fit  <- sample_Q6[sample, ]
 
-Q5_train.sf <- st_as_sf(Q5_train,
+Q6_fit.sf <- st_as_sf(Q6_fit,
                             coords = c("X", "Y"))
-Q5_train.sf <- st_set_crs(Q5_train.sf, 32632)
-Q5_train.sp <- Q5_train.sf %>% as_Spatial()
+Q6_fit.sf <- st_set_crs(Q6_fit.sf, 32632)
+Q6_fit.sp <- Q6_fit.sf %>% as_Spatial()
+
+# Model 7 Slope Cut-off = 20
+sample <- sample(c(TRUE, FALSE), nrow(sample_Q7), replace=TRUE, prob=c(0.20,0.80))
+Q7_fit  <- sample_Q6[sample, ]
+
+Q7_fit.sf <- st_as_sf(Q7_fit,
+                            coords = c("X", "Y"))
+Q7_fit.sf <- st_set_crs(Q7_fit.sf, 32632)
+Q7_fit.sp <- Q7_fit.sf %>% as_Spatial()
 
 
-Q5_test.sf <- st_as_sf(Q5_test,
-                            coords = c("X", "Y"))
-Q5_test.sf <- st_set_crs(Q5_test.sf, 32632)
-Q5_test.sp <- Q5_test.sf %>% as_Spatial()
+```
+
+```{r}
+Q6_fit.sp <- read_rds("~/IS485-Landslide/data/rds/Q6_fit.sp.rds")
+Q7_fit.sp <- read_rds("~/IS485-Landslide/data/rds/Q7_fit.sp.rds")
+```
+
+We will make a quick plot to see the geographical distribution of landslide and non-landslide samples in `Q6_fit.sp` & `Q7_fit.sp`.
+
+```{r}
+Q6_fit.sf$Landslide <- as.factor(Q6_fit.sf$Landslide)
+Q7_fit.sf$Landslide <- as.factor(Q7_fit.sf$Landslide)
 ```
 
 ```{r}
 #| eval: false
 #| echo: false
-Q7_train.sf <- st_as_sf(Q7_train,
-                            coords = c("X", "Y"))
-Q7_train.sf <- st_set_crs(Q7_train.sf, 32632)
-Q7_train_sp <- Q7_train.sf %>% as_Spatial()
-Q7_train_sp
+tmap_mode("plot")
+tmap_options(check.and.fix = TRUE)+
+tm_shape(valtellina)+
+  tm_polygons()+
+tm_shape(Q6_fit.sf)+
+  tm_dots(col = "Landslide", palette = "Spectral") +
+  tm_layout(
+    main.title = "20% Random Samples of Slope Cut-off 20 Degree Sampling",
+    main.title.size = 1,
+    main.title.position = "center",
+    legend.position = c("right", "bottom"))
 
-Q7_test.sf <- st_as_sf(Q7_test,
-                            coords = c("X", "Y"))
-Q7_test.sf <- st_set_crs(Q7_test.sf, 32632)
-Q7_test_sp <- Q7_test.sf %>% as_Spatial()
-Q7_test_sp
-```
-
-We will make a quick plot to see the geographical distribution of landslide and non-landslide samples in `sample_Q5`.
-
-```{r}
-
+tmap_mode("plot")
+tmap_options(check.and.fix = TRUE)+
+tm_shape(valtellina)+
+  tm_polygons()+
+tm_shape(Q7_fit.sf)+
+  tm_dots(col = "Landslide", palette = "Spectral") +
+  tm_layout(
+    main.title = "20% Random Samples of Slope Cut-off 15 Degree Sampling",
+    main.title.size = 1,
+    main.title.position = "center",
+    legend.position = c("right", "bottom"))
 ```
 
 ### 5.1 Calculating Adaptive Bandwidth
@@ -518,9 +579,11 @@ In this section, we will calculate the adaptive bandwidth for fitting a GWLE mod
 
 Firstly, we will create a distance matrix to be used for calculating the bandwidth. The **`st_coordinates`** function is used to extract the coordinates from the **`Q5_train.sf`** spatial object. The **`gw.dist`** function is then used to calculate the distance matrix **`dist.test`** based on these coordinates.
 
+#### 5.1.1 Model 6 (Slope Cut-off 20)
+
 ```{r}
-dist_mat <- st_coordinates(Q5_train.sf) 
-dist.test <- gw.dist(dp.locat=dist_mat,p=2, theta=0, longlat=FALSE)
+dist_mat <- st_coordinates(Q6_fit.sf) 
+dist.Q6 <- gw.dist(dp.locat=dist_mat,p=2, theta=0, longlat=FALSE)
 ```
 
 Now that, we have created the distance matrix, we will calculate the adaptive bandwidth value with specifications as below.
@@ -541,11 +604,11 @@ Now that, we have created the distance matrix, we will calculate the adaptive ba
 
 ```{r}
 #| eval: false
-adaptive_bw <- bw.ggwr(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic+Lithology_Unconsolidated + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, data = Q5_train_sp, family = "binomial", approach="CV", kernel="gaussian",
-       adaptive=TRUE, p=2, theta=0, longlat=F, dMat=dist.test)
+adaptive_bw <- bw.gwr(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic+Lithology_Unconsolidated + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, data = Q6_fit.sp, approach="CV", kernel="gaussian",
+       adaptive=TRUE, p=2, theta=0, longlat=F)
 ```
 
-![](images/Screenshot 2024-02-19 at 9.56.31 PM.png)
+![](images/Screenshot%202024-02-19%20at%209.56.31%20PM.png)
 
 Based on the result, the optimal adaptive bandwidth value that yields the lowest CV score is **203** (with CV score = 1312.815). We will use this value in fitting GWLR model `gwlr`.
 
@@ -568,7 +631,7 @@ We will use `ggwr.basic()` function from `GWmodel` package to fit a GWLR model `
 ```{r}
 #| eval: false
 
-gwlr <- ggwr.basic(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic+Lithology_Unconsolidated + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, data = Q5_train_sp, regression.points = Q5_test_sp, bw= 203, family = "binomial", kernel = "gaussian", adaptive = TRUE, cv = T, tol = 0.00001, p = 2, theta = 0, longlat = FALSE)
+gwlr <- ggwr.basic(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic+Lithology_Unconsolidated + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, data = Q6_fit.sp, bw= 100, family = "binomial", kernel = "gaussian", adaptive = TRUE, cv = T, p = 2, theta = 0, longlat = FALSE)
 ```
 
 ### 5.3 Model Summary
@@ -584,7 +647,7 @@ gwlr
 ```
 
 ```{r}
-gwlr$glms$coefficients
+regression.points <- gwlr$SDF
 ```
 
 ```{r}
@@ -594,11 +657,336 @@ tmap_mode("view")
 tmap_options(check.and.fix = TRUE)+
 tm_shape(valtellina)+
   tm_polygons()+
-tm_shape(gwlr.res.sf) +  
-  tm_dots(col= "gwlr.glms.residuals",
+tm_shape(regression.points) +  
+  tm_dots(col= "Landuse_Vegetation",
           alpha = 0.6,
           midpoint = NA )
+
+tmap_mode("plot")
+
 ```
+
+### Spatial Interpolation
+
+```{r}
+valtellina_boundary <- st_union(valtellina) %>% st_sf()
+class(valtellina_boundary)
+```
+
+#### **Prediction locations**
+
+We wish to predict the prices of properties continuously in space in Athens. To do that, we create a fine raster grid covering Athens and consider the centroids of the raster cells as the prediction locations. We create the raster grid with the [`rast()`](https://rdrr.io/pkg/terra/man/rast.html) function of **terra** by specifying the region to be covered (`map`), and the number of rows and columns of the grid (`nrows = 700, ncols = 1066`). The prediction locations are the centroids of the raster cells and can be obtained with the [`xyFromCell()`](https://rdrr.io/pkg/terra/man/xyCellFrom.html) function of **terra**. Alternatively, we could create the grid using the [`st_make_grid()`](https://r-spatial.github.io/sf/reference/st_make_grid.html) function of **sf** by specifying the number of grid cells in the horizontal and vertical directions or the cell size.
+
+```{r}
+grid <- rast(valtellina_boundary, nrows = 700, ncols = 1066)
+xy <- xyFromCell(grid, 1:ncell(grid))
+coop <- st_as_sf(as.data.frame(xy), coords = c("x", "y"),
+              crs = st_crs(valtellina_boundary))
+coop <- st_filter(coop, valtellina_boundary)
+qtm(coop)
+```
+
+### **Closest Observation**
+
+We can obtain predictions at each of the prediction locations as the values of the closest sampled locations. To do that, we can employ the Voronoi diagram (also known as Dirichlet or Thiessen diagram). The Voronoi diagram is created when a region with n points is partitioned into convex polygons such that each polygon contains exactly one generating point, and every point in a given polygon is closer to its generating point than to any other.
+
+Given a set of points, we can create a Voronoi diagram with the [`voronoi()`](https://rdrr.io/pkg/terra/man/voronoi.html) function of **terra** specifying the points as an object of class `SpatVector` of **terra**, and `map` to set the outer boundary of the Voronoi diagram. This returns a Voronoi diagram for the set of points assuming constant values in each of the polygons.
+
+Then, we can use the functions [`tm_shape()`](https://rdrr.io/pkg/tmap/man/tm_shape.html) and [`tm_fill()`](https://rdrr.io/pkg/tmap/man/tm_polygons.html) of **tmap** to plot the values of the variable in each of the polygons indicating the name of the variable `col = "vble"`, the palette `palette = "viridis"` and the level of transparency `alpha = 0.6` (if the plot is interactive).
+
+```{r}
+# Voronoi
+v <- voronoi(x = vect(regression.points), bnd = valtellina_boundary)
+plot(v)
+points(vect(regression.points), cex = 0.5)
+
+# Prediction
+v <- st_as_sf(v)
+tm_shape(v) +
+  tm_fill(col = "Landuse_Vegetation", palette = "Spectral")
+```
+
+```{r}
+resp <- st_intersection(v, coop)
+resp$pred <- resp$Landuse_Vegetation
+
+pred_voronoi <- rasterize(resp, grid, field = "pred", fun = "mean")
+```
+
+```{r}
+voronoi_map <- tm_shape(pred_voronoi) + 
+  tm_raster(palette = "Spectral",
+            title = "Landuse Vegetation",
+            midpoint = NA) +
+ tm_layout(main.title = "Voronoi",
+            main.title.position = "center",
+            main.title.size = 0.8,
+            legend.position = c("RIGHT", "BOTTOM"),
+            legend.title.size = 0.5,
+            legend.text.size = 0.4,
+            frame = TRUE) +
+  tm_compass(type="8star", text.size = 0.5, size = 2, position=c("RIGHT", "TOP")) +
+   tm_scale_bar(position=c("LEFT", "TOP"),
+                text.size = 0.4)
+
+voronoi_map
+```
+
+### IDW: Inverse Distance Weighting
+
+In the IDW method, values at unsampled locations are estimated as the weighted average of values from the rest of locations with weights inversely proportional to the distance between the unsampled and the sampled locations.
+
+We can apply the IDW method with the [`gstat()`](https://rdrr.io/pkg/gstat/man/gstat.html) function of **gstat** and the following arguments:
+
+-   `formula`: `vble ~ 1` to have an intercept only model,
+
+-   `nmax`: number of neighbors is set equal to the total number of locations,
+
+-   `idp`: inverse distance power is set to `idp = 1` to have weights with β=1�=1.
+
+Then, we use the [`predict()`](https://rdrr.io/pkg/terra/man/predict.html) function to obtain the predictions and **tmap** to show the results
+
+```{r}
+pacman::p_load(gstat)
+
+res <- gstat(formula = Landuse_Vegetation ~ 1, locations = regression.points,
+             nmax = nrow(regression.points), # use all the neighbors locations
+             set = list(idp = 1)) # beta = 1 
+
+resp <- predict(res, coop)
+resp$x <- st_coordinates(resp)[,1]
+resp$y <- st_coordinates(resp)[,2]
+resp$pred <- resp$var1.pred
+
+pred_idw <- rasterize(resp, grid, field = "pred", fun = "mean")
+```
+
+```{r}
+
+idw_map <- tm_shape(pred_idw) + 
+  tm_raster(palette = "Spectral",
+            title = "Landuse Vegetation",
+            midpoint = NA) +
+ tm_layout(main.title = "IDW",
+            main.title.position = "center",
+            main.title.size = 0.8,
+            legend.position = c("RIGHT", "BOTTOM"),
+            legend.title.size = 0.5,
+            legend.text.size = 0.4,
+            frame = TRUE) +
+  tm_compass(type="8star", text.size = 0.5, size = 2, position=c("RIGHT", "TOP")) +
+   tm_scale_bar(position=c("LEFT", "TOP"),
+                text.size = 0.4)
+
+idw_map
+```
+
+### **Nearest neighbors**
+
+In the nearest neighbors interpolation method, values at unsampled locations are estimated as the average of the values of the k closest sampled locations. Specifically,
+
+We can compute predictions using nearest neighbors interpolation with the [`gstat()`](https://rdrr.io/pkg/gstat/man/gstat.html) function of **gstat**. Here, we consider the number of closest sampled locations equal to 5 by setting `nmax = 5`. Unlike the IDW method, in the nearest neighbors approach locations further away from the location where we wish to predict are assigned the same weights. Therefore, the inverse distance power `idp` is set equal to zero so all the neighbors are equally weighted.
+
+Then, we use the [`predict()`](https://rdrr.io/pkg/terra/man/predict.html) function to get predictions at unsampled locations given in `coop`.
+
+```{r}
+res <- gstat(formula = Landuse_Vegetation ~ 1, locations = regression.points, nmax = 5,
+             set = list(idp = 0))
+
+resp <- predict(res, coop)
+resp$x <- st_coordinates(resp)[,1]
+resp$y <- st_coordinates(resp)[,2]
+resp$pred <- resp$var1.pred
+
+pred_nn <- rasterize(resp, grid, field = "pred", fun = "mean")
+```
+
+```{r}
+nn_map <- tm_shape(pred_nn) + 
+  tm_raster(palette = "Spectral",
+             title = "Landuse Vegetation",
+            midpoint = NA) +
+ tm_layout(main.title = "Nearest Neighbour",
+            main.title.position = "center",
+            main.title.size = 0.8,
+            legend.position = c("RIGHT", "BOTTOM"),
+            legend.title.size = 0.5,
+            legend.text.size = 0.4,
+            frame = TRUE) +
+  tm_compass(type="8star", text.size = 0.5, size = 2, position=c("RIGHT", "TOP")) +
+   tm_scale_bar(position=c("LEFT", "TOP"),
+                text.size = 0.4)
+
+nn_map
+```
+
+### **Ensemble approach**
+
+Predictions can also be obtained using an ensemble approach that combines the predictions obtained with several spatial interpolation methods.
+
+Here, we use an ensemble approach to predict the price per square meter of apartments in Athens by combining the predictions of the three previous approaches (closest observation, IDW, nearest neighbors) using equal weights.
+
+The predictions with the closest observation method are obtained using the Voronoi diagram as follows:
+
+```{r}
+# Closest observation (Voronoi)
+v <- terra::voronoi(x = terra::vect(regression.points), bnd = valtellina_boundary)
+v <- st_as_sf(v)
+p1 <- st_intersection(v, coop)$Landuse_Vegetation
+```
+
+The IDW approach can be applied with the [`gstat()`](https://rdrr.io/pkg/gstat/man/gstat.html) function of **gstat** specifying `nmax` as the total number of locations and `idp = 1`.
+
+```{r}
+# IDW
+gs <- gstat(formula = Landuse_Vegetation ~ 1, locations = regression.points, nmax = nrow(regression.points),
+            set = list(idp = 1))
+p2 <- predict(gs, coop)$var1.pred
+```
+
+The nearest neighbors method is applied with the [`gstat()`](https://rdrr.io/pkg/gstat/man/gstat.html) function specifying `nmax` as the number of neighbors and with equal weights (`idp = 0`).
+
+```{r}
+# Nearest neighbors
+nn <- gstat(formula = Landuse_Vegetation ~ 1, locations = regression.points, nmax = 5,
+            set = list(idp = 0))
+p3 <- predict(nn, coop)$var1.pred
+```
+
+Finally, the ensemble predictions are obtained by combining the predictions of these three methods with equal weights.
+
+```{r}
+# Ensemble (equal weights)
+weights <- c(1/3, 1/3, 1/3)
+p4 <- p1 * weights[1] + p2 * weights[2] + p3 * weights[3]
+```
+
+We create a map with the predictions by creating a raster with the predictions and using the **tmap** package.
+
+```{r}
+resp <- data.frame(
+x = st_coordinates(coop)[, 1],
+y = st_coordinates(coop)[, 2],
+pred = p4)
+
+resp <- st_as_sf(resp, coords = c("x", "y"), crs = st_crs(map))
+
+pred_ensemble <- rasterize(resp, grid, field = "pred", fun = "mean")
+
+```
+
+```{r}
+ ensemble_map <- tm_shape(pred_ensemble) + 
+   tm_raster(palette = "Spectral",
+             title = "Landuse Vegetation",
+             midpoint = NA) +
+ tm_layout(main.title = "Ensemble",
+            main.title.position = "center",
+            main.title.size = 0.8,
+            legend.position = c("RIGHT", "BOTTOM"),
+            legend.title.size = 0.5,
+            legend.text.size = 0.4,
+            frame = TRUE) +
+  tm_compass(type="8star", text.size = 0.5, size = 2, position=c("RIGHT", "TOP")) +
+   tm_scale_bar(position=c("LEFT", "TOP"),
+                text.size = 0.4)
+ 
+ ensemble_map
+```
+
+```{r}
+tmap_arrange(voronoi_map, idw_map, nn_map, ensemble_map)
+```
+
+```{r}
+writeRaster(pred_nn, "~/IS485-Landslide/data/gwr_maps/landuse_nn.tif", overwrite=TRUE)
+writeRaster(pred_idw, "~/IS485-Landslide/data/gwr_maps/landuse_idw.tif", overwrite=TRUE)
+writeRaster(pred_voronoi, "~/IS485-Landslide/data/gwr_maps/landuse_voronoi.tif", overwrite=TRUE)
+writeRaster(pred_ensemble, "~/IS485-Landslide/data/gwr_maps/landuse_ensemble.tif", overwrite=TRUE)
+
+```
+
+### Cross-Validation
+
+We can assess the performance of each of the methods presented above using K-fold cross-validation and the root mean squared error (RMSE). First, we split the data in K parts. For each part, we use the remaining K−1 parts (training data) to fit the model and that part (testing data) to predict. We compute the RMSE by comparing the testing and predicted data in each of the K parts.
+
+Note that if K is equal to the number of observations n, this procedure is called leave-one-out cross-validation (LOOCV). That means that n separate data sets are trained on all of the data except one observation, and then prediction is made for that one observation.
+
+Here, we assess the performance of each of the methods previously employed to predict the prices of apartments in Athens. We create training and testing sets by using the `dismo:kfold()` function of the **dismo** package ([Hijmans et al. 2022](https://www.paulamoraga.com/book-spatial/references.html#ref-R-dismo)) to randomly assign the observations to K=5 groups of roughly equal size. For each group, we fit the model using the training data, and obtain predictions of the testing data. We calculate the RMSEs of each part and average the RMSEs to obtain a K-fold cross-validation estimate.
+
+```{r}
+pacman::p_load(dismo)
+```
+
+```{r}
+RMSE <- function(observed, predicted) {
+sqrt(mean((observed - predicted)^2))
+}
+
+# Split data in 5 sets
+kf <- dismo::kfold(nrow(regression.points), k = 5) # K-fold partitioning
+
+# Vectors to store the RMSE values obtained with each method
+rmse1 <- rep(NA, 5) # Closest observation
+rmse2 <- rep(NA, 5) # IDW
+rmse3 <- rep(NA, 5) # Nearest neighbors
+rmse4 <- rep(NA, 5) # Ensemble
+```
+
+```{r}
+#| eval: false
+for(k in 1:5) {
+# Split data in test and train
+test <- regression.points[kf == k, ]
+train <- regression.points[kf != k, ]
+
+# Closest observation
+v <- terra::voronoi(x = terra::vect(regression.points), bnd = valtellina_boundary)
+v <- st_as_sf(v)
+p1 <- st_intersection(v, coop)$Landuse_Vegetation
+rmse1[k] <- RMSE(test$Landuse_Vegetation, p1)
+
+# IDW
+gs <- gstat(formula = Landuse_Vegetation ~ 1, locations = regression.points, nmax = nrow(regression.points),
+            set = list(idp = 1))
+p2 <- predict(gs, coop)$var1.pred
+rmse2[k] <- RMSE(test$Landuse_Vegetation, p2)
+
+# Nearest neighbors
+nn <- gstat(formula = Landuse_Vegetation ~ 1, locations = regression.points, nmax = 5,
+            set = list(idp = 0))
+p3 <- predict(nn, coop)$var1.pred
+rmse3[k] <- RMSE(test$Landuse_Vegetation, p3)
+
+# Ensemble (weights are inverse RMSE so lower RMSE higher weight)
+w <- 1/c(rmse1[k], rmse2[k], rmse3[k])
+weights <- w/sum(w)
+p4 <- p1 * weights[1] + p2 * weights[2] + p3 * weights[3]
+rmse4[k] <- RMSE(test$Landuse_Vegetation, p4)
+}
+```
+
+The RMSE values obtained in each of the 5 splits are shown below.
+
+```{r}
+#| eval: false
+
+# RMSE obtained for each of the 5 splits
+data.frame(closest.obs = rmse1, IDW = rmse2,
+           nearest.neigh = rmse3, ensemble = rmse4)
+```
+
+We see the minimum average RMSE corresponds to the ensemble method.
+
+```{r}
+#| eval: false
+
+# Average RMSE over the 5 splits
+data.frame(closest.obs = mean(rmse1), IDW = mean(rmse2),
+           nearest.neigh = mean(rmse3), ensemble = mean(rmse4))
+```
+
+## Page Break
 
 ```{r}
 #| eval: false
@@ -648,5 +1036,11 @@ adaptive_bw <- bw.gwr(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspec
 ```{r}
 #| eval: false
 #| echo: false
-gwlr_15 <- ggwr.basic(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic+Lithology_Unconsolidated + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, data = Q7_train_sp, regression.points = Q7_test_sp, bw= 127, family = "binomial", kernel = "gaussian", adaptive = TRUE, cv = T, tol = 0.00001, p = 2, theta = 0, longlat = FALSE)
+gwlr_15 <- ggwr.basic(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic+Lithology_Unconsolidated + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, data = sample_Q7.sp, bw= 127, family = "binomial", kernel = "gaussian", adaptive = TRUE, cv = T, tol = 0.00001, p = 2, theta = 0, longlat = FALSE, dMat=dist.Q7)
+```
+
+```{r}
+
+write.csv(sample_Q6, "~/IS485-Landslide/data/aspatial/slope_20degree.csv")
+write.csv(sample_Q7, "~/IS485-Landslide/data/aspatial/slope_15degree.csv")
 ```

@@ -240,7 +240,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 21, 2024</p>
+      <p class="date-modified">March 2, 2024</p>
     </div>
   </div>
     
@@ -918,49 +918,59 @@ No more variables to be added or removed.</code></pre>
 <section id="model-update" class="level3">
 <h3 class="anchored" data-anchor-id="model-update">Model Update</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>landslide.lr_modified <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Slope_Angle <span class="sc">+</span> Aspect_SouthWest <span class="sc">+</span> Aspect_South <span class="sc">+</span> Profile_Curvature <span class="sc">+</span>Plan_Curvature <span class="sc">+</span>Lithology_Unconsolidated<span class="sc">+</span>Proximity_Stream<span class="sc">+</span>Landuse_Vegetation<span class="sc">+</span>TWI, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> train_grids_v4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>landslide.lr_modified <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Slope_Angle <span class="sc">+</span> Aspect_SouthEast <span class="sc">+</span> Aspect_NorthEast <span class="sc">+</span> Aspect_South <span class="sc">+</span> Aspect_East <span class="sc">+</span> Profile_Curvature <span class="sc">+</span>Plan_Curvature <span class="sc">+</span>Lithology_Metamorphic<span class="sc">+</span>Lithology_Unconsolidated<span class="sc">+</span> Lithology_Sedimentary<span class="sc">+</span>Proximity_Stream<span class="sc">+</span>Landuse_Vegetation<span class="sc">+</span>TWI<span class="sc">+</span>SPI, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> train_grids_v4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(landslide.lr_modified)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-glm(formula = Landslide ~ Slope_Angle + Aspect_SouthWest + Aspect_South + 
-    Profile_Curvature + Plan_Curvature + Lithology_Unconsolidated + 
-    Proximity_Stream + Landuse_Vegetation + TWI, family = "binomial", 
+glm(formula = Landslide ~ Slope_Angle + Aspect_SouthEast + Aspect_NorthEast + 
+    Aspect_South + Aspect_East + Profile_Curvature + Plan_Curvature + 
+    Lithology_Metamorphic + Lithology_Unconsolidated + Lithology_Sedimentary + 
+    Proximity_Stream + Landuse_Vegetation + TWI + SPI, family = "binomial", 
     data = train_grids_v4)
 
 Coefficients:
                            Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept)              -1.821e+00  9.862e-02 -18.461   &lt;2e-16 ***
-Slope_Angle               1.684e-01  1.917e-03  87.831   &lt;2e-16 ***
-Aspect_SouthWest          5.325e-02  4.872e-02   1.093   0.2744    
-Aspect_South             -9.199e-02  4.625e-02  -1.989   0.0467 *  
-Profile_Curvature        -6.493e+02  1.727e+01 -37.585   &lt;2e-16 ***
-Plan_Curvature           -5.711e+02  1.933e+01 -29.547   &lt;2e-16 ***
-Lithology_Unconsolidated  3.175e-01  3.831e-02   8.288   &lt;2e-16 ***
-Proximity_Stream         -1.241e-03  1.432e-03  -0.867   0.3860    
-Landuse_Vegetation        6.966e-01  3.549e-02  19.629   &lt;2e-16 ***
-TWI                      -1.020e-01  9.132e-03 -11.170   &lt;2e-16 ***
+(Intercept)              -2.989e+00  1.226e-01 -24.386  &lt; 2e-16 ***
+Slope_Angle               1.699e-01  1.938e-03  87.672  &lt; 2e-16 ***
+Aspect_SouthEast         -1.803e-01  5.117e-02  -3.523 0.000426 ***
+Aspect_NorthEast         -2.012e-01  5.559e-02  -3.620 0.000295 ***
+Aspect_South             -1.292e-01  4.982e-02  -2.593 0.009514 ** 
+Aspect_East              -1.277e-01  5.427e-02  -2.353 0.018603 *  
+Profile_Curvature        -6.192e+02  1.760e+01 -35.183  &lt; 2e-16 ***
+Plan_Curvature           -5.746e+02  1.953e+01 -29.417  &lt; 2e-16 ***
+Lithology_Metamorphic     1.265e+00  7.068e-02  17.898  &lt; 2e-16 ***
+Lithology_Unconsolidated  1.657e+00  7.387e-02  22.433  &lt; 2e-16 ***
+Lithology_Sedimentary     1.797e+00  7.644e-02  23.510  &lt; 2e-16 ***
+Proximity_Stream         -2.702e-03  1.486e-03  -1.818 0.069028 .  
+Landuse_Vegetation        6.586e-01  3.592e-02  18.336  &lt; 2e-16 ***
+TWI                      -1.088e-01  9.222e-03 -11.796  &lt; 2e-16 ***
+SPI                       7.985e-01  6.022e-01   1.326 0.184876    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 (Dispersion parameter for binomial family taken to be 1)
 
     Null deviance: 46691  on 50562  degrees of freedom
-Residual deviance: 23700  on 50553  degrees of freedom
-AIC: 23720
+Residual deviance: 23127  on 50548  degrees of freedom
+AIC: 23157
 
-Number of Fisher Scoring iterations: 6</code></pre>
+Number of Fisher Scoring iterations: 7</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(landslide.lr_modified)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>             Slope_Angle         Aspect_SouthWest             Aspect_South 
-                1.654654                 1.037041                 1.038986 
-       Profile_Curvature           Plan_Curvature Lithology_Unconsolidated 
-                1.383936                 1.406606                 1.207148 
-        Proximity_Stream       Landuse_Vegetation                      TWI 
-                1.118953                 1.093817                 2.047931 </code></pre>
+<pre><code>             Slope_Angle         Aspect_SouthEast         Aspect_NorthEast 
+                1.674417                 1.157345                 1.134779 
+            Aspect_South              Aspect_East        Profile_Curvature 
+                1.164675                 1.137678                 1.397392 
+          Plan_Curvature    Lithology_Metamorphic Lithology_Unconsolidated 
+                1.410249                 4.035544                 4.405966 
+   Lithology_Sedimentary         Proximity_Stream       Landuse_Vegetation 
+                3.037511                 1.138366                 1.096464 
+                     TWI                      SPI 
+                2.048050                 1.000892 </code></pre>
 </div>
 </div>
 </section>
@@ -1046,23 +1056,23 @@ McNemars's Test P-Value  : 0.0000
                         def = 1                 def = 0        
 Group    Total    Observed    Expected    Observed    Expected 
 --------------------------------------------------------------
-  1      5057       452        813.72       4605      4243.28  
-  2      5056       2228      2494.63       2828      2561.37  
-  3      5056       4275      4035.12       781       1020.88  
-  4      5056       4922      4609.93       134        446.07  
-  5      5057       5024      4824.79        33        232.21  
-  6      5056       5045      4921.91        11        134.09  
-  7      5056       5051      4977.98        5         78.02   
-  8      5056       5044      5013.19        12        42.81   
-  9      5056       5033      5036.35        23        19.65   
- 10      5057       4706      5052.38       351         4.62   
+  1      5057       439        789.34       4618      4267.66  
+  2      5056       2216      2432.89       2840      2623.11  
+  3      5056       4303      4058.69       753        997.31  
+  4      5056       4916      4634.39       140        421.61  
+  5      5057       5024      4841.37        33        215.63  
+  6      5056       5043      4933.14        13        122.86  
+  7      5056       5043      4984.03        13        71.97   
+  8      5056       5046      5016.07        10        39.93   
+  9      5056       5032      5037.52        24        18.48   
+ 10      5057       4718      5052.56       339         4.44   
 --------------------------------------------------------------
 
      Goodness of Fit Test      
 ------------------------------
 Chi-Square    DF    Pr &gt; ChiSq 
 ------------------------------
-26946.6369    8       0.0000   
+26056.1816    8       0.0000   
 ------------------------------</code></pre>
 </div>
 </div>
@@ -1070,20 +1080,24 @@ Chi-Square    DF    Pr &gt; ChiSq
 <section id="roc-curve" class="level3">
 <h3 class="anchored" data-anchor-id="roc-curve">ROC Curve</h3>
 <p>ROC curve is a graphical representation of the validity of cut-offs for a logistic regression model. The ROC curve is plotted using the sensitivity and specificity for all possible cut-offs, i.e., all the probability scores. The graph is plotted using sensitivity on the y-axis and 1-specificity on the x-axis. Any point on the ROC curve represents a sensitivity X (1-specificity) measure corresponding to a cut-off. The area under the ROC curve is used as a validation measure for the model – the bigger the area the better is the model.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>landslide.lr_modified<span class="sc">%&gt;%</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">blr_gains_table</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blr_roc_curve</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
+<pre class="{r]}"><code>#| eval: false
+predicted &lt;- predict(landslide.lr, train_grids_v4[, 6:29], type="response")
+roc_curve &lt;- roc(train_grids_v4$Landslide, predicted)
+plot(roc_curve, main = "ROC Curve (No Calibration Model)")
+auc_value &lt;- auc(roc_curve)
+cat("AUC:", auc_value, "\n")
+
+predicted &lt;- predict(landslide.lr_modified, train_grids_v4[, 6:29], type="response")
+roc_curve &lt;- roc(train_grids_v4$Landslide, predicted)
+plot(roc_curve, main = "ROC Curve (Stepwise Model)")
+auc_value &lt;- auc(roc_curve)
+cat("AUC:", auc_value, "\n")</code></pre>
 <section id="influence-diagnostics" class="level4">
 <h4 class="anchored" data-anchor-id="influence-diagnostics">Influence Diagnostics</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">blr_plot_diag_influence</span>(landslide.lr_modified)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -1092,7 +1106,7 @@ Chi-Square    DF    Pr &gt; ChiSq
 <div class="cell">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">blr_plot_diag_fit</span>(landslide.lr_modified)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+<p><img src="gwsmodelling_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>

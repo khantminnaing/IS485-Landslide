@@ -37,7 +37,7 @@ train_grid_v4.sf <- st_as_sf(train_grids_v4,
 train_grid_v4.sf <- st_set_crs(train_grid_v4.sf, 32632) 
 ```
 
-## 3.0 Exploratory Spatial Data Analysis (ESDA) 
+## 3.0 Exploratory Spatial Data Analysis (ESDA)
 
 To calculate the summary statistics of `landslide_train` data frame, we use `st()`.
 
@@ -148,7 +148,7 @@ landslide.lr %>%
 ### Model Update
 
 ```{r}
-landslide.lr_modified <- glm(Landslide ~ Slope_Angle + Aspect_SouthWest + Aspect_South + Profile_Curvature +Plan_Curvature +Lithology_Unconsolidated+Proximity_Stream+Landuse_Vegetation+TWI, family = "binomial", data = train_grids_v4)
+landslide.lr_modified <- glm(Landslide ~ Slope_Angle + Aspect_SouthEast + Aspect_NorthEast + Aspect_South + Aspect_East + Profile_Curvature +Plan_Curvature +Lithology_Metamorphic+Lithology_Unconsolidated+ Lithology_Sedimentary+Proximity_Stream+Landuse_Vegetation+TWI+SPI, family = "binomial", data = train_grids_v4)
 ```
 
 ```{r}
@@ -189,10 +189,19 @@ blr_test_hosmer_lemeshow(landslide.lr_modified)
 
 ROC curve is a graphical representation of the validity of cut-offs for a logistic regression model. The ROC curve is plotted using the sensitivity and specificity for all possible cut-offs, i.e., all the probability scores. The graph is plotted using sensitivity on the y-axis and 1-specificity on the x-axis. Any point on the ROC curve represents a sensitivity X (1-specificity) measure corresponding to a cut-off. The area under the ROC curve is used as a validation measure for the model -- the bigger the area the better is the model.
 
-```{r}
-landslide.lr_modified%>%
-    blr_gains_table() %>%
-  blr_roc_curve()
+```{r]}
+#| eval: false
+predicted <- predict(landslide.lr, train_grids_v4[, 6:29], type="response")
+roc_curve <- roc(train_grids_v4$Landslide, predicted)
+plot(roc_curve, main = "ROC Curve (No Calibration Model)")
+auc_value <- auc(roc_curve)
+cat("AUC:", auc_value, "\n")
+
+predicted <- predict(landslide.lr_modified, train_grids_v4[, 6:29], type="response")
+roc_curve <- roc(train_grids_v4$Landslide, predicted)
+plot(roc_curve, main = "ROC Curve (Stepwise Model)")
+auc_value <- auc(roc_curve)
+cat("AUC:", auc_value, "\n")
 ```
 
 #### Influence Diagnostics
@@ -217,7 +226,6 @@ IV <- create_infotables(data=train_grids_v4[, 5:29],
                         y="Landslide")
 kable(IV$Summary, row.names=FALSE)
 ```
-
 
 ### **Spatial Interpolation**
 
