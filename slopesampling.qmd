@@ -14,6 +14,8 @@ output:
     code_folding: false
     toc: true
     self_contained: false
+execute: 
+  eval: false
 ---
 
 # Slope-Based Stratified Sampling
@@ -30,7 +32,7 @@ We will import datasets used for this sampling.
 
 ```{r}
 valtellina <- read_sf(dsn = "./data/vector", layer = "valtellina")
-train_grids_v4 <- read.csv("~/IS485-Landslide/data/aspatial/train_grid_v4.csv")
+train_grids_v4 <- read.csv("data/aspatial/train_grid_v4.csv")
 ```
 
 ## 3.0 Slope Sampling
@@ -530,12 +532,13 @@ Q7_fit.sf <- st_as_sf(Q7_fit,
 Q7_fit.sf <- st_set_crs(Q7_fit.sf, 32632)
 Q7_fit.sp <- Q7_fit.sf %>% as_Spatial()
 
-
+write_rds(Q6_fit.sp, "data/rds/Q6_fit.sp.rds")
+write_rds(Q7_fit.sp, "data/rds/Q7_fit.sp.rds")
 ```
 
 ```{r}
-Q6_fit.sp <- read_rds("~/IS485-Landslide/data/rds/Q6_fit.sp.rds")
-Q7_fit.sp <- read_rds("~/IS485-Landslide/data/rds/Q7_fit.sp.rds")
+Q6_fit.sp <- read_rds("data/rds/Q6_fit.sp.rds")
+Q7_fit.sp <- read_rds("data/rds/Q7_fit.sp.rds")
 ```
 
 We will make a quick plot to see the geographical distribution of landslide and non-landslide samples in `Q6_fit.sp` & `Q7_fit.sp`.
@@ -1029,8 +1032,17 @@ tm_shape(gwlr.adaptive.sf) +
 ```{r}
 #| eval: false
 #| echo: false
-adaptive_bw <- bw.gwr(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic+Lithology_Unconsolidated + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, data = Q7_train_sp, approach="CV", kernel="gaussian",
-       adaptive=TRUE, p=2, theta=0, longlat=F)
+
+Q7_train  <- sample_Q7[sample, ]
+Q7_train.sf <- st_as_sf(Q7_train, coords=c("X", "Y"))
+Q7_train.sf <- st_set_crs(Q7_train.sf, 32632)
+Q7_train.sp <- Q7_train.sf %>% as_Spatial()
+
+dist_mat <- st_coordinates(Q7_train.sf) 
+dist.Q7 <- gw.dist(dp.locat=dist_mat,p=2, theta=0, longlat=FALSE)
+
+adaptive_bw <- bw.ggwr(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic+Lithology_Unconsolidated + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, data = Q7_train.sp, family = "binomial", approach="CV", kernel="gaussian",
+       adaptive=TRUE, p=2, theta=0, longlat=F, dMat=dist.Q7)
 ```
 
 ```{r}

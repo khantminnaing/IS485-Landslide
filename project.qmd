@@ -15,6 +15,8 @@ output:
     toc: true
     toc_depth: 4
     self_contained: false
+execute: 
+  eval: false
 ---
 
 ::: {style="color: #603494;"}
@@ -78,12 +80,12 @@ library(ggnewscale)
 In this section, I will import the necessary datasets (both spatial and geospatial) into R environment.
 
 ```{r, code_folding=FALSE, warning=FALSE}
-valtellina <- read_sf(dsn = "./data/vector", layer = "valtellina")
-landslides <- read_sf(dsn = "./data/vector", layer = "landslide_inventory")
+valtellina <- read_sf(dsn = "data/vector", layer = "valtellina")
+landslides <- read_sf(dsn = "data/vector", layer = "landslide_inventory")
 precipitation <-raster("data/raster/avgprecipitation_mm.tif")
 elevation <-raster("data/raster/elevation_m.tiff")
 twi <-raster("data/raster/twi_.tif")
-lithology <- read_sf(dsn = "./data/vector", layer = "lithology_cat")
+lithology <- read_sf(dsn = "data/vector", layer = "lithology_cat")
 profile_c <- raster("data/raster/profile_curvature_cat.tif")
 plan_c <- raster("data/raster/plan_curvature_cat.tif")
 slope <- raster("data/raster/slope_degree.tif")

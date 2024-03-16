@@ -22,6 +22,8 @@ website:
           text: "Parametric Testing"      
         - href: slopesampling.qmd
           text: "Slope Sampling"
+        - href: gwsmodelling_new.qmd
+          text: "Geographically Weighted Model"
       - text: Research Paper
         href: research.qmd
 

@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Khant Min Naing">
+<meta name="author" content="Ann Mei Yi Victoria Grace">
+<meta name="dcterms.date" content="2024-01-07">
+
+<title>GWS Modelling: Parametric Testing</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="site_libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
+<script src="site_libs/bsTable-3.3.7/bootstrapTable.js"></script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="logo.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./images/logo_name.png" alt="" class="navbar-logo">
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./studyarea.html" rel="" target="">
+ <span class="menu-text">Study Area</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./methodology.html" rel="" target="">
+ <span class="menu-text">Methodology</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./project.html" rel="" target="">
+ <span class="menu-text">EDA</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-model-development" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Model Development</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-model-development">    
+        <li>
+    <a class="dropdown-item" href="./gwsmodelling.qmd" rel="" target="">
+ <span class="dropdown-text">Parametric Testing</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./slopesampling.html" rel="" target="">
+ <span class="dropdown-text">Slope Sampling</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./gwsmodelling_new.html" rel="" target="">
+ <span class="dropdown-text">Geographically Weighted Model</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./research.html" rel="" target="">
+ <span class="menu-text">Research Paper</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#import-packages" id="toc-import-packages" class="nav-link active" data-scroll-target="#import-packages">1.0 Import Packages</a></li>
+  <li><a href="#import-data" id="toc-import-data" class="nav-link" data-scroll-target="#import-data">2.0 Import Data</a></li>
+  <li><a href="#exploratory-spatial-data-analysis-esda" id="toc-exploratory-spatial-data-analysis-esda" class="nav-link" data-scroll-target="#exploratory-spatial-data-analysis-esda">3.0 Exploratory Spatial Data Analysis (ESDA)</a>
+  <ul class="collapse">
+  <li><a href="#correlation-matrix-using-ggstats" id="toc-correlation-matrix-using-ggstats" class="nav-link" data-scroll-target="#correlation-matrix-using-ggstats">3.1 Correlation Matrix Using ggstats</a></li>
+  </ul></li>
+  <li><a href="#multiple-logistic-regression" id="toc-multiple-logistic-regression" class="nav-link" data-scroll-target="#multiple-logistic-regression">4.0 Multiple Logistic Regression</a>
+  <ul class="collapse">
+  <li><a href="#logistic-regression-model-1" id="toc-logistic-regression-model-1" class="nav-link" data-scroll-target="#logistic-regression-model-1">4.1 Logistic Regression Model 1</a>
+  <ul class="collapse">
+  <li><a href="#stepwise-selection" id="toc-stepwise-selection" class="nav-link" data-scroll-target="#stepwise-selection">4.1.1 Stepwise Selection</a></li>
+  <li><a href="#validating-logistic-regression-model-1" id="toc-validating-logistic-regression-model-1" class="nav-link" data-scroll-target="#validating-logistic-regression-model-1">4.1.2 Validating Logistic Regression Model 1</a></li>
+  </ul></li>
+  <li><a href="#logistic-regression-model-2" id="toc-logistic-regression-model-2" class="nav-link" data-scroll-target="#logistic-regression-model-2">4.2 Logistic Regression Model 2</a>
+  <ul class="collapse">
+  <li><a href="#validating-logistic-regression-model-2" id="toc-validating-logistic-regression-model-2" class="nav-link" data-scroll-target="#validating-logistic-regression-model-2">4.2.1 Validating Logistic Regression Model 2</a></li>
+  <li><a href="#comparing-lr-models-1-2" id="toc-comparing-lr-models-1-2" class="nav-link" data-scroll-target="#comparing-lr-models-1-2">4.2.2 Comparing LR Models 1 &amp; 2</a></li>
+  <li><a href="#weight-of-evidence-information-value" id="toc-weight-of-evidence-information-value" class="nav-link" data-scroll-target="#weight-of-evidence-information-value">4.2.3 Weight of Evidence &amp; Information Value</a></li>
+  <li><a href="#slope-distribution" id="toc-slope-distribution" class="nav-link" data-scroll-target="#slope-distribution">4.2.4 Slope Distribution</a></li>
+  </ul></li>
+  <li><a href="#logistic-regression-model-3" id="toc-logistic-regression-model-3" class="nav-link" data-scroll-target="#logistic-regression-model-3">4.3 Logistic Regression Model 3</a>
+  <ul class="collapse">
+  <li><a href="#stratified-slope-sampling" id="toc-stratified-slope-sampling" class="nav-link" data-scroll-target="#stratified-slope-sampling">4.3.1 Stratified Slope Sampling</a></li>
+  <li><a href="#validating-logistic-regression-model-3" id="toc-validating-logistic-regression-model-3" class="nav-link" data-scroll-target="#validating-logistic-regression-model-3">4.3.2 Validating Logistic Regression Model 3</a></li>
+  <li><a href="#spatial-weights" id="toc-spatial-weights" class="nav-link" data-scroll-target="#spatial-weights">4.3.3 Spatial Weights</a></li>
+  </ul></li>
+  <li><a href="#geographically-weighted-logistic-regression-model-1" id="toc-geographically-weighted-logistic-regression-model-1" class="nav-link" data-scroll-target="#geographically-weighted-logistic-regression-model-1">4.4 Geographically Weighted Logistic Regression Model 1</a>
+  <ul class="collapse">
+  <li><a href="#data-sampling" id="toc-data-sampling" class="nav-link" data-scroll-target="#data-sampling">4.4.1 Data Sampling</a></li>
+  <li><a href="#calculating-distance-matrix" id="toc-calculating-distance-matrix" class="nav-link" data-scroll-target="#calculating-distance-matrix">4.4.2 Calculating Distance Matrix</a></li>
+  <li><a href="#computing-adaptive-bandwidth" id="toc-computing-adaptive-bandwidth" class="nav-link" data-scroll-target="#computing-adaptive-bandwidth">4.4.3 Computing Adaptive Bandwidth</a></li>
+  <li><a href="#correlation-matrix-using-ggstats-1" id="toc-correlation-matrix-using-ggstats-1" class="nav-link" data-scroll-target="#correlation-matrix-using-ggstats-1">4.4.5 Correlation Matrix Using ggstats</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">GWS Modelling: Parametric Testing</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">sf</div>
+    <div class="quarto-category">gwmodel</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-contents">
+             <p>Khant Min Naing </p>
+             <p>Ann Mei Yi Victoria Grace </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 7, 2024</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">March 16, 2024</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<p>To develop a landslide susceptibility methodology framework, we will explore and calibrate different statistical and machine learning models. This page focuses on statistical models first.</p>
+<section id="import-packages" class="level1">
+<h1>1.0 Import Packages</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sp, sf, st, spdep, raster, spatstat, tmap, devtools,vtable,ggplot2,egg, corrplot, patchwork, ggstats, ggstatsplot, GWmodel, tidyverse, gtsummary,vtable, sjPlot, sjmisc, sjlabelled, tableHTML, olsrr, car, blorr,ISLR, klaR, rsample)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="import-data" class="level1">
+<h1>2.0 Import Data</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>valtellina <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="at">dsn =</span> <span class="st">"data/vector"</span>, <span class="at">layer =</span> <span class="st">"valtellina"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>train_grids_v4 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/aspatial/train_grid_v4.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>train_grid_v4.sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(train_grids_v4,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>train_grid_v4.sf <span class="ot">&lt;-</span> <span class="fu">st_set_crs</span>(train_grid_v4.sf, <span class="dv">32632</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="exploratory-spatial-data-analysis-esda" class="level1">
+<h1>3.0 Exploratory Spatial Data Analysis (ESDA)</h1>
+<p>To calculate the summary statistics of <code>landslide_train</code> data frame, we use <code>st()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st</span>(train_grids_v4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Summary Statistics</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Variable</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">N</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Mean</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Std. Dev.</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Min</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Pctl. 25</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Pctl. 75</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Train_ID</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">25282</td>
+<td style="text-align: left;">14596</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">12642</td>
+<td style="text-align: left;">37923</td>
+<td style="text-align: left;">50563</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Grid_ID</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">7258576</td>
+<td style="text-align: left;">4280699</td>
+<td style="text-align: left;">154</td>
+<td style="text-align: left;">3455206</td>
+<td style="text-align: left;">11141723</td>
+<td style="text-align: left;">14724829</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">X</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">573312</td>
+<td style="text-align: left;">27325</td>
+<td style="text-align: left;">519097</td>
+<td style="text-align: left;">550687</td>
+<td style="text-align: left;">594547</td>
+<td style="text-align: left;">624487</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Y</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">5129116</td>
+<td style="text-align: left;">17040</td>
+<td style="text-align: left;">5095541</td>
+<td style="text-align: left;">5115266</td>
+<td style="text-align: left;">5143076</td>
+<td style="text-align: left;">5164991</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Landslide</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.83</td>
+<td style="text-align: left;">0.38</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Elevation</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">1913</td>
+<td style="text-align: left;">677</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1509</td>
+<td style="text-align: left;">2420</td>
+<td style="text-align: left;">3924</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Slope_Angle</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">29</td>
+<td style="text-align: left;">15</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">39</td>
+<td style="text-align: left;">83</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_North</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.061</td>
+<td style="text-align: left;">0.24</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aspect_NorthEast</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.12</td>
+<td style="text-align: left;">0.32</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_East</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.14</td>
+<td style="text-align: left;">0.34</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aspect_SouthEast</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.15</td>
+<td style="text-align: left;">0.35</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_South</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.16</td>
+<td style="text-align: left;">0.36</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aspect_SouthWest</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.15</td>
+<td style="text-align: left;">0.36</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_West</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.13</td>
+<td style="text-align: left;">0.34</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Profile_Curvature</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">-0.00043</td>
+<td style="text-align: left;">0.0012</td>
+<td style="text-align: left;">-0.0066</td>
+<td style="text-align: left;">-0.0011</td>
+<td style="text-align: left;">0.00022</td>
+<td style="text-align: left;">0.0079</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Plan_Curvature</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">-0.00019</td>
+<td style="text-align: left;">0.0011</td>
+<td style="text-align: left;">-0.0056</td>
+<td style="text-align: left;">-0.00071</td>
+<td style="text-align: left;">0.00032</td>
+<td style="text-align: left;">0.0068</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lithology_Metamorphic</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.42</td>
+<td style="text-align: left;">0.49</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lithology_Sedimentary</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.24</td>
+<td style="text-align: left;">0.42</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lithology_Plutonic</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.057</td>
+<td style="text-align: left;">0.23</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lithology_Unconsolidated</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.29</td>
+<td style="text-align: left;">0.45</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Proximity_Settlement</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">904</td>
+<td style="text-align: left;">764</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">328</td>
+<td style="text-align: left;">1288</td>
+<td style="text-align: left;">5600</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Proximity_Stream</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">3.1</td>
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">97</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Proximity_Road</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">26</td>
+<td style="text-align: left;">22</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">6.3</td>
+<td style="text-align: left;">40</td>
+<td style="text-align: left;">125</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Proximity_Fault</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">828</td>
+<td style="text-align: left;">1032</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">199</td>
+<td style="text-align: left;">1012</td>
+<td style="text-align: left;">7746</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Landuse_Vegetation</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.51</td>
+<td style="text-align: left;">0.5</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Precipitation</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.15</td>
+<td style="text-align: left;">0.048</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0.13</td>
+<td style="text-align: left;">0.17</td>
+<td style="text-align: left;">0.29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TWI</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">7.5</td>
+<td style="text-align: left;">2.3</td>
+<td style="text-align: left;">3.7</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">8.3</td>
+<td style="text-align: left;">23</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SPI</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">0.0065</td>
+<td style="text-align: left;">0.029</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0.00024</td>
+<td style="text-align: left;">0.0032</td>
+<td style="text-align: left;">1.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STI</td>
+<td style="text-align: left;">50563</td>
+<td style="text-align: left;">7.7</td>
+<td style="text-align: left;">27</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">5.8</td>
+<td style="text-align: left;">877</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>Next, we will create atrellis plot by using <code>ggarrange()</code> of <a href="https://cran.r-project.org/web/packages/ggpubr/"><strong>ggpubr</strong></a> package. In this way, we can see the distribution plots of different parameters at the same time.4.1 Correlation Matrix Using Corrplot</p>
+<p>Before building a logistic regression model, it is important to ensure that the indepdent variables used are <strong>not highly correlated</strong> to each other. If these highly correlated independent variables are used in building a regression model by mistake, the quality of the model will be compromised. This phenomenon is known as <strong>multicollinearity</strong> in statistics.</p>
+<p>Correlation matrix is commonly used to visualise the relationships between the independent variables. In this section, the <a href="https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html"><strong>corrplot</strong></a> package will be used to display the correlation matrix.</p>
+<section id="correlation-matrix-using-ggstats" class="level3">
+<h3 class="anchored" data-anchor-id="correlation-matrix-using-ggstats">3.1 Correlation Matrix Using ggstats</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="do">## producing the correlation matrix</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrmat</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train_grids_v4[, <span class="dv">6</span><span class="sc">:</span><span class="dv">29</span>],  </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">matrix.type =</span> <span class="st">"upper"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"parametric"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">tr =</span> <span class="fl">0.2</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">partial =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> 2L,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">sig.level =</span> <span class="fl">0.05</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">bf.prior =</span> <span class="fl">0.707</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggcorrplot.args =</span> <span class="fu">list</span>(</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">tl.cex =</span> <span class="dv">10</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch.cex =</span> <span class="dv">5</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">lab_size =</span> <span class="dv">3</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span> <span class="do">## modification outside `{ggstatsplot}` using `{ggplot2}` functions</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">margin =</span> ggplot2<span class="sc">::</span><span class="fu">margin</span>(<span class="at">t =</span> <span class="fl">0.15</span>, <span class="at">r =</span> <span class="fl">0.15</span>, <span class="at">b =</span> <span class="fl">0.15</span>, <span class="at">l =</span> <span class="fl">0.15</span>, <span class="at">unit =</span> <span class="st">"cm"</span>)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_new_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="multiple-logistic-regression" class="level1">
+<h1>4.0 Multiple Logistic Regression</h1>
+<p>The <code>glm</code> function fits generalized linear models, a class of models that includes logistic regression. The syntax of the <code>glm</code> function is similar to that of <code>lm</code>, except that we must pass the argument <code>family = binomial</code> in order to tell R to run a logistic regression rather than some other type of generalized linear model.</p>
+<section id="logistic-regression-model-1" class="level2">
+<h2 class="anchored" data-anchor-id="logistic-regression-model-1">4.1 Logistic Regression Model 1</h2>
+<p>Under general logistic regression, all variables are considered first.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>landslide.lr <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Elevation <span class="sc">+</span> Slope_Angle <span class="sc">+</span> Aspect_North <span class="sc">+</span> Aspect_NorthEast <span class="sc">+</span> Aspect_East<span class="sc">+</span>Aspect_SouthEast<span class="sc">+</span>Aspect_South <span class="sc">+</span> Aspect_SouthWest <span class="sc">+</span>Aspect_West <span class="sc">+</span> Profile_Curvature <span class="sc">+</span>Plan_Curvature <span class="sc">+</span> Lithology_Metamorphic<span class="sc">+</span>Lithology_Sedimentary <span class="sc">+</span> Lithology_Plutonic<span class="sc">+</span>Lithology_Unconsolidated <span class="sc">+</span> Proximity_Settlement<span class="sc">+</span>Proximity_Stream<span class="sc">+</span>Proximity_Road<span class="sc">+</span>Proximity_Fault<span class="sc">+</span>Landuse_Vegetation<span class="sc">+</span>Precipitation<span class="sc">+</span>TWI<span class="sc">+</span>SPI<span class="sc">+</span>STI, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> train_grids_v4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(landslide.lr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Landslide ~ Elevation + Slope_Angle + Aspect_North + 
+    Aspect_NorthEast + Aspect_East + Aspect_SouthEast + Aspect_South + 
+    Aspect_SouthWest + Aspect_West + Profile_Curvature + Plan_Curvature + 
+    Lithology_Metamorphic + Lithology_Sedimentary + Lithology_Plutonic + 
+    Lithology_Unconsolidated + Proximity_Settlement + Proximity_Stream + 
+    Proximity_Road + Proximity_Fault + Landuse_Vegetation + Precipitation + 
+    TWI + SPI + STI, family = "binomial", data = train_grids_v4)
+
+Coefficients:
+                           Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)              -2.243e+00  1.893e-01 -11.847  &lt; 2e-16 ***
+Elevation                 5.790e-05  3.517e-05   1.646 0.099718 .  
+Slope_Angle               1.706e-01  1.954e-03  87.343  &lt; 2e-16 ***
+Aspect_North             -3.510e-02  8.618e-02  -0.407 0.683821    
+Aspect_NorthEast         -2.225e-01  7.213e-02  -3.084 0.002041 ** 
+Aspect_East              -1.617e-01  7.128e-02  -2.268 0.023321 *  
+Aspect_SouthEast         -2.401e-01  6.917e-02  -3.472 0.000517 ***
+Aspect_South             -1.812e-01  6.829e-02  -2.653 0.007975 ** 
+Aspect_SouthWest         -4.600e-02  6.949e-02  -0.662 0.508031    
+Aspect_West              -4.762e-02  7.108e-02  -0.670 0.502869    
+Profile_Curvature        -6.228e+02  1.777e+01 -35.052  &lt; 2e-16 ***
+Plan_Curvature           -5.890e+02  2.009e+01 -29.320  &lt; 2e-16 ***
+Lithology_Metamorphic     1.109e+00  9.629e-02  11.522  &lt; 2e-16 ***
+Lithology_Sedimentary     1.577e+00  1.005e-01  15.687  &lt; 2e-16 ***
+Lithology_Plutonic       -3.030e-02  8.847e-02  -0.343 0.731946    
+Lithology_Unconsolidated  1.499e+00  9.792e-02  15.312  &lt; 2e-16 ***
+Proximity_Settlement      4.360e-05  2.970e-05   1.468 0.142100    
+Proximity_Stream         -6.250e-03  1.593e-03  -3.924 8.72e-05 ***
+Proximity_Road           -2.343e-03  1.026e-03  -2.283 0.022445 *  
+Proximity_Fault          -1.315e-04  1.615e-05  -8.146 3.77e-16 ***
+Landuse_Vegetation        6.692e-01  4.060e-02  16.483  &lt; 2e-16 ***
+Precipitation            -3.469e+00  4.229e-01  -8.202 2.37e-16 ***
+TWI                      -1.067e-01  9.637e-03 -11.067  &lt; 2e-16 ***
+SPI                       1.191e+00  7.010e-01   1.699 0.089396 .  
+STI                      -5.287e-04  7.677e-04  -0.689 0.491022    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 46691  on 50562  degrees of freedom
+Residual deviance: 22929  on 50538  degrees of freedom
+AIC: 22979
+
+Number of Fisher Scoring iterations: 7</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dv">100</span><span class="sc">*</span><span class="fu">with</span>(<span class="fu">summary</span>(landslide.lr), <span class="dv">1</span> <span class="sc">-</span> deviance<span class="sc">/</span>null.deviance)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 50.89114</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(landslide.lr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Waiting for profiling to be done...</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                 2.5 %        97.5 %
+(Intercept)              -2.614798e+00 -1.872528e+00
+Elevation                -1.100535e-05  1.268617e-04
+Slope_Angle               1.668213e-01  1.744792e-01
+Aspect_North             -2.036349e-01  1.342130e-01
+Aspect_NorthEast         -3.639457e-01 -8.116805e-02
+Aspect_East              -3.014909e-01 -2.205432e-02
+Aspect_SouthEast         -3.758587e-01 -1.047178e-01
+Aspect_South             -3.152073e-01 -4.749895e-02
+Aspect_SouthWest         -1.823284e-01  9.008984e-02
+Aspect_West              -1.870295e-01  9.162142e-02
+Profile_Curvature        -6.577535e+02 -5.880979e+02
+Plan_Curvature           -6.284441e+02 -5.496984e+02
+Lithology_Metamorphic     9.214128e-01  1.298931e+00
+Lithology_Sedimentary     1.380869e+00  1.775060e+00
+Lithology_Plutonic       -2.039839e-01  1.428812e-01
+Lithology_Unconsolidated  1.308214e+00  1.692127e+00
+Proximity_Settlement     -1.450154e-05  1.019138e-04
+Proximity_Stream         -9.364838e-03 -3.120470e-03
+Proximity_Road           -4.349682e-03 -3.261896e-04
+Proximity_Fault          -1.631453e-04 -9.983405e-05
+Landuse_Vegetation        5.897524e-01  7.489057e-01
+Precipitation            -4.298446e+00 -2.640479e+00
+TWI                      -1.256194e-01 -8.783854e-02
+SPI                      -1.375593e-01  2.613875e+00
+STI                      -2.021054e-03  9.886275e-04</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(landslide.lr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               Elevation              Slope_Angle             Aspect_North 
+                2.362748                 1.691170                 1.497475 
+        Aspect_NorthEast              Aspect_East         Aspect_SouthEast 
+                1.905428                 1.954287                 2.093957 
+            Aspect_South         Aspect_SouthWest              Aspect_West 
+                2.145022                 2.027933                 1.927346 
+       Profile_Curvature           Plan_Curvature    Lithology_Metamorphic 
+                1.422228                 1.487571                 7.443019 
+   Lithology_Sedimentary       Lithology_Plutonic Lithology_Unconsolidated 
+                5.130757                 1.910924                 7.685545 
+    Proximity_Settlement         Proximity_Stream           Proximity_Road 
+                1.787204                 1.293758                 1.818813 
+         Proximity_Fault       Landuse_Vegetation            Precipitation 
+                1.058314                 1.387744                 1.297600 
+                     TWI                      SPI                      STI 
+                2.201753                 1.308706                 1.308264 </code></pre>
+</div>
+</div>
+<section id="stepwise-selection" class="level3">
+<h3 class="anchored" data-anchor-id="stepwise-selection">4.1.1 Stepwise Selection</h3>
+<p>For the initial/ first cut model, all the independent variables are put into the model. Our goal is to include a limited number of independent variables (5-15) which are all significant, without sacrificing too much on the model performance. The rationale behind including not too many variables is that the model would be overfitted and would become unstable when tested on the validation sample. The variable reduction is done using forward or backward or stepwise variable selection procedures. We will use <code>blr_step_aic_both()</code> to shortlist predictors for our model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">blr_step_aic_both</span>(landslide.lr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Stepwise Selection Method 
+-------------------------
+
+Candidate Terms: 
+
+1 . Elevation 
+2 . Slope_Angle 
+3 . Aspect_North 
+4 . Aspect_NorthEast 
+5 . Aspect_East 
+6 . Aspect_SouthEast 
+7 . Aspect_South 
+8 . Aspect_SouthWest 
+9 . Aspect_West 
+10 . Profile_Curvature 
+11 . Plan_Curvature 
+12 . Lithology_Metamorphic 
+13 . Lithology_Sedimentary 
+14 . Lithology_Plutonic 
+15 . Lithology_Unconsolidated 
+16 . Proximity_Settlement 
+17 . Proximity_Stream 
+18 . Proximity_Road 
+19 . Proximity_Fault 
+20 . Landuse_Vegetation 
+21 . Precipitation 
+22 . TWI 
+23 . SPI 
+24 . STI 
+
+
+Variables Entered/Removed: 
+
+- Slope_Angle added 
+- Profile_Curvature added 
+- Plan_Curvature added 
+- Landuse_Vegetation added 
+- Lithology_Plutonic added 
+- Precipitation added 
+- Proximity_Fault added 
+- TWI added 
+- Lithology_Sedimentary added 
+- Lithology_Unconsolidated added 
+- Lithology_Metamorphic added 
+- Lithology_Plutonic removed 
+- Proximity_Stream added 
+- Aspect_SouthEast added 
+- Aspect_NorthEast added 
+- Aspect_South added 
+- Aspect_East added 
+- SPI added 
+
+No more variables to be added or removed.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+                              Stepwise Summary                               
+---------------------------------------------------------------------------
+Variable                     Method        AIC          BIC       Deviance  
+---------------------------------------------------------------------------
+Slope_Angle                 addition    27757.416    27775.078    27753.416 
+Profile_Curvature           addition    25065.141    25091.634    25059.141 
+Plan_Curvature              addition    24303.970    24339.294    24295.970 
+Landuse_Vegetation          addition    23891.260    23935.415    23881.260 
+Lithology_Plutonic          addition    23677.727    23730.713    23665.727 
+Precipitation               addition    23539.203    23601.020    23525.203 
+Proximity_Fault             addition    23430.433    23501.081    23414.433 
+TWI                         addition    23337.014    23416.493    23319.014 
+Lithology_Sedimentary       addition    23278.363    23366.672    23258.363 
+Lithology_Unconsolidated    addition    23148.835    23245.976    23126.835 
+Lithology_Metamorphic       addition    22999.689    23105.661    22975.689 
+Lithology_Plutonic          removal     22997.760    23094.901    22975.760 
+Proximity_Stream            addition    22989.371    23095.343    22965.371 
+Aspect_SouthEast            addition    22984.054    23098.857    22958.054 
+Aspect_NorthEast            addition    22979.924    23103.558    22951.924 
+Aspect_South                addition    22975.790    23108.254    22945.790 
+Aspect_East                 addition    22972.549    23113.844    22940.549 
+SPI                         addition    22971.964    23122.090    22937.964 
+---------------------------------------------------------------------------</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Stepwise Selection Result
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>16 explanatory variables have been selected</p>
+</div>
+</div>
+<p>Plotting the Akaike Information Criterion curve as it is the main threshold.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>landslide.lr <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blr_step_aic_both</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Stepwise Selection Method 
+-------------------------
+
+Candidate Terms: 
+
+1 . Elevation 
+2 . Slope_Angle 
+3 . Aspect_North 
+4 . Aspect_NorthEast 
+5 . Aspect_East 
+6 . Aspect_SouthEast 
+7 . Aspect_South 
+8 . Aspect_SouthWest 
+9 . Aspect_West 
+10 . Profile_Curvature 
+11 . Plan_Curvature 
+12 . Lithology_Metamorphic 
+13 . Lithology_Sedimentary 
+14 . Lithology_Plutonic 
+15 . Lithology_Unconsolidated 
+16 . Proximity_Settlement 
+17 . Proximity_Stream 
+18 . Proximity_Road 
+19 . Proximity_Fault 
+20 . Landuse_Vegetation 
+21 . Precipitation 
+22 . TWI 
+23 . SPI 
+24 . STI 
+
+
+Variables Entered/Removed: 
+
+- Slope_Angle added 
+- Profile_Curvature added 
+- Plan_Curvature added 
+- Landuse_Vegetation added 
+- Lithology_Plutonic added 
+- Precipitation added 
+- Proximity_Fault added 
+- TWI added 
+- Lithology_Sedimentary added 
+- Lithology_Unconsolidated added 
+- Lithology_Metamorphic added 
+- Lithology_Plutonic removed 
+- Proximity_Stream added 
+- Aspect_SouthEast added 
+- Aspect_NorthEast added 
+- Aspect_South added 
+- Aspect_East added 
+- SPI added 
+
+No more variables to be added or removed.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_new_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Observation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In our first stepwise selection, <code>Slope_Angle</code> has the highest AIC value followed by <code>Profile_Curvature</code>.</p>
+</div>
+</div>
+</section>
+<section id="validating-logistic-regression-model-1" class="level3">
+<h3 class="anchored" data-anchor-id="validating-logistic-regression-model-1">4.1.2 Validating Logistic Regression Model 1</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">blr_confusion_matrix</span>(landslide.lr, <span class="at">cutoff =</span> <span class="fl">0.5</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>cm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics 
+
+          Reference
+Prediction     0     1
+         0  6548  1292
+         1  2235 40488
+
+                Accuracy : 0.9302 
+     No Information Rate : 0.1737 
+
+                   Kappa : 0.7462 
+
+McNemars's Test P-Value  : 0.0000 
+
+             Sensitivity : 0.9691 
+             Specificity : 0.7455 
+          Pos Pred Value : 0.9477 
+          Neg Pred Value : 0.8352 
+              Prevalence : 0.8263 
+          Detection Rate : 0.8007 
+    Detection Prevalence : 0.8449 
+       Balanced Accuracy : 0.8573 
+               Precision : 0.9477 
+                  Recall : 0.9691 
+
+        'Positive' Class : 1</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="logistic-regression-model-2" class="level2">
+<h2 class="anchored" data-anchor-id="logistic-regression-model-2">4.2 Logistic Regression Model 2</h2>
+<p>Here, we recalibrate the model by updating the logistic regression with the selected variables.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>landslide.lr2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Slope_Angle <span class="sc">+</span> Aspect_SouthEast <span class="sc">+</span> Aspect_NorthEast <span class="sc">+</span> Aspect_South <span class="sc">+</span> Aspect_East <span class="sc">+</span> Profile_Curvature <span class="sc">+</span>Plan_Curvature <span class="sc">+</span>Lithology_Metamorphic<span class="sc">+</span>Lithology_Unconsolidated<span class="sc">+</span> Lithology_Sedimentary<span class="sc">+</span>Proximity_Stream<span class="sc">+</span>Landuse_Vegetation<span class="sc">+</span>TWI<span class="sc">+</span>SPI, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> train_grids_v4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(landslide.lr2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Landslide ~ Slope_Angle + Aspect_SouthEast + Aspect_NorthEast + 
+    Aspect_South + Aspect_East + Profile_Curvature + Plan_Curvature + 
+    Lithology_Metamorphic + Lithology_Unconsolidated + Lithology_Sedimentary + 
+    Proximity_Stream + Landuse_Vegetation + TWI + SPI, family = "binomial", 
+    data = train_grids_v4)
+
+Coefficients:
+                           Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)              -2.989e+00  1.226e-01 -24.386  &lt; 2e-16 ***
+Slope_Angle               1.699e-01  1.938e-03  87.672  &lt; 2e-16 ***
+Aspect_SouthEast         -1.803e-01  5.117e-02  -3.523 0.000426 ***
+Aspect_NorthEast         -2.012e-01  5.559e-02  -3.620 0.000295 ***
+Aspect_South             -1.292e-01  4.982e-02  -2.593 0.009514 ** 
+Aspect_East              -1.277e-01  5.427e-02  -2.353 0.018603 *  
+Profile_Curvature        -6.192e+02  1.760e+01 -35.183  &lt; 2e-16 ***
+Plan_Curvature           -5.746e+02  1.953e+01 -29.417  &lt; 2e-16 ***
+Lithology_Metamorphic     1.265e+00  7.068e-02  17.898  &lt; 2e-16 ***
+Lithology_Unconsolidated  1.657e+00  7.387e-02  22.433  &lt; 2e-16 ***
+Lithology_Sedimentary     1.797e+00  7.644e-02  23.510  &lt; 2e-16 ***
+Proximity_Stream         -2.702e-03  1.486e-03  -1.818 0.069028 .  
+Landuse_Vegetation        6.586e-01  3.592e-02  18.336  &lt; 2e-16 ***
+TWI                      -1.088e-01  9.222e-03 -11.796  &lt; 2e-16 ***
+SPI                       7.985e-01  6.022e-01   1.326 0.184876    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 46691  on 50562  degrees of freedom
+Residual deviance: 23127  on 50548  degrees of freedom
+AIC: 23157
+
+Number of Fisher Scoring iterations: 7</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Observation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Model is still overfitting and AIC is very high.</p>
+</div>
+</div>
+<section id="validating-logistic-regression-model-2" class="level3">
+<h3 class="anchored" data-anchor-id="validating-logistic-regression-model-2">4.2.1 Validating Logistic Regression Model 2</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>cm2 <span class="ot">&lt;-</span> <span class="fu">blr_confusion_matrix</span>(landslide.lr2, <span class="at">cutoff =</span> <span class="fl">0.5</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>cm2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics 
+
+          Reference
+Prediction     0     1
+         0  6514  1274
+         1  2269 40506
+
+                Accuracy : 0.9299 
+     No Information Rate : 0.1737 
+
+                   Kappa : 0.7445 
+
+McNemars's Test P-Value  : 0.0000 
+
+             Sensitivity : 0.9695 
+             Specificity : 0.7417 
+          Pos Pred Value : 0.9470 
+          Neg Pred Value : 0.8364 
+              Prevalence : 0.8263 
+          Detection Rate : 0.8011 
+    Detection Prevalence : 0.8460 
+       Balanced Accuracy : 0.8556 
+               Precision : 0.9470 
+                  Recall : 0.9695 
+
+        'Positive' Class : 1</code></pre>
+</div>
+</div>
+</section>
+<section id="comparing-lr-models-1-2" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-lr-models-1-2">4.2.2 Comparing LR Models 1 &amp; 2</h3>
+<p>The two models thus far yield similar results with small changes in accuracy, sensitivity and specificity despite a reduced number of variables from the first to the second model.</p>
+<p><insert comparison="" photo="" here=""></insert></p>
+</section>
+<section id="weight-of-evidence-information-value" class="level3">
+<h3 class="anchored" data-anchor-id="weight-of-evidence-information-value">4.2.3 Weight of Evidence &amp; Information Value</h3>
+<p>Weight of Evidence (WoE) is a variable transformation technique meant for independent variables according to Information Theory. WoE measures <strong>how good</strong> each grouped attribute or bin of a feature can predict the target variable.</p>
+<p>WoE is formulated as:</p>
+<p><span class="math display">\[
+W~i^+ = ln \frac{P\{E~i/I\}}{P\{E~i/\overline{I}\}}
+\]</span></p>
+<p><span class="math display">\[
+W~i^- = ln \frac{P\{\overline{E}~i/I\}}{P\{\overline{E}~-i/\overline{I}\}}
+\]</span></p>
+<p><span class="math display">\[
+W~i = W~i^+ + W~i^-
+\]</span></p>
+<p>Information value (IV) explains the predictive power of the entirety of the feature.</p>
+<p><insert formula="" later=""></insert></p>
+<p>Here is the IV for all the predictors.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"Information"</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>IV <span class="ot">&lt;-</span> <span class="fu">create_infotables</span>(<span class="at">data=</span>train_grids_v4[, <span class="dv">5</span><span class="sc">:</span><span class="dv">29</span>],</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">valid=</span>train_grids_v4[, <span class="dv">5</span><span class="sc">:</span><span class="dv">29</span>],</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y=</span><span class="st">"Landslide"</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(IV<span class="sc">$</span>Summary[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">row.names=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: right;">IV</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Slope_Angle</td>
+<td style="text-align: right;">5.3574828</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TWI</td>
+<td style="text-align: right;">0.5119619</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Elevation</td>
+<td style="text-align: right;">0.3270770</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Proximity_Settlement</td>
+<td style="text-align: right;">0.2073722</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Proximity_Road</td>
+<td style="text-align: right;">0.2060752</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Profile_Curvature</td>
+<td style="text-align: right;">0.1481448</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Plan_Curvature</td>
+<td style="text-align: right;">0.1469663</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Precipitation</td>
+<td style="text-align: right;">0.1097135</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lithology_Unconsolidated</td>
+<td style="text-align: right;">0.1047331</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Proximity_Fault</td>
+<td style="text-align: right;">0.0931591</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lithology_Sedimentary</td>
+<td style="text-align: right;">0.0770191</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Landuse_Vegetation</td>
+<td style="text-align: right;">0.0758787</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Proximity_Stream</td>
+<td style="text-align: right;">0.0606072</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lithology_Metamorphic</td>
+<td style="text-align: right;">0.0243440</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lithology_Plutonic</td>
+<td style="text-align: right;">0.0184281</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_East</td>
+<td style="text-align: right;">0.0028829</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aspect_SouthEast</td>
+<td style="text-align: right;">0.0025985</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_South</td>
+<td style="text-align: right;">0.0020174</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aspect_North</td>
+<td style="text-align: right;">0.0019081</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_West</td>
+<td style="text-align: right;">0.0011630</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STI</td>
+<td style="text-align: right;">0.0008136</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SPI</td>
+<td style="text-align: right;">0.0007769</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aspect_SouthWest</td>
+<td style="text-align: right;">0.0000422</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aspect_NorthEast</td>
+<td style="text-align: right;">0.0000023</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Observation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>Slope_Angle</code> indeed has the most predictive power compared to other variables.</p>
+</div>
+</div>
+<p><code>Slope_Angle</code> has to be further investigated to understand why it has the greatest predictive power.</p>
+</section>
+<section id="slope-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="slope-distribution">4.2.4 Slope Distribution</h3>
+<p>Our data points are located in various places with varying slope angles. Since our initial IV analysis flags out its influence over our model results, the slope distribution can be first viewed with a histogram.</p>
+<p>Distribution of Landslide Samples</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>ls_data <span class="ot">&lt;-</span> train_grids_v4[train_grids_v4<span class="sc">$</span>Landslide<span class="sc">==</span><span class="dv">1</span>,]</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>ls_data, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">100</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>) <span class="sc">+</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Distribution of slope values in landslide samples"</span>) <span class="sc">+</span> </span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">20</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_new_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Distribution of Non-Landslide Samples</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>non_ls_data <span class="ot">&lt;-</span> train_grids_v4[train_grids_v4<span class="sc">$</span>Landslide<span class="sc">==</span><span class="dv">0</span>,]</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>non_ls_data, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">100</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>) <span class="sc">+</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Distribution of slope values in non-landslide samples"</span>) <span class="sc">+</span> </span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">20</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_new_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<section id="quasi-separation-present" class="level4 callout-insight">
+<h4 class="anchored" data-anchor-id="quasi-separation-present">Quasi-separation Present</h4>
+<p>The majority of landslide samples have slope angles larger than 20°. In similar contrast, the majority of non-landslide samples have slope angles less than 20°.</p>
+<p>As such, the model currently predicts any instances with a slope angle <strong>greater than 20°</strong> to be a landslide.</p>
+</section>
+</section>
+</section>
+<section id="logistic-regression-model-3" class="level2">
+<h2 class="anchored" data-anchor-id="logistic-regression-model-3">4.3 Logistic Regression Model 3</h2>
+<section id="stratified-slope-sampling" class="level3">
+<h3 class="anchored" data-anchor-id="stratified-slope-sampling">4.3.1 Stratified Slope Sampling</h3>
+<p>To address the data bias with the evidence of quasi-separation, we use a 15° cut-off based on the first quantile result and slope (%) reference from the Barcelona Field Studies Centre.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>slope_angle <span class="ot">&lt;-</span> train_grids_v4<span class="sc">$</span>Slope_Angle</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(slope_angle, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.25</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      0%      25%      50%      75%     100% 
+ 0.00000 18.41368 30.34639 38.54599 82.91669 </code></pre>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://geographyfieldwork.com/SlopeSteepnessIndex.htm"><img src="images/bfc_slope_descriptors.png" class="img-fluid figure-img"></a></p>
+<figcaption class="figure-caption">Standard Slope Descriptors (Source: Barcelona Field Studies Centre)</figcaption>
+</figure>
+</div>
+<p>Distribution of Landslide Samples</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>ls_data_15 <span class="ot">&lt;-</span> train_grids_v4[train_grids_v4<span class="sc">$</span>Landslide<span class="sc">==</span><span class="dv">1</span> <span class="sc">&amp;</span> train_grids_v4<span class="sc">$</span>Slope_Angle <span class="sc">&lt;=</span> <span class="dv">15</span>,]</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>ls_data_15, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">40</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>) <span class="sc">+</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Distribution of slope values in landslide samples (15° slope cut-off)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_new_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Distribution of Non-Landslide Samples</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>non_ls_data_15 <span class="ot">&lt;-</span> train_grids_v4[train_grids_v4<span class="sc">$</span>Landslide<span class="sc">==</span><span class="dv">0</span> <span class="sc">&amp;</span> train_grids_v4<span class="sc">$</span>Slope_Angle <span class="sc">&lt;=</span> <span class="dv">15</span>,]</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>non_ls_data_15, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">40</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>) <span class="sc">+</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Distribution of slope values in non-landslide samples (15° slope cut-off)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="gwsmodelling_new_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Observation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Although the distribution for this stratified non-landslide sample is left-skewed, the data skewness has been reduced significantly.</p>
+</div>
+</div>
+<p>We then perform the logistic regression model with the stratified sample.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>landslide.lr3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Elevation <span class="sc">+</span> Slope_Angle <span class="sc">+</span> Aspect_North <span class="sc">+</span> Aspect_NorthEast <span class="sc">+</span> Aspect_East<span class="sc">+</span>Aspect_SouthEast<span class="sc">+</span>Aspect_South <span class="sc">+</span> Aspect_SouthWest <span class="sc">+</span>Aspect_West <span class="sc">+</span> Profile_Curvature <span class="sc">+</span>Plan_Curvature <span class="sc">+</span> Lithology_Metamorphic<span class="sc">+</span>Lithology_Sedimentary <span class="sc">+</span> Lithology_Plutonic<span class="sc">+</span>Lithology_Unconsolidated <span class="sc">+</span> Proximity_Settlement<span class="sc">+</span>Proximity_Stream<span class="sc">+</span>Proximity_Road<span class="sc">+</span>Proximity_Fault<span class="sc">+</span>Landuse_Vegetation<span class="sc">+</span>Precipitation<span class="sc">+</span>TWI<span class="sc">+</span>SPI<span class="sc">+</span>STI, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> data_15)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="validating-logistic-regression-model-3" class="level3">
+<h3 class="anchored" data-anchor-id="validating-logistic-regression-model-3">4.3.2 Validating Logistic Regression Model 3</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(landslide.lr3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Landslide ~ Elevation + Slope_Angle + Aspect_North + 
+    Aspect_NorthEast + Aspect_East + Aspect_SouthEast + Aspect_South + 
+    Aspect_SouthWest + Aspect_West + Profile_Curvature + Plan_Curvature + 
+    Lithology_Metamorphic + Lithology_Sedimentary + Lithology_Plutonic + 
+    Lithology_Unconsolidated + Proximity_Settlement + Proximity_Stream + 
+    Proximity_Road + Proximity_Fault + Landuse_Vegetation + Precipitation + 
+    TWI + SPI + STI, family = "binomial", data = data_15)
+
+Coefficients:
+                           Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)              -2.977e+00  2.458e-01 -12.109  &lt; 2e-16 ***
+Elevation                -1.718e-04  4.479e-05  -3.836 0.000125 ***
+Slope_Angle               2.387e-01  4.878e-03  48.930  &lt; 2e-16 ***
+Aspect_North             -2.829e-02  1.145e-01  -0.247 0.804838    
+Aspect_NorthEast         -2.502e-01  9.767e-02  -2.561 0.010425 *  
+Aspect_East              -3.313e-01  9.686e-02  -3.421 0.000624 ***
+Aspect_SouthEast         -4.151e-01  9.348e-02  -4.441 8.96e-06 ***
+Aspect_South             -3.331e-01  9.105e-02  -3.658 0.000254 ***
+Aspect_SouthWest         -2.544e-01  9.281e-02  -2.741 0.006118 ** 
+Aspect_West              -2.073e-01  9.327e-02  -2.223 0.026225 *  
+Profile_Curvature        -8.707e+02  2.683e+01 -32.448  &lt; 2e-16 ***
+Plan_Curvature           -7.673e+02  3.158e+01 -24.298  &lt; 2e-16 ***
+Lithology_Metamorphic     7.562e-01  1.321e-01   5.723 1.05e-08 ***
+Lithology_Sedimentary     1.213e+00  1.368e-01   8.868  &lt; 2e-16 ***
+Lithology_Plutonic       -8.368e-01  1.261e-01  -6.636 3.22e-11 ***
+Lithology_Unconsolidated  1.332e+00  1.325e-01  10.052  &lt; 2e-16 ***
+Proximity_Settlement      5.663e-05  4.050e-05   1.398 0.162001    
+Proximity_Stream         -5.190e-03  2.117e-03  -2.452 0.014218 *  
+Proximity_Road           -4.507e-03  1.422e-03  -3.170 0.001527 ** 
+Proximity_Fault          -3.759e-06  2.381e-05  -0.158 0.874578    
+Landuse_Vegetation        6.319e-01  5.267e-02  11.996  &lt; 2e-16 ***
+Precipitation            -5.781e+00  5.831e-01  -9.914  &lt; 2e-16 ***
+TWI                      -3.994e-02  1.127e-02  -3.546 0.000392 ***
+SPI                       1.336e+00  8.694e-01   1.537 0.124295    
+STI                      -8.186e-04  1.028e-03  -0.796 0.425851    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 19171  on 14019  degrees of freedom
+Residual deviance: 11479  on 13995  degrees of freedom
+AIC: 11529
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>cm3 <span class="ot">&lt;-</span> <span class="fu">blr_confusion_matrix</span>(landslide.lr3, <span class="at">cutoff =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>       Metric      LR.1      LR.2      LR.3
+1    Accuracy 0.9302454 0.9299290 0.8210414
+2 Sensitivity 0.9690761 0.9695069 0.7718254
+3 Specificity 0.9302454 0.9299290 0.8210414</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Observation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>LR 3 has the best AIC at the expense of having the lowest accuracy and sensitivity rates so far. As such, the overall performance was compromised after conducting stratified sampling.</p>
+</div>
+</div>
+</section>
+<section id="spatial-weights" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-weights">4.3.3 Spatial Weights</h3>
+<p>Variables are more often than not influenced by geographic factors and to name a few, topography, lithology, and slope gradient.</p>
+</section>
+</section>
+<section id="geographically-weighted-logistic-regression-model-1" class="level2">
+<h2 class="anchored" data-anchor-id="geographically-weighted-logistic-regression-model-1">4.4 Geographically Weighted Logistic Regression Model 1</h2>
+<p>Imposing a Geographically Weighted Logistic Regression (GWLR) Model aims to improve the model performance and more importantly, detect any spatial relationship between explanatory variables and the target variable.</p>
+<p>Our above LR model will be calibrated into GWLR by incorporating spatial weight-matrix, weighting function and bandwidth parameters.</p>
+<section id="data-sampling" class="level3">
+<h3 class="anchored" data-anchor-id="data-sampling">4.4.1 Data Sampling</h3>
+<p>There is a limit to the number of observations the GWModel can take. Hence only 20% of the landslide data is taken into account.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>ls_data_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(data_15, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>))</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1243</span>)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>ls_split <span class="ot">&lt;-</span> ls_data_sf <span class="sc">%&gt;%</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">initial_split</span>(<span class="at">prop =</span> .<span class="dv">2</span>, </span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">strata =</span> Landslide)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>training_data_sf <span class="ot">&lt;-</span> <span class="fu">training</span>(ls_split)</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>testing_data_sf  <span class="ot">&lt;-</span> <span class="fu">testing</span>(ls_split)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>training_data_sp <span class="ot">&lt;-</span> <span class="fu">as_Spatial</span>(training_data_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="calculating-distance-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="calculating-distance-matrix">4.4.2 Calculating Distance Matrix</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>distMAT <span class="ot">&lt;-</span> <span class="fu">gw.dist</span>(<span class="at">dp.locat=</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">coordinates</span>(training_data_sp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="computing-adaptive-bandwidth" class="level3">
+<h3 class="anchored" data-anchor-id="computing-adaptive-bandwidth">4.4.3 Computing Adaptive Bandwidth</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>bw.adaptive <span class="ot">&lt;-</span> <span class="fu">bw.ggwr</span>(<span class="at">formula =</span> </span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>                         Landslide <span class="sc">~</span> Slope_Angle, </span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">family =</span> <span class="st">"binomial"</span>, </span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> training_data_sp, </span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">approach=</span><span class="st">"CV"</span>, </span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>                       <span class="at">kernel=</span><span class="st">"gaussian"</span>, </span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">adaptive=</span> <span class="cn">TRUE</span>, </span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>                       <span class="at">longlat=</span><span class="cn">FALSE</span>, </span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>                       <span class="at">p=</span><span class="dv">2</span>,</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>                       <span class="at">theta=</span><span class="dv">0</span>,</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>                       <span class="at">dMat=</span>distMAT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The above step is computationally intensive. The resulting adaptive bandwidth value is 20.</p>
+</div>
+</div>
+<p>The input variables for the geographically weighted logistic regression model would be the selected independent variables for the formula, the training data in SpatialPointDataFrame object, the adaptive bandwidth value 20, where kernel is set to Gaussian and family is set as binomial due to the binary nature of the data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>gwlr <span class="ot">&lt;-</span> <span class="fu">ggwr.basic</span>(Landslide <span class="sc">~</span> Aspect_North <span class="sc">+</span> </span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>                     Aspect_SouthEast <span class="sc">+</span> Profile_Curvature <span class="sc">+</span> </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>                     Plan_Curvature <span class="sc">+</span> Slope_Angle <span class="sc">+</span> </span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>                     Lithology_Sedimentary <span class="sc">+</span> Lithology_Plutonic <span class="sc">+</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>                     Lithology_Unconsolidated <span class="sc">+</span> Proximity_Stream <span class="sc">+</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>                     Landuse_Vegetation <span class="sc">+</span> Precipitation, </span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> training_data_sp, </span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">bw =</span> <span class="dv">20</span>, </span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">family =</span> <span class="st">"binomial"</span>, </span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">kernel =</span> <span class="st">"gaussian"</span>, </span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">adaptive =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">cv =</span> T, </span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">tol =</span> <span class="fl">1e-05</span>, </span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>                   <span class="at">maxiter =</span> <span class="dv">20</span>, </span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>                   <span class="at">p =</span> <span class="dv">2</span>, </span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>                   <span class="at">theta =</span> <span class="dv">0</span>, </span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a>                   <span class="at">longlat =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dMat =</span> distMAT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>gwlr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="images/gwmodel.png" class="img-fluid"></p>
+<p><img src="images/glr.jpg" class="img-fluid"></p>
+<p><img src="images/gwr.jpg" class="img-fluid"></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Observation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Adjusted R-squared and AIC perform better with GWR</p></li>
+<li><p>Significant improvements from using global LR to local GWR</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="correlation-matrix-using-ggstats-1" class="level3">
+<h3 class="anchored" data-anchor-id="correlation-matrix-using-ggstats-1">4.4.5 Correlation Matrix Using ggstats</h3>
+<p><tbc></tbc></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="do">## producing the correlation matrix</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrmat</span>(</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train_grids_v4[, <span class="dv">6</span><span class="sc">:</span><span class="dv">29</span>],  </span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">matrix.type =</span> <span class="st">"upper"</span>,</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"parametric"</span>,</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">tr =</span> <span class="fl">0.2</span>,</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">partial =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> 2L,</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">sig.level =</span> <span class="fl">0.05</span>,</span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span>,</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">bf.prior =</span> <span class="fl">0.707</span>,</span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggcorrplot.args =</span> <span class="fu">list</span>(</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">tl.cex =</span> <span class="dv">10</span>,</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch.cex =</span> <span class="dv">5</span>,</span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">lab_size =</span> <span class="dv">3</span></span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span> <span class="do">## modification outside `{ggstatsplot}` using `{ggplot2}` functions</span></span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(</span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">margin =</span> ggplot2<span class="sc">::</span><span class="fu">margin</span>(<span class="at">t =</span> <span class="fl">0.15</span>, <span class="at">r =</span> <span class="fl">0.15</span>, <span class="at">b =</span> <span class="fl">0.15</span>, <span class="at">l =</span> <span class="fl">0.15</span>, <span class="at">unit =</span> <span class="st">"cm"</span>)</span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">What Causes Landslides? Explanatory Landslide Susceptibility Modelling of Valtellina Valley, Lombardy Region, Italy</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>
