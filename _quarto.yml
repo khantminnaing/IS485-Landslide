@@ -18,10 +18,6 @@ website:
         href: project.qmd
       - text: "Model Development"
         menu:
-        - href: gwsmodelling.qmd
-          text: "Parametric Testing"      
-        - href: slopesampling.qmd
-          text: "Slope Sampling"
         - href: gwsmodelling_new.qmd
           text: "Geographically Weighted Model"
       - text: Research Paper
