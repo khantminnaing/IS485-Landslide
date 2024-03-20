@@ -377,9 +377,9 @@ m_comparison <- data.frame(
   Model2 = c(50563L,8783L,41780L,17L,cm2$accuracy, sum_lr2$aic,
              cm2$sensitivity,
              cm2$specificity, pd2),
-  Model3 = c(9899L,4630L,2304L,24L,cm2$accuracy, sum_lr2$aic,
-             cm2$sensitivity,
-             cm2$specificity, pd2)
+  Model3 = c(9899L,4630L,2304L,24L,cm3$accuracy, sum_lr3$aic,
+             cm3$sensitivity,
+             cm3$specificity, pd2)
 )
 
 # round evaluators to 4 d.p.
