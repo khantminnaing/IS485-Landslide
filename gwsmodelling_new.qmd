@@ -21,7 +21,7 @@ To develop a landslide susceptibility methodology framework, we will explore and
 # 1.0 Import Packages
 
 ```{r}
-pacman::p_load(sp, sf, st, spdep, raster, spatstat, tmap, devtools,vtable,ggplot2,egg, corrplot, patchwork, ggstats, ggstatsplot, GWmodel, tidyverse, gtsummary,vtable, sjPlot, sjmisc, sjlabelled, tableHTML, olsrr, car, blorr,ISLR, klaR, rsample)
+pacman::p_load(sp, sf, st, spdep, raster, spatstat, tmap, devtools,vtable,ggplot2,egg, corrplot, patchwork, ggstats, ggstatsplot, GWmodel, tidyverse, gtsummary,vtable, sjPlot, sjmisc, sjlabelled, tableHTML, olsrr, car, blorr,ISLR, klaR, rsample,kableExtra)
 ```
 
 # 2.0 Import Data
@@ -96,11 +96,13 @@ landslide.lr <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_
 ```
 
 ```{r}
-summary(landslide.lr)
+sum_lr <- summary(landslide.lr)
+sum_lr
 ```
 
 ```{r}
-100*with(summary(landslide.lr), 1 - deviance/null.deviance)
+pd <- 100*with(summary(landslide.lr), 1 - deviance/null.deviance)
+pd
 confint(landslide.lr)
 ```
 
@@ -113,21 +115,26 @@ vif(landslide.lr)
 For the initial/ first cut model, all the independent variables are put into the model. Our goal is to include a limited number of independent variables (5-15) which are all significant, without sacrificing too much on the model performance. The rationale behind including not too many variables is that the model would be overfitted and would become unstable when tested on the validation sample. The variable reduction is done using forward or backward or stepwise variable selection procedures. We will use `blr_step_aic_both()` to shortlist predictors for our model.
 
 ```{r}
-blr_step_aic_both(landslide.lr)
+#| eval: false
+stepwise_1 <- blr_step_aic_both(landslide.lr)
+write_rds(stepwise_1, "data/rds/stepwise1.rds")
+```
+
+```{r}
+stepwise1 <- read_rds("data/rds/stepwise1.rds")
+stepwise1
 ```
 
 ::: callout-note
 #### Stepwise Selection Result
 
-16 explanatory variables have been selected
+17 explanatory variables have been selected in this stepwise selection process.
 :::
 
-Plotting the Akaike Information Criterion curve as it is the main threshold.
+Plot the Akaike Information Criterion curve as it is the main threshold.
 
 ```{r}
-landslide.lr %>%
-  blr_step_aic_both() %>%
-  plot()
+plot(stepwise1)
 ```
 
 ::: callout-note
@@ -155,13 +162,20 @@ landslide.lr2 <- glm(Landslide ~ Slope_Angle + Aspect_SouthEast + Aspect_NorthEa
 ```
 
 ```{r}
-summary(landslide.lr2)
+sum_lr2 <- summary(landslide.lr2)
+sum_lr2
+```
+
+```{r}
+pd2 <- 100*with(summary(landslide.lr2), 1 - deviance/null.deviance)
+pd2
+confint(landslide.lr2)
 ```
 
 ::: callout-note
 #### Observation
 
-Model is still overfitting and AIC is very high.
+The model is still overfitting and AIC of 23157 is very high.
 :::
 
 ### 4.2.1 Validating Logistic Regression Model 2
@@ -172,11 +186,38 @@ cm2 <- blr_confusion_matrix(landslide.lr2, cutoff = 0.5)
 cm2
 ```
 
+
 ### 4.2.2 Comparing LR Models 1 & 2
 
 The two models thus far yield similar results with small changes in accuracy, sensitivity and specificity despite a reduced number of variables from the first to the second model.
 
-<insert comparison photo here>
+```{r}
+#| echo: false
+
+m_comparison <- data.frame(
+  Information = c("Sample Size","Non-Landslide",
+                  "Landslide","Explanatory Variable",
+                  "Accuracy", "AIC",
+                  "Sensitivity", "Specificity", 
+                  "Percentage Deviant"),
+  Model1 = c(50563L,
+             8783L,41780L,24L,cm$accuracy, sum_lr$aic,
+             cm$sensitivity, 
+             cm$specificity, pd),
+  Model2 = c(50563L,8783L,41780L,17L,cm2$accuracy, sum_lr2$aic,
+             cm2$sensitivity,
+             cm2$specificity, pd2)
+)
+
+# round evaluators to 4 d.p.
+m_comparison[5:9, -1] <- round(m_comparison[5:9, -1], 4)
+
+
+kable(m_comparison,
+      format="html",
+      caption="Comparing LR Model 1 and LR Model 2")
+```
+
 
 ### 4.2.3 Weight of Evidence & Information Value
 
@@ -311,21 +352,43 @@ landslide.lr3 <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect
 ### 4.3.2 Validating Logistic Regression Model 3
 
 ```{r}
-summary(landslide.lr3)
+sum_lr3 <- summary(landslide.lr3)
+sum_lr3
 ```
 
 ```{r}
 cm3 <- blr_confusion_matrix(landslide.lr3, cutoff = 0.5)
+cm3
 ```
 
 ```{r}
 #| echo: false
-data.frame(
-  "Metric" = c("Accuracy", "Sensitivity", "Specificity"),
-  "LR 1" = c(cm$accuracy, cm$sensitivity, cm$accuracy),
-  "LR 2" = c(cm2$accuracy, cm2$sensitivity, cm2$accuracy),
-  "LR 3" = c(cm3$accuracy, cm3$sensitivity, cm3$accuracy)
+
+m_comparison <- data.frame(
+  Information = c("Sample Size","Non-Landslide",
+                  "Landslide","Explanatory Variable",
+                  "Accuracy", "AIC",
+                  "Sensitivity", "Specificity", 
+                  "Percentage Deviant"),
+  Model1 = c(50563L,
+             8783L,41780L,24L,cm$accuracy, sum_lr$aic,
+             cm$sensitivity, 
+             cm$specificity, pd),
+  Model2 = c(50563L,8783L,41780L,17L,cm2$accuracy, sum_lr2$aic,
+             cm2$sensitivity,
+             cm2$specificity, pd2),
+  Model3 = c(9899L,4630L,2304L,24L,cm2$accuracy, sum_lr2$aic,
+             cm2$sensitivity,
+             cm2$specificity, pd2)
 )
+
+# round evaluators to 4 d.p.
+m_comparison[5:9, -1] <- round(m_comparison[5:9, -1], 4)
+
+
+kable(m_comparison,
+      format="html",
+      caption="Comparing LR Model 1 and LR Model 2")
 ```
 
 ::: callout-note
@@ -364,6 +427,7 @@ training_data_sp <- as_Spatial(training_data_sf)
 ### 4.4.2 Calculating Distance Matrix
 
 ```{r}
+#| eval: false
 distMAT <- gw.dist(dp.locat=
                      coordinates(training_data_sp))
 ```
@@ -416,20 +480,16 @@ gwlr <- ggwr.basic(Landslide ~ Aspect_North +
 ```
 
 ```{r}
-#| eval: false
+gwlr <- read_rds("data/rds/gwlr_aicc-vic.rds")
 gwlr
 ```
 
-![](images/gwmodel.png)
 
-![](images/glr.jpg)
-
-![](images/gwr.jpg)
 
 ::: callout-tip
 ### Observation
 
--   Adjusted R-squared and AIC perform better with GWR
+-   Adjusted R-squared and AIC perform better with a 200 point improvement on average with GWR
 
 -   Significant improvements from using global LR to local GWR
 :::
@@ -437,15 +497,18 @@ gwlr
 
 ### 4.4.5 Correlation Matrix Using ggstats
 
-<tbc>
 ```{r}
-#| eval: false
 #| fig-width: 10
 
+training_data_cal <- training_data_sf %>% 
+  st_drop_geometry()
+
+training_data_cal <- training_data_cal[, c(5, 13, 14, 23, 17, 21, 15, 24)]
+  
 set.seed(123)
 ## producing the correlation matrix
 ggcorrmat(
-  data = train_grids_v4[, 6:29],  
+  data = training_data_cal,  
           matrix.type = "upper",
   type = "parametric",
   tr = 0.2,
