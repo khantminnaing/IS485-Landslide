@@ -169,11 +169,20 @@ non.spatial.rf <- spatialRF::rf_importance(
   )
 ```
 
+```{r}
+#| echo: false
+#| fig-height: 10
+read_rds("data/rds/transferability.plot.rds")
+```
+
 # Partial dependence plot (PDP)
 
 To understand and visualize how the model predictions are influenced by each predictor when all other predictors are being controlled, we can generate partial dependence plots (PDPs) of the predictors of the model. Partial dependence plots, introduced by Friedman (2001) (Friedman, 2001), is used to interpret the output of complex machine learning models. In PDPs, the Y-axis value (ŷ) is defined by the average of all of the possible model predictions when the value of the objective predictor is at X.
 
 ```{r}
+#| fig-width: 10
+#| fig-height: 10
+
 spatialRF::plot_response_curves(
   non.spatial.rf,
   quantiles = 0.5,
@@ -212,9 +221,11 @@ pdp_1_2 <- pdp::partial(
 
 ```{r}
 #| fig-width: 10
-grid.arrange(pdp_1,pdp_2,pdp_1_2, 
-             ncol= 3, 
+grid.arrange(pdp_1,pdp_2, 
+             ncol= 2, 
              top = textGrob("Partial Dependence Plot", gp=gpar(fontsize=20)))
+
+pdp_1_2
 ```
 
 ## Model Performance
@@ -320,7 +331,12 @@ spatial.rf.eval <- read_rds("data/rds/spatial.rf.eval.rds")
 print_evaluation(spatial.rf.eval)
 ```
 
+# **Partial Dependence Plots (PDP) for gwRF**
+
 ```{r}
+#| fig-width: 10
+#| fig-height: 10
+
 spatialRF::plot_response_curves(
   spatial.rf,
   quantiles = 0.5,
