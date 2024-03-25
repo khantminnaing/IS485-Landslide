@@ -1,0 +1,466 @@
+---
+title: "Predictive Modelling"
+author:
+  - name: Khant Min Naing
+  - name: Ann Mei Yi Victoria Grace
+date: 01-07-2024 
+date-modified: "last-modified"
+categories:
+  - R
+  - sf
+  - gwmodel
+output:
+  distill::distill_article:
+    code_folding: false
+    toc: true
+    self_contained: false
+---
+
+# 1.0 Import Packages
+
+The package **spatialRF** facilitates fitting spatial regression models on regular or irregular data with Random Forest. It does so by generating *spatial predictors* that help the model "understand" the spatial structure of the training data with the end goal of minimizing the spatial autocorrelation of the model residuals and offering honest variable importance scores.
+
+```{r}
+pacman::p_load(sf, sp, tmap, ggplot2, GWmodel, tidyverse, rsample, ranger, spatialRF, kableExtra, randomForestExplainer, pdp, dplyr, SpatialML)
+```
+
+```{r}
+ls_data <- readRDS("data/rds/sample_Q6.rds")
+#ls_data <- subset(ls_data, select = -Lithology_Unconsolidated)
+```
+
+## Test Train Split
+
+```{r}
+set.seed(1243)
+ls_split <- ls_data %>%
+  initial_split(prop = .2, 
+                strata = Landslide)
+
+training_data <- training(ls_split)
+testing_data  <- testing(ls_split)
+
+dependent.variable.name <- "Landslide"
+predictor.variable.names <- colnames(ls_data)[6:29]
+xy <- training_data[, c("X", "Y")]
+colnames(xy) <- c("x", "y")
+
+
+training_data_sf <- st_as_sf(training_data, coords = c("X", "Y"))
+testing_data_sf <- st_as_sf(testing_data, coords = c("X", "Y"))
+training_data_sp <- as_Spatial(training_data_sf)
+testing_data_sp <- as_Spatial(testing_data_sf)
+
+
+distance_matrix <- gw.dist(dp.locat=
+                     coordinates(training_data_sp))
+
+distance.thresholds <- c(0, 1000, 2000, 4000, 8000)
+
+random.seed <- 1
+```
+
+The function [`plot_training_df_moran()`](https://blasbenito.github.io/spatialRF/reference/plot_training_df_moran.html) helps create the scatterplots of the response variable (y axis) against each predictor (x axis).
+
+```{r}
+#| fig-width: 10
+#| fig-height: 12
+spatialRF::plot_training_df(
+  data = training_data,
+  dependent.variable.name = dependent.variable.name,
+  predictor.variable.names = c("Elevation", "Slope_Angle", "Profile_Curvature", "Plan_Curvature", "Proximity_Settlement", "Proximity_Stream","Proximity_Road", "Proximity_Fault", "Precipitation", "TWI", "SPI", "STI"),
+  ncol = 3,
+  point.color = viridis::viridis(100, option = "A", direction = -1),
+  line.color = "gray30")
+```
+
+The function [`plot_training_df_moran()`](https://blasbenito.github.io/spatialRF/reference/plot_training_df_moran.html) helps assessing the spatial autocorrelation of the response variable and the predictors across different distance thresholds. Low Moran's I and p-values equal or larger than 0.05 indicate that there is no spatial autocorrelation for the given variable and distance threshold.
+
+```{r}
+#| eval: false
+spatialRF::plot_training_df_moran(
+  data = training_data,
+  dependent.variable.name = dependent.variable.name,
+  predictor.variable.names = predictor.variable.names,
+  distance.matrix = distance_matrix,
+  distance.thresholds = distance.thresholds,
+  fill.color = viridis::viridis(
+    100,
+    option = "A",
+    direction = -1
+    ),
+  point.color = "gray40"
+)
+```
+
+![](images/Screenshot%202024-03-14%20at%208.53.39%20PM.png){fig-align="center"}
+
+# **Fitting a non-spatial Random Forest model**
+
+The function [`rf()`](https://blasbenito.github.io/spatialRF/reference/rf.html) is a convenient wrapper for [`ranger::ranger()`](https://rdrr.io/pkg/ranger/man/ranger.html) used in every modelling function of the *spatialRF* package. It takes the training data, the names of the response and the predictors, and optionally (to assess the spatial autocorrelation of the residuals), the distance matrix, and a vector of distance thresholds (in the same units as the distances in **distance_matrix**).
+
+```{r}
+non.spatial.rf <- spatialRF::rf(
+  data = training_data,
+  dependent.variable.name = dependent.variable.name,
+  predictor.variable.names = predictor.variable.names,
+  distance.matrix = distance_matrix,
+  distance.thresholds = distance.thresholds,
+  xy = xy,
+  seed = random.seed,
+  verbose = FALSE
+)
+```
+
+# Residuals
+
+The slot **residuals** (`model.non.spatial$residuals`) stores the values of the residuals and the results of the normality and spatial autocorrelation tests, and its content can be plotted with [`plot_residuals_diagnostics()`](https://blasbenito.github.io/spatialRF/reference/plot_residuals_diagnostics.html).
+
+```{r}
+#| fig-width: 10
+#| fig-height: 12
+spatialRF::plot_residuals_diagnostics(
+  non.spatial.rf,
+  verbose = FALSE
+  )
+```
+
+The upper panels show the results of the normality test (interpretation in the title), the middle panel shows the relationship between the residuals and the fitted values, important to understand the behavior of the residuals, and the lower panel shows the Moran's I of the residuals across distance thresholds and their respective p-values (positive for 0 and 1000 km).
+
+# **Global variable importance**
+
+The slot **importance** (`model.non.spatial$variable.importance`) contains the variable importance scores. These can be plotted with [`plot_importance()`](https://blasbenito.github.io/spatialRF/reference/plot_importance.html), printed with [`print_importance()`](https://blasbenito.github.io/spatialRF/reference/print_importance.html), and the dataframe retrieved with [`get_importance()`](https://blasbenito.github.io/spatialRF/reference/get_importance.html)
+
+```{r}
+#| fig-height: 10
+spatialRF::plot_importance(
+  non.spatial.rf,
+  verbose = FALSE
+  )
+```
+
+The package [`randomForestExplainer`](https://github.com/ModelOriented/randomForestExplainer) offers a couple of interesting options to deepen our understanding on variable importance scores. The first one is [`measure_importance()`](https://rdrr.io/pkg/randomForestExplainer/man/measure_importance.html), which analyzes the forest to find out the average minimum tree depth at which each variable can be found (`mean_min_depth`), the number of nodes in which a variable was selected to make a split (`no_of_nodes`), the number of times the variable was selected as the first one to start a tree (`times_a_root`), and the probability of a variable to be in more nodes than what it would be expected by chance (`p_value`).
+
+```{r}
+importance.df <- randomForestExplainer::measure_importance(
+  non.spatial.rf,
+  measures = c("mean_min_depth", "no_of_nodes", "times_a_root", "p_value")
+  )
+```
+
+```{r}
+kableExtra::kbl(
+  importance.df %>% 
+    dplyr::arrange(mean_min_depth) %>% 
+    dplyr::mutate(p_value = round(p_value, 4)),
+  format = "html"
+) %>%
+  kableExtra::kable_paper("hover", full_width = T)
+```
+
+# **Contribution of predictors to model transferability**
+
+The new function [`rf_importance()`](https://blasbenito.github.io/spatialRF/reference/rf_importance.html) offers a way to assess to what extent each predictor contributes to model transferability (predictive ability on independent spatial folds measured with [`rf_evaluate()`](https://blasbenito.github.io/spatialRF/reference/rf_evaluate.html), see below). It does so by comparing the performance of the full model with models fitted without each one of the predictors. The difference in performance between the full model and a model without a given predictor represents the contribution of such predictor to model transferability.
+
+```{r}
+#| eval: false
+non.spatial.rf <- spatialRF::rf_importance(
+  model = non.spatial.rf
+  )
+```
+
+# Partial dependence plot (PDP)
+
+To understand and visualize how the model predictions are influenced by each predictor when all other predictors are being controlled, we can generate partial dependence plots (PDPs) of the predictors of the model. Partial dependence plots, introduced by Friedman (2001) (Friedman, 2001), is used to interpret the output of complex machine learning models. In PDPs, the Y-axis value (ŷ) is defined by the average of all of the possible model predictions when the value of the objective predictor is at X.
+
+```{r}
+spatialRF::plot_response_curves(
+  non.spatial.rf,
+  quantiles = 0.5,
+  ncol = 3
+  )
+```
+
+```{r}
+pacman::p_load(grid,gridExtra)
+```
+
+```{r}
+pdp_1 <- pdp::partial(
+  non.spatial.rf, 
+  train = training_data, 
+  pred.var = "Slope_Angle", 
+  plot = TRUE, 
+  grid.resolution = 200
+  )
+
+pdp_2 <- pdp::partial(
+  non.spatial.rf, 
+  train = training_data, 
+  pred.var = "Profile_Curvature", 
+  plot = TRUE, 
+  grid.resolution = 200
+  )
+
+pdp_1_2 <- pdp::partial(
+  non.spatial.rf,
+  train = training_data,
+  pred.var = c("Slope_Angle","Profile_Curvature"),
+  plot = TRUE,
+  grid.resolution = 10)
+```
+
+```{r}
+#| fig-width: 10
+grid.arrange(pdp_1,pdp_2,pdp_1_2, 
+             ncol= 3, 
+             top = textGrob("Partial Dependence Plot", gp=gpar(fontsize=20)))
+```
+
+## Model Performance
+
+The **performance** slot (in `model.non.spatial$performance`) contains the values of several performance measures. It be printed via the function [`print_performance()`](https://blasbenito.github.io/spatialRF/reference/print_performance.html).
+
+-   `R squared (oob)` and `RMSE (oob)` are the R squared of the model and its root mean squared error when predicting the out-of-bag data (fraction of data not used to train individual trees). From all the values available in the `performance` slot, probably these the most honest ones, as it is the closer trying to get a performance estimate on independent data. However, out-of-bag data is not fully independent, and therefore will still be inflated, especially if the data is highly aggregated in space.
+
+-   `R squared` and `pseudo R squared` are computed from the observations and the predictions, and indicate to what extent model outcomes represent the input data. These values will usually be high the data is highly aggregated in space.
+
+-   The `RMSE` and its normalized version are computed via [`root_mean_squared_error()`](https://blasbenito.github.io/spatialRF/reference/root_mean_squared_error.html), and are linear with `R squared` and `pseudo R squared`.
+
+```{r}
+spatialRF::print_performance(non.spatial.rf)
+```
+
+# Geographical Random Forest
+
+"Geographical Weighted Random Forest (GWRF) or local RF model is a spatial analysis method using a local version of the Random Forest Regresson Model. It allows for the investigation of the existence of spatial non-stationarity, in the relationship between a dependent and a set of independent variables. The latter is possible by fitting a sub-model for each observation in space, taking into account the neighbouring observations. This technique adopts the idea of the Geographically Weighted Regression, Kalogirou (2003). The main difference between a tradition (linear) GWR and GRF is that we can model non-stationarity coupled with a flexible non-linear model which is very hard to overfit due to its bootstrapping nature, thus relaxing the assumptions of traditional Gaussian statistics. Essential it was designed to be a bridge between machine learning and geographical models, combining inferential and explanatory power. Additionally, it is suited for datasets with numerous predictors, due to the robust nature of the random forest algorithm in high dimensionality."
+
+# **Fitting a spatial model with `rf_spatial()`**
+
+```{r}
+#| eval: false
+spatial.rf <- spatialRF::rf_spatial(
+  model = non.spatial.rf,
+  method = "mem.moran.sequential",
+  verbose = FALSE,
+  seed = random.seed,
+  weight.r.squared = 0.5
+  )
+```
+
+```{r}
+spatial.rf <- read_rds("data/rds/spatial_rf.rds")
+```
+
+```{r}
+spatialRF::plot_moran(
+  non.spatial.rf, 
+  verbose = FALSE
+  )
+
+spatialRF::plot_moran(
+  spatial.rf, 
+  verbose = FALSE
+  )
+```
+
+If we compare the variable importance plots of both models, we can see that the spatial model has an additional set of dots under the name "spatial_predictors", and that the maximum importance of a few of these *spatial predictors* matches the importance of the most relevant non-spatial predictors.
+
+```{r}
+#| fig-width: 10
+p1 <- spatialRF::plot_importance(
+  non.spatial.rf, 
+  verbose = FALSE) + 
+  ggplot2::ggtitle("Non-spatial RF") 
+
+p2 <- spatialRF::plot_importance(
+  spatial.rf,
+  verbose = FALSE) + 
+  ggplot2::ggtitle("Spatial RF")
+
+p1 | p2 
+```
+
+```{r}
+kableExtra::kbl(
+  head(spatial.rf$importance$per.variable, n = 50),
+  format = "html"
+) %>%
+  kableExtra::kable_paper("hover", full_width = F)
+```
+
+```{r}
+non.spatial.rf.eval <- rf_evaluate(
+  non.spatial.rf,
+  xy = xy,
+  metrics = "auc",
+  verbose = FALSE
+)
+
+print_evaluation(non.spatial.rf.eval)
+```
+
+```{r}
+#| eval: false
+spatial.rf.eval <- rf_evaluate(
+  spatial.rf,
+  xy = xy,
+  metrics = "auc",
+  verbose = FALSE
+)
+```
+
+```{r}
+#| echo: false
+#write_rds(spatial.rf.eval, "data/rds/spatial.rf.eval.rds")
+spatial.rf.eval <- read_rds("data/rds/spatial.rf.eval.rds")
+```
+
+```{r}
+print_evaluation(spatial.rf.eval)
+```
+
+```{r}
+spatialRF::plot_response_curves(
+  spatial.rf,
+  quantiles = 0.5,
+  ncol = 3
+  )
+```
+
+# Using SpatialML
+
+```{r}
+coords_train <- st_coordinates(training_data_sf)
+coords_test <- st_coordinates(testing_data_sf)
+```
+
+```{r}
+set.seed(1234)
+
+rf <- ranger(Landslide ~ Elevation + 
+                 Aspect_North + Aspect_NorthEast + 
+                 Aspect_East + Aspect_SouthEast + 
+                 Aspect_South + Aspect_SouthWest + 
+                 Aspect_West + Profile_Curvature + 
+                 Plan_Curvature + Slope_Angle + 
+                 Lithology_Metamorphic + 
+                 Lithology_Sedimentary + 
+                 Lithology_Plutonic +
+                 Lithology_Unconsolidated +
+                 Proximity_Settlement +
+                 Proximity_Stream +
+                 Proximity_Road + Proximity_Fault + 
+                 Landuse_Vegetation + Precipitation + 
+                 TWI + SPI + STI,
+             data=training_data,
+             importance = "impurity")
+rf
+```
+
+Note: permutations of bandwidth selection is done previously. Refer to the Data Preparation document to check the logs.
+
+```{r}
+#| eval: false
+
+set.seed(1234)
+grf.bw.260.orig <- grf.bw(Landslide ~ Elevation + 
+                 Aspect_North + Aspect_NorthEast + 
+                 Aspect_East + Aspect_SouthEast + 
+                 Aspect_South + Aspect_SouthWest + 
+                 Aspect_West + Profile_Curvature + 
+                 Plan_Curvature + Slope_Angle + 
+                 Lithology_Metamorphic + 
+                 Lithology_Sedimentary + 
+                 Lithology_Plutonic +
+                 Lithology_Unconsolidated +
+                 Proximity_Settlement +
+                 Proximity_Stream +
+                 Proximity_Road + Proximity_Fault + 
+                 Landuse_Vegetation + Precipitation + 
+                 TWI + SPI + STI,
+       data=training_data, 
+       kernel="adaptive", 
+       coords=coords_train, 
+       bw.min = 260,
+       bw.max = 260, 
+       step = 1, 
+       trees= 500, 
+       importance="impurity",
+       forests = FALSE, 
+       geo.weighted = TRUE)
+```
+
+```{r}
+#| eval: false
+
+write_rds(grf.bw.260.orig, "data/rds/gwRF.bw.260.orig.rds")
+#grf.bw.100 <- read_rds("data/rds/grf.bw.100.rds")
+grf.bw.260.orig$tested.bandwidths
+```
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_adaptive <- grf(formula = Landslide ~ Elevation + 
+                 Aspect_North + Aspect_NorthEast + 
+                 Aspect_East + Aspect_SouthEast + 
+                 Aspect_South + Aspect_SouthWest + 
+                 Aspect_West + Profile_Curvature + 
+                 Plan_Curvature + Slope_Angle + 
+                 Lithology_Metamorphic + 
+                 Lithology_Sedimentary + 
+                 Lithology_Plutonic +
+                 Lithology_Unconsolidated +
+                 Proximity_Settlement +
+                 Proximity_Stream +
+                 Proximity_Road + Proximity_Fault + 
+                 Landuse_Vegetation + Precipitation + 
+                 TWI + SPI + STI,
+                 dframe=training_data, 
+                 bw=260,
+                 kernel="adaptive",
+                 coords=coords_train)
+```
+
+```{r}
+#| eval: false
+
+#write_rds(gwRF_adaptive, "data/rds/gwRF_adaptive_260.rds")
+gwRF_adaptive <- read_rds("data/rds/gwRF_adaptive_260.rds")
+```
+
+```{r}
+#| eval: false
+
+gwRF_pred_260 <- predict.grf(gwRF_adaptive, 
+                           testing_data, 
+                           x.var.name=predictor.variable.names,
+                           y.var.name=dependent.variable.name, 
+                           local.w=0.5,
+                           global.w=0.5)
+```
+
+```{r}
+#| eval: false
+write_rds(gwRF_pred_260, "data/rds/gwRF_pred_260.rds")
+```
+
+```{r}
+#| eval: false
+
+gwRF_pred_260_df <- as.data.frame(gwRF_pred_260)
+```
+
+```{r}
+#| eval: false
+
+testing_data_pred <- cbind(testing_data, gwRF_pred_260_df)
+```
+
+```{r}
+#| eval: false
+
+rmse(testing_data_pred$Landslide, 
+     testing_data_pred$gwRF_pred_260)
+```

@@ -16,10 +16,12 @@ website:
         href: methodology.qmd
       - text: EDA
         href: project.qmd
-      - text: "Model Development"
+      - text: "Model Fitting and Results"
         menu:
         - href: gwsmodelling_new.qmd
-          text: "Geographically Weighted Model"
+          text: "Geographically Weighted Logistic Modelling"
+        - href: predictivemodelling.qmd
+          text: "Geographically Weighted Random Forest"
       - text: Research Paper
         href: research.qmd
 
