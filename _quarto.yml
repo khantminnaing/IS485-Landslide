@@ -19,9 +19,9 @@ website:
       - text: "Model Fitting and Results"
         menu:
         - href: gwsmodelling_new.qmd
-          text: "Geographically Weighted Logistic Modelling"
+          text: "Statistical Modelling"
         - href: predictivemodelling.qmd
-          text: "Geographically Weighted Random Forest"
+          text: "Machine Learning Modelling"
       - text: Research Paper
         href: research.qmd
 

@@ -1,5 +1,5 @@
 ---
-title: "Predictive Modelling"
+title: "Machine Learning Modelling"
 author:
   - name: Khant Min Naing
   - name: Ann Mei Yi Victoria Grace

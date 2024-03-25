@@ -1,5 +1,5 @@
 ---
-title: "GWS Modelling: Parametric Testing"
+title: "Statistical Modelling"
 author:
   - name: Khant Min Naing
   - name: Ann Mei Yi Victoria Grace
@@ -533,7 +533,7 @@ tmap_options(check.and.fix = TRUE)+
 tm_shape(valtellina)+
   tm_polygons()+
 tm_shape(residuals.sf)+
-  tm_dots(col = "GLM.residuals", midpoint = NA, palette ="RdYlGn",  style="quantile", auto.palette.mapping=FALSE) +
+  tm_dots(col = "GLM.residuals", palette ="RdYlGn",  style="quantile") +
   tm_layout(
     main.title = "Residuals of Generalised Linear (Logistic) Regression Model",
     main.title.size = 1,
