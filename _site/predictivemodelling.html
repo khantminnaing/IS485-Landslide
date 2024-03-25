@@ -183,17 +183,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#test-train-split" id="toc-test-train-split" class="nav-link" data-scroll-target="#test-train-split">Test Train Split</a></li>
   </ul></li>
-  <li><a href="#fitting-a-non-spatial-random-forest-model" id="toc-fitting-a-non-spatial-random-forest-model" class="nav-link" data-scroll-target="#fitting-a-non-spatial-random-forest-model"><strong>Fitting a non-spatial Random Forest model</strong></a></li>
+  <li><a href="#fitting-a-non-spatial-random-forest-model" id="toc-fitting-a-non-spatial-random-forest-model" class="nav-link" data-scroll-target="#fitting-a-non-spatial-random-forest-model">Fitting a non-spatial Random Forest model</a></li>
   <li><a href="#residuals" id="toc-residuals" class="nav-link" data-scroll-target="#residuals">Residuals</a></li>
-  <li><a href="#global-variable-importance" id="toc-global-variable-importance" class="nav-link" data-scroll-target="#global-variable-importance"><strong>Global variable importance</strong></a></li>
-  <li><a href="#contribution-of-predictors-to-model-transferability" id="toc-contribution-of-predictors-to-model-transferability" class="nav-link" data-scroll-target="#contribution-of-predictors-to-model-transferability"><strong>Contribution of predictors to model transferability</strong></a></li>
+  <li><a href="#global-variable-importance" id="toc-global-variable-importance" class="nav-link" data-scroll-target="#global-variable-importance">Global variable importance</a></li>
+  <li><a href="#contribution-of-predictors-to-model-transferability" id="toc-contribution-of-predictors-to-model-transferability" class="nav-link" data-scroll-target="#contribution-of-predictors-to-model-transferability">Contribution of predictors to model transferability</a></li>
   <li><a href="#partial-dependence-plot-pdp" id="toc-partial-dependence-plot-pdp" class="nav-link" data-scroll-target="#partial-dependence-plot-pdp">Partial dependence plot (PDP)</a>
   <ul class="collapse">
   <li><a href="#model-performance" id="toc-model-performance" class="nav-link" data-scroll-target="#model-performance">Model Performance</a></li>
   </ul></li>
   <li><a href="#geographical-random-forest" id="toc-geographical-random-forest" class="nav-link" data-scroll-target="#geographical-random-forest">Geographical Random Forest</a></li>
-  <li><a href="#fitting-a-spatial-model-with-rf_spatial" id="toc-fitting-a-spatial-model-with-rf_spatial" class="nav-link" data-scroll-target="#fitting-a-spatial-model-with-rf_spatial"><strong>Fitting a spatial model with <code>rf_spatial()</code></strong></a></li>
-  <li><a href="#partial-dependence-plots-pdp-for-gwrf" id="toc-partial-dependence-plots-pdp-for-gwrf" class="nav-link" data-scroll-target="#partial-dependence-plots-pdp-for-gwrf"><strong>Partial Dependence Plots (PDP) for gwRF</strong></a></li>
+  <li><a href="#fitting-a-spatial-model-with-rf_spatial" id="toc-fitting-a-spatial-model-with-rf_spatial" class="nav-link" data-scroll-target="#fitting-a-spatial-model-with-rf_spatial">Fitting a spatial model with <code>rf_spatial()</code></a></li>
+  <li><a href="#partial-dependence-plots-pdp-for-gwrf" id="toc-partial-dependence-plots-pdp-for-gwrf" class="nav-link" data-scroll-target="#partial-dependence-plots-pdp-for-gwrf">Partial Dependence Plots (PDP) for gwRF</a></li>
   <li><a href="#using-spatialml" id="toc-using-spatialml" class="nav-link" data-scroll-target="#using-spatialml">Using SpatialML</a></li>
   </ul>
 </nav>
@@ -319,7 +319,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 </section>
 <section id="fitting-a-non-spatial-random-forest-model" class="level1">
-<h1><strong>Fitting a non-spatial Random Forest model</strong></h1>
+<h1>Fitting a non-spatial Random Forest model</h1>
 <p>The function <a href="https://blasbenito.github.io/spatialRF/reference/rf.html"><code>rf()</code></a> is a convenient wrapper for <a href="https://rdrr.io/pkg/ranger/man/ranger.html"><code>ranger::ranger()</code></a> used in every modelling function of the <em>spatialRF</em> package. It takes the training data, the names of the response and the predictors, and optionally (to assess the spatial autocorrelation of the residuals), the distance matrix, and a vector of distance thresholds (in the same units as the distances in <strong>distance_matrix</strong>).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>non.spatial.rf <span class="ot">&lt;-</span> spatialRF<span class="sc">::</span><span class="fu">rf</span>(</span>
@@ -349,7 +349,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The upper panels show the results of the normality test (interpretation in the title), the middle panel shows the relationship between the residuals and the fitted values, important to understand the behavior of the residuals, and the lower panel shows the Moran’s I of the residuals across distance thresholds and their respective p-values (positive for 0 and 1000 km).</p>
 </section>
 <section id="global-variable-importance" class="level1">
-<h1><strong>Global variable importance</strong></h1>
+<h1>Global variable importance</h1>
 <p>The slot <strong>importance</strong> (<code>model.non.spatial$variable.importance</code>) contains the variable importance scores. These can be plotted with <a href="https://blasbenito.github.io/spatialRF/reference/plot_importance.html"><code>plot_importance()</code></a>, printed with <a href="https://blasbenito.github.io/spatialRF/reference/print_importance.html"><code>print_importance()</code></a>, and the dataframe retrieved with <a href="https://blasbenito.github.io/spatialRF/reference/get_importance.html"><code>get_importance()</code></a></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>spatialRF<span class="sc">::</span><span class="fu">plot_importance</span>(</span>
@@ -563,7 +563,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 <section id="contribution-of-predictors-to-model-transferability" class="level1">
-<h1><strong>Contribution of predictors to model transferability</strong></h1>
+<h1>Contribution of predictors to model transferability</h1>
 <p>The new function <a href="https://blasbenito.github.io/spatialRF/reference/rf_importance.html"><code>rf_importance()</code></a> offers a way to assess to what extent each predictor contributes to model transferability (predictive ability on independent spatial folds measured with <a href="https://blasbenito.github.io/spatialRF/reference/rf_evaluate.html"><code>rf_evaluate()</code></a>, see below). It does so by comparing the performance of the full model with models fitted without each one of the predictors. The difference in performance between the full model and a model without a given predictor represents the contribution of such predictor to model transferability.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>non.spatial.rf <span class="ot">&lt;-</span> spatialRF<span class="sc">::</span><span class="fu">rf_importance</span>(</span>
@@ -656,7 +656,7 @@ Model performance
 <p>“Geographical Weighted Random Forest (GWRF) or local RF model is a spatial analysis method using a local version of the Random Forest Regresson Model. It allows for the investigation of the existence of spatial non-stationarity, in the relationship between a dependent and a set of independent variables. The latter is possible by fitting a sub-model for each observation in space, taking into account the neighbouring observations. This technique adopts the idea of the Geographically Weighted Regression, Kalogirou (2003). The main difference between a tradition (linear) GWR and GRF is that we can model non-stationarity coupled with a flexible non-linear model which is very hard to overfit due to its bootstrapping nature, thus relaxing the assumptions of traditional Gaussian statistics. Essential it was designed to be a bridge between machine learning and geographical models, combining inferential and explanatory power. Additionally, it is suited for datasets with numerous predictors, due to the robust nature of the random forest algorithm in high dimensionality.”</p>
 </section>
 <section id="fitting-a-spatial-model-with-rf_spatial" class="level1">
-<h1><strong>Fitting a spatial model with <code>rf_spatial()</code></strong></h1>
+<h1>Fitting a spatial model with <code>rf_spatial()</code></h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>spatial.rf <span class="ot">&lt;-</span> spatialRF<span class="sc">::</span><span class="fu">rf_spatial</span>(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> non.spatial.rf,</span>
@@ -964,7 +964,7 @@ Spatial evaluation
 </div>
 </section>
 <section id="partial-dependence-plots-pdp-for-gwrf" class="level1">
-<h1><strong>Partial Dependence Plots (PDP) for gwRF</strong></h1>
+<h1>Partial Dependence Plots (PDP) for gwRF</h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>spatialRF<span class="sc">::</span><span class="fu">plot_response_curves</span>(</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  spatial.rf,</span>

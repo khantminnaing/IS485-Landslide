@@ -95,7 +95,7 @@ spatialRF::plot_training_df_moran(
 
 ![](images/Screenshot%202024-03-14%20at%208.53.39%20PM.png){fig-align="center"}
 
-# **Fitting a non-spatial Random Forest model**
+# Fitting a non-spatial Random Forest model
 
 The function [`rf()`](https://blasbenito.github.io/spatialRF/reference/rf.html) is a convenient wrapper for [`ranger::ranger()`](https://rdrr.io/pkg/ranger/man/ranger.html) used in every modelling function of the *spatialRF* package. It takes the training data, the names of the response and the predictors, and optionally (to assess the spatial autocorrelation of the residuals), the distance matrix, and a vector of distance thresholds (in the same units as the distances in **distance_matrix**).
 
@@ -127,7 +127,7 @@ spatialRF::plot_residuals_diagnostics(
 
 The upper panels show the results of the normality test (interpretation in the title), the middle panel shows the relationship between the residuals and the fitted values, important to understand the behavior of the residuals, and the lower panel shows the Moran's I of the residuals across distance thresholds and their respective p-values (positive for 0 and 1000 km).
 
-# **Global variable importance**
+# Global variable importance
 
 The slot **importance** (`model.non.spatial$variable.importance`) contains the variable importance scores. These can be plotted with [`plot_importance()`](https://blasbenito.github.io/spatialRF/reference/plot_importance.html), printed with [`print_importance()`](https://blasbenito.github.io/spatialRF/reference/print_importance.html), and the dataframe retrieved with [`get_importance()`](https://blasbenito.github.io/spatialRF/reference/get_importance.html)
 
@@ -158,7 +158,7 @@ kableExtra::kbl(
   kableExtra::kable_paper("hover", full_width = T)
 ```
 
-# **Contribution of predictors to model transferability**
+# Contribution of predictors to model transferability
 
 The new function [`rf_importance()`](https://blasbenito.github.io/spatialRF/reference/rf_importance.html) offers a way to assess to what extent each predictor contributes to model transferability (predictive ability on independent spatial folds measured with [`rf_evaluate()`](https://blasbenito.github.io/spatialRF/reference/rf_evaluate.html), see below). It does so by comparing the performance of the full model with models fitted without each one of the predictors. The difference in performance between the full model and a model without a given predictor represents the contribution of such predictor to model transferability.
 
@@ -246,7 +246,7 @@ spatialRF::print_performance(non.spatial.rf)
 
 "Geographical Weighted Random Forest (GWRF) or local RF model is a spatial analysis method using a local version of the Random Forest Regresson Model. It allows for the investigation of the existence of spatial non-stationarity, in the relationship between a dependent and a set of independent variables. The latter is possible by fitting a sub-model for each observation in space, taking into account the neighbouring observations. This technique adopts the idea of the Geographically Weighted Regression, Kalogirou (2003). The main difference between a tradition (linear) GWR and GRF is that we can model non-stationarity coupled with a flexible non-linear model which is very hard to overfit due to its bootstrapping nature, thus relaxing the assumptions of traditional Gaussian statistics. Essential it was designed to be a bridge between machine learning and geographical models, combining inferential and explanatory power. Additionally, it is suited for datasets with numerous predictors, due to the robust nature of the random forest algorithm in high dimensionality."
 
-# **Fitting a spatial model with `rf_spatial()`**
+# Fitting a spatial model with `rf_spatial()`
 
 ```{r}
 #| eval: false
@@ -331,7 +331,7 @@ spatial.rf.eval <- read_rds("data/rds/spatial.rf.eval.rds")
 print_evaluation(spatial.rf.eval)
 ```
 
-# **Partial Dependence Plots (PDP) for gwRF**
+# Partial Dependence Plots (PDP) for gwRF
 
 ```{r}
 #| fig-width: 10
