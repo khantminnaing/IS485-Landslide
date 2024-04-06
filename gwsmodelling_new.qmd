@@ -528,6 +528,13 @@ residuals.sp <- as(residuals.sf, "Spatial")
 ```
 
 ```{r}
+ggplot(residuals.sf, aes(x=residuals)) +
+  geom_histogram(color="white")+
+  labs(title="Residuals of Generalised Linear (Logistic) Regression Model", x="Residuals", y="Count")  +
+  coord_cartesian(xlim = c(-50, 2900))
+```
+
+```{r}
 tmap_mode("view")
 tmap_options(check.and.fix = TRUE)+
 tm_shape(valtellina)+
@@ -547,6 +554,13 @@ SDF.sf <- st_as_sf(SDF)
 SDF.sf <- st_set_crs(SDF.sf, 32632) 
 st_crs(SDF.sf)
 SDF.sp <- as(SDF.sf, "Spatial")
+```
+
+```{r}
+ggplot(SDF.sf, aes(x=residual)) +
+  geom_histogram(color="white") +
+  labs(title="Residuals of Geographically Weighted Logistic Regression Model", x="Residuals", y="Count")  +
+  coord_cartesian(xlim = c(-1, 1))
 ```
 
 ```{r}
@@ -575,8 +589,14 @@ summary(k1dists)
 ```
 
 ```{r}
-dnear_nb <- dnearneigh(coords, 0, 2922, longlat = FALSE)
-listw <- nb2listw(dnear_nb, style="W")
+dnear_nb_95 <- dnearneigh(coords, 0, 95, longlat = FALSE)
+listw <- nb2listw(dnear_nb_95, style="W", zero.policy=TRUE)
+moran.test(residuals.sp$residuals, listw)
+```
+
+```{r}
+dnear_nb_198 <- dnearneigh(coords, 0, 198, longlat = FALSE)
+listw <- nb2listw(dnear_nb_198, style="W", zero.policy=TRUE)
 moran.test(residuals.sp$residuals, listw)
 ```
 

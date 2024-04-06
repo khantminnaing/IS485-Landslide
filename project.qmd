@@ -1,5 +1,5 @@
 ---
-title: "Exploratory Data Analysis"
+title: "Data Preparation"
 author:
   - name: Khant Min Naing
   - name: Ann Mei Yi Victoria Grace
@@ -15,8 +15,6 @@ output:
     toc: true
     toc_depth: 4
     self_contained: false
-execute: 
-  eval: false
 ---
 
 ::: {style="color: #603494;"}
@@ -586,6 +584,7 @@ Plan (or planform) curvature refers to the curvature of a slope in the horizonta
 
 ```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
 #| echo: false
+#| 
 ggplot(data=plan_classifed_df)+
   geom_raster(aes(x=x,y=y,fill=as.character(plan_curvature_cat)))+
   geom_sf(fill='transparent',data=valtellina)+
