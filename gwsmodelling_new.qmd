@@ -393,14 +393,14 @@ m_comparison <- data.frame(
                   "Accuracy", "AIC",
                   "Sensitivity", "Specificity", 
                   "Percentage Deviant"),
-  Model1 = c(50563L,
+  Model_1 = c(50563L,
              8783L,41780L,24L,cm$accuracy, sum_lr$aic,
              cm$sensitivity, 
              cm$specificity, pd),
-  Model2 = c(50563L,8783L,41780L,17L,cm2$accuracy, sum_lr2$aic,
+  Model_2 = c(50563L,8783L,41780L,17L,cm2$accuracy, sum_lr2$aic,
              cm2$sensitivity,
              cm2$specificity, pd2),
-  Model3 = c(9899L,4630L,2304L,24L,cm3$accuracy, sum_lr3$aic,
+  Model_3 = c(9899L,4630L,2304L,24L,cm3$accuracy, sum_lr3$aic,
              cm3$sensitivity,
              cm3$specificity, pd2)
 )
@@ -411,7 +411,7 @@ m_comparison[5:9, -1] <- round(m_comparison[5:9, -1], 4)
 
 kable(m_comparison,
       format="html",
-      caption="Comparing LR Model 1 and LR Model 2")
+      caption="Comparing LR Model 1, 2 and 3")
 ```
 
 ::: callout-note
@@ -522,9 +522,9 @@ gwlr
 
 ```{r}
 GLM <- gwlr$glms
-residuals.sf <- cbind(training_data_sf, 
-                        GLM$residuals)
+residuals.sf <- cbind(training_data_sf, residuals = GLM$residuals)
 st_crs(residuals.sf)
+residuals.sp <- as(residuals.sf, "Spatial")
 ```
 
 ```{r}
@@ -533,7 +533,7 @@ tmap_options(check.and.fix = TRUE)+
 tm_shape(valtellina)+
   tm_polygons()+
 tm_shape(residuals.sf)+
-  tm_dots(col = "GLM.residuals", palette ="RdYlGn",  style="quantile") +
+  tm_dots(col = "residuals", palette ="RdYlGn",  style="quantile", midpoint = 0) +
   tm_layout(
     main.title = "Residuals of Generalised Linear (Logistic) Regression Model",
     main.title.size = 1,
@@ -546,6 +546,7 @@ SDF <- gwlr$SDF
 SDF.sf <- st_as_sf(SDF)
 SDF.sf <- st_set_crs(SDF.sf, 32632) 
 st_crs(SDF.sf)
+SDF.sp <- as(SDF.sf, "Spatial")
 ```
 
 ```{r}
@@ -560,6 +561,45 @@ tm_shape(SDF.sf)+
     main.title.size = 1,
     main.title.position = "center",
     legend.position = c("right", "bottom"))
+```
+
+### 4.4.4 Moran's $I$ for Residuals
+
+#### Moran's $I$ of LR Residuals
+
+```{r}
+coords <- coordinates(residuals.sp)
+k1 <- knn2nb(knearneigh(coords))
+k1dists <- unlist(nbdists(k1, coords, longlat = FALSE))
+summary(k1dists)
+```
+
+```{r}
+dnear_nb <- dnearneigh(coords, 0, 2922, longlat = FALSE)
+listw <- nb2listw(dnear_nb, style="W")
+moran.test(residuals.sp$residuals, listw)
+```
+
+```{r}
+knear <- knearneigh(coordinates(residuals.sp), k=20) 
+knear_nb <- knn2nb(knear)
+listw <- nb2listw(knear_nb, style="W")
+moran.test(residuals.sp$residuals, listw)
+```
+
+#### Moran's $I$ of GWLR Residuals
+
+```{r}
+dnear_nb <- dnearneigh(coordinates(SDF.sp), 0, 2922, longlat = FALSE)
+listw <- nb2listw(dnear_nb, style="W")
+moran.test(SDF.sp$residual, listw)
+```
+
+```{r}
+knear <- knearneigh(coordinates(SDF.sp), k=20) 
+knear_nb <- knn2nb(knear)
+listw <- nb2listw(knear_nb, style="W")
+moran.test(SDF.sp$residual, listw)
 ```
 
 ### 4.4.5 Correlation Matrix Using ggstats
