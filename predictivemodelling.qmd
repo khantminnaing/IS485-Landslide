@@ -16,20 +16,50 @@ output:
     self_contained: false
 ---
 
+# Predictive Landslide Susceptibility Modelling Using Machine Learning Techniques
+
+Landslide susceptibility modelling is emerging field of research that aims to identify the contributing factors of landslides and predict areas that are most susceptible. These studies serve as a valuable decision-support tool, helping us identify the areas at highest risk and implement preventive measures accordingly. In this research project, we aims to demonstrate the potential contribution of spatial non-stationarity in landslide susceptibility modelling. To do so, we will attempt to make a comparative case study of nonspatial and spatial random forest techniques and how space can be incorporate to these models. In particular, we will be developing three different RF models
+
+-   (Nonspatial) Random Forest (`ranger` package)
+
+-   Moran's Eigenvector Random Forest (`spatialRF` package)
+
+-   Geographically Weighted Random Forest (`SpatialML` package)
+
 # 1.0 Import Packages
 
-The package **spatialRF** facilitates fitting spatial regression models on regular or irregular data with Random Forest. It does so by generating *spatial predictors* that help the model "understand" the spatial structure of the training data with the end goal of minimizing the spatial autocorrelation of the model residuals and offering honest variable importance scores.
+Before we start the analysis, we will need to import necessary R packages first. In particular, we will import three packages that will allow us to fit three RF models we mentioned above.
+
+-   The package **ranger** allows fast implementation of Random Forests, particularly suited for high dimensional data
+
+-   The package **spatialRF** facilitates fitting spatial regression models on regular or irregular data with Random Forest. It does so by generating *spatial predictors* that help the model "understand" the spatial structure of the training data with the end goal of minimizing the spatial autocorrelation of the model residuals and offering honest variable importance scores.
+
+-   The package **SpatialML** implements a spatial extension of the random forest algorithm based on the concept of geographically weighted regression (GWR)
 
 ```{r}
-pacman::p_load(sf, sp, tmap, ggplot2, GWmodel, tidyverse, rsample, ranger, spatialRF, kableExtra, randomForestExplainer, pdp, dplyr, SpatialML)
+pacman::p_load(sf, sp, tmap, ggplot2, GWmodel, tidyverse, rsample, ranger, spatialRF, kableExtra, randomForestExplainer, pdp, dplyr, SpatialML, caret, Metrics, raster)
 ```
 
+# 2.0 Import Datasets
+
+In this session, we will use two datasets.
+
+-   The first dataset, **`valtellina`**, is a geospatial dataset that delineates the boundary of our study area - Valtellina Valley. This data is presented in the ESRI shapefile format and is based on the Italy Geographic Coordinate System.
+
+-   The second dataset, `ls_data` is a comma-separated values (csv) dataset that includes the landslide and non-landslide samples we will use for model fitting, training and testing.
+
 ```{r}
+valtellina <- read_sf(dsn = "data/vector", layer = "valtellina")
 ls_data <- readRDS("data/rds/sample_Q6.rds")
-#ls_data <- subset(ls_data, select = -Lithology_Unconsolidated)
 ```
 
-## Test Train Split
+# 3.0 Data Wrangling
+
+## 3.1 Test-Train Split
+
+In this section, we are preparing our data for the subsequent analysis. The **`ls_data`** dataset, which contains our landslide data, is divided into two subsets: a training set and a testing set.
+
+The code chunk below performs this operation. This process is crucial because it allows us to train our model on one subset of the data (the training set) and then evaluate its performance on unseen data (the testing set). This helps to ensure that our model is not just memorizing the training data and is actually able to generalize to new data. The **`set.seed(1243)`** function ensures that the random split of data is reproducible. The **`initial_split`** function from the **`rsample`** package is used to perform the split, with 20% of the data allocated to the testing set (**`prop = .2`**). The split is stratified by the **`Landslide`** variable, meaning the proportion of each class of **`Landslide`** is the same in the training and testing sets.
 
 ```{r}
 set.seed(1243)
@@ -39,42 +69,118 @@ ls_split <- ls_data %>%
 
 training_data <- training(ls_split)
 testing_data  <- testing(ls_split)
+```
 
+## 3.2 Preparing the Testing Data
+
+In this section, we are further refining our testing data for the analysis. We will be performing two main operations:
+
+1.  **Saving the target variable:** We save the **`Landslide`** values from **`testing_data`** as a separate column. This is done because **`Landslide`** is our target variable, and we want to compare our model's predictions with the actual values to evaluate its performance.
+
+2.  **Removing unnecessary variables:** We remove the **`Train_ID`**, **`Grid_ID`**, and **`Landslide`** variables from the **`testing_data`** as they are not needed for the analysis. These variables are identifiers and the target variable, which are not used as input features in our model.
+
+The code chunk below performs these operations:
+
+```{r}
+test_col <- as.factor(testing_data$Landslide)
+testing_data <- testing_data_temp <- subset(testing_data, select = -c(Train_ID,Grid_ID,Landslide))
+```
+
+## 3.3 Storing Variable Names
+
+In this section, we are streamlining our code by storing the names of our variables in vectors. y storing the variable names in vectors, we can easily reference them later in our code. This approach will make our code cleaner and more efficient, as we won't have to repeatedly write out all the variable names. Also, it reduces the chance of errors that could arise from mistyping variable names.
+
+The code chunk below performs these operations:
+
+-   We first store the name of the dependent variable in a vector called `dependent.variable.name`.
+
+-   We then use the `colnames` function to get the names of columns 6 to 29 from the `ls_data` dataset. These are the names of the independent variable used in this study, We store them in a vector called `predictor.variable.names`.
+
+-   We etract the 'X' and 'Y' columns from the training data and store them in a new data frame called `xy`.
+
+```{r}
 dependent.variable.name <- "Landslide"
 predictor.variable.names <- colnames(ls_data)[6:29]
 xy <- training_data[, c("X", "Y")]
 colnames(xy) <- c("x", "y")
-
-
-training_data_sf <- st_as_sf(training_data, coords = c("X", "Y"))
-testing_data_sf <- st_as_sf(testing_data, coords = c("X", "Y"))
-training_data_sp <- as_Spatial(training_data_sf)
-testing_data_sp <- as_Spatial(testing_data_sf)
-
-
-distance_matrix <- gw.dist(dp.locat=
-                     coordinates(training_data_sp))
-
-distance.thresholds <- c(0, 1000, 2000, 4000, 8000)
-
 random.seed <- 1
 ```
 
-The function [`plot_training_df_moran()`](https://blasbenito.github.io/spatialRF/reference/plot_training_df_moran.html) helps create the scatterplots of the response variable (y axis) against each predictor (x axis).
+## 3.4 Transforming Data to Simple Feature Objects
+
+In this section, we are transforming our **`training_data`** and **`testing_data`** data frames into simple feature (**`sf`**) objects. This is a crucial step for spatial analysis, as **`sf`** objects allow us to perform various spatial operations.
+
+The code chunk below performs these transformations:
 
 ```{r}
-#| fig-width: 10
-#| fig-height: 12
-spatialRF::plot_training_df(
-  data = training_data,
-  dependent.variable.name = dependent.variable.name,
-  predictor.variable.names = c("Elevation", "Slope_Angle", "Profile_Curvature", "Plan_Curvature", "Proximity_Settlement", "Proximity_Stream","Proximity_Road", "Proximity_Fault", "Precipitation", "TWI", "SPI", "STI"),
-  ncol = 3,
-  point.color = viridis::viridis(100, option = "A", direction = -1),
-  line.color = "gray30")
+training_data_sf <- st_as_sf(training_data, coords = c("X", "Y"))
+testing_data_sf <- st_as_sf(testing_data, coords = c("X", "Y"))
+
 ```
 
-The function [`plot_training_df_moran()`](https://blasbenito.github.io/spatialRF/reference/plot_training_df_moran.html) helps assessing the spatial autocorrelation of the response variable and the predictors across different distance thresholds. Low Moran's I and p-values equal or larger than 0.05 indicate that there is no spatial autocorrelation for the given variable and distance threshold.
+To ensure that our spatial data is in the correct projected system, we will set the CRS of `training_data_sf` and `testing_data_sf` to **WGS 84 / UTM zone 32N** (EPSG code 32632). This is crucial for accurate spatial analysis, as different CRSs can lead to different results. By setting appropriate CRS, we ensure that our spatial data is in a projected system suitable for accurate distance and area calculations.
+
+The code chunk below sets the CRS for our **`training_data_sf`** and **`testing_data_sf`**:
+
+```{r}
+training_data_sf <- st_set_crs(training_data_sf, 32632) 
+testing_data_sf <- st_set_crs(testing_data_sf, 32632) 
+st_crs(training_data_sf)
+```
+
+## 3.5 Distance Matrix Transformation and Threshold Setting
+
+In this section, we are performing transformations on the distance matrix and setting distance thresholds based on quantile values. These steps are crucial for further spatial analysis.
+
+-   We use **`gw.dist`** function from the **`spgwr`** package to compute a geographically weighted distance matrix for the training data,
+
+-   We convert the distance matrix from metres to kilometres for easier interpretation.
+
+-   We then calculate the quantiles of the distance matrix.
+
+The code chunk below performs these operations:
+
+```{r}
+training_data_sp <- as_Spatial(training_data_sf)
+distance.matrix <- gw.dist(dp.locat=
+                     coordinates(training_data_sp))
+distance.matrix <- distance.matrix / 1000
+quantile(distance.matrix)
+```
+
+After examining the quantile values, we set the distance thresholds as follows:
+
+```{r}
+distance.thresholds <- c(0, 20, 35, 55, 110)
+```
+
+## 3.6 Checking the Balance of Classes
+
+In this section, we are verifying whether our training and testing datasets have a representative ratio of landslide (class 1) and non-landslide (class 0) data. This is an important step to ensure that our model is trained and tested on balanced data.
+
+The code chunk below performs these checks:
+
+```{r}
+sum(training_data$Landslide == 1)
+sum(training_data$Landslide == 0)
+
+sum(testing_data$Landslide == 1)
+sum(testing_data$Landslide == 0)
+```
+
+Based on these calculations, our **`training_data`** has **1209 landslide** and **1594 non-landslide** samples. Our **`testing_data`** has **4839 landslide** and **6378 non-landslide** samples. This indicates that our data has a representative ratio of landslide to non-landslide samples, which is crucial for training a balanced and unbiased model.
+
+# 4.0 Explanatory Data Analysis
+
+## 4.1 Variable Spatial Autocorrelation Analysis
+
+Spatial predictor variables often exhibit spatial autocorrelation, where nearby observations are not independent but rather exhibit similar values. This leads to spatial nonstationarity, a phenomenon where the relationships between variables change over space, violating the assumption of a global model.
+
+To address this issue, we use Moran's I, a common measure of spatial autocorrelation widely adopted by the geospatial data science community. Moran's I quantifies the similarity between values and neighbouring observations, considering spatial relationships between neighbours. It describes how each observation differs from the mean of the study area.
+
+Our aim is to assess the spatial autocorrelation level of predictor variables at different spatial scales. The function **`plot_training_df_moran()`** helps in assessing the spatial autocorrelation of the response variable and the predictors across different distance thresholds. This function generates a plot that visualizes the spatial autocorrelation of the response variable and the predictors across different distance thresholds. The **`fill.color`** and **`point.color`** arguments are used to customize the colors of the plot.
+
+The code chunk below performs this operation:
 
 ```{r}
 #| eval: false
@@ -93,18 +199,30 @@ spatialRF::plot_training_df_moran(
 )
 ```
 
-![](images/Screenshot%202024-03-14%20at%208.53.39%20PM.png){fig-align="center"}
+![](images/Screenshot%202024-04-02%20at%205.00.25%20PM.png){fig-align="center"}
 
-# Fitting a non-spatial Random Forest model
+# 5.0 Non-spatial Random Forest
 
-The function [`rf()`](https://blasbenito.github.io/spatialRF/reference/rf.html) is a convenient wrapper for [`ranger::ranger()`](https://rdrr.io/pkg/ranger/man/ranger.html) used in every modelling function of the *spatialRF* package. It takes the training data, the names of the response and the predictors, and optionally (to assess the spatial autocorrelation of the residuals), the distance matrix, and a vector of distance thresholds (in the same units as the distances in **distance_matrix**).
+## 5.1 Fitting a non-spatial Random Forest model
+
+The **`rf()`** function from the **`spatialRF`** package is a convenient wrapper for the **`ranger::ranger()`** function, which is used in every modelling function of the **`spatialRF`** package. This function takes the training data, the names of the response variable and the predictor variables, and optionally, to assess the spatial autocorrelation of the residuals, the distance matrix, and a vector of distance thresholds (in the same units as the distances in **`distance_matrix`**).
+
+The code chunk below fits a non-spatial random forest model using the **`rf()`** function:
+
+By default, RF model from `ranger` use the following parameters.
+
+-   Number of Trees (`ntree`) : 500 
+
+-   Number of Features at Each Split (`mtry`) : 4 
+
+-   Minimum Node Size (`min.node.size`) : 5
 
 ```{r}
 non.spatial.rf <- spatialRF::rf(
   data = training_data,
   dependent.variable.name = dependent.variable.name,
   predictor.variable.names = predictor.variable.names,
-  distance.matrix = distance_matrix,
+  distance.matrix = distance.matrix,
   distance.thresholds = distance.thresholds,
   xy = xy,
   seed = random.seed,
@@ -112,9 +230,11 @@ non.spatial.rf <- spatialRF::rf(
 )
 ```
 
-# Residuals
+## 5.2 Residual Spatial Autocorrelation Analysis
 
-The slot **residuals** (`model.non.spatial$residuals`) stores the values of the residuals and the results of the normality and spatial autocorrelation tests, and its content can be plotted with [`plot_residuals_diagnostics()`](https://blasbenito.github.io/spatialRF/reference/plot_residuals_diagnostics.html).
+The **`residuals`** slot of our non-spatial random forest model (**`non.spatial.rf$residuals`**) stores the values of the residuals and the results of the normality and spatial autocorrelation tests. We can visualize this information using the **`plot_residuals_diagnostics()`** function from the **`spatialRF`** package. The **`xy`**, **`distance.matrix`**, and **`distance.thresholds`** arguments included in the model fitting are used to assess the spatial autocorrelation of the residuals.
+
+The code chunk below generates a diagnostic plot of the residuals:
 
 ```{r}
 #| fig-width: 10
@@ -125,11 +245,23 @@ spatialRF::plot_residuals_diagnostics(
   )
 ```
 
-The upper panels show the results of the normality test (interpretation in the title), the middle panel shows the relationship between the residuals and the fitted values, important to understand the behavior of the residuals, and the lower panel shows the Moran's I of the residuals across distance thresholds and their respective p-values (positive for 0 and 1000 km).
+The plot above provides valuable insights into the behavior of the residuals:
 
-# Global variable importance
+-   The **upper panels** show the results of the normality test. The interpretation of the test is provided in the title of the plot.
 
-The slot **importance** (`model.non.spatial$variable.importance`) contains the variable importance scores. These can be plotted with [`plot_importance()`](https://blasbenito.github.io/spatialRF/reference/plot_importance.html), printed with [`print_importance()`](https://blasbenito.github.io/spatialRF/reference/print_importance.html), and the dataframe retrieved with [`get_importance()`](https://blasbenito.github.io/spatialRF/reference/get_importance.html)
+-   The **middle panel** shows the relationship between the residuals and the fitted values. This is important for understanding the behavior of the residuals.
+
+-   The **lower panel** shows Moran's I of the residuals across distance thresholds and their respective p-values. Positive values indicate positive spatial autocorrelation at the corresponding distances (0, 20, 35 and 55 km in this case).
+
+By examining these plots, we can gain a deeper understanding of our model's performance and the spatial structure of the residuals.
+
+## 5.3 Global Variable Importance
+
+The **`importance`** slot of our non-spatial random forest model (**`non.spatial.rf$variable.importance`**) contains the variable importance scores. These scores provide a measure of the contribution of each predictor variable to the predictive power of the model.
+
+We can visualize these importance scores using the **`plot_importance()`** function from the **`spatialRF`** package, print them with the **`print_importance()`** function, or retrieve the data frame of importance scores with the **`get_importance()`** function.
+
+The code chunk below generates a plot of the variable importance scores:
 
 ```{r}
 #| fig-height: 10
@@ -139,7 +271,21 @@ spatialRF::plot_importance(
   )
 ```
 
-The package [`randomForestExplainer`](https://github.com/ModelOriented/randomForestExplainer) offers a couple of interesting options to deepen our understanding on variable importance scores. The first one is [`measure_importance()`](https://rdrr.io/pkg/randomForestExplainer/man/measure_importance.html), which analyzes the forest to find out the average minimum tree depth at which each variable can be found (`mean_min_depth`), the number of nodes in which a variable was selected to make a split (`no_of_nodes`), the number of times the variable was selected as the first one to start a tree (`times_a_root`), and the probability of a variable to be in more nodes than what it would be expected by chance (`p_value`).
+The plot above provides a visual representation of the importance of each predictor variable in the model. The variables are ordered by their importance scores, with the most important variable at the top.
+
+## 5.4 Understanding Variable Importance Scores
+
+The **`randomForestExplainer`** package offers several options to deepen our understanding of variable importance scores. One such option is the **`measure_importance()`** function, which analyzes the forest to find out:
+
+-   The average minimum tree depth at which each variable can be found (**`mean_min_depth`**).
+
+-   The number of nodes in which a variable was selected to make a split (**`no_of_nodes`**).
+
+-   The number of times the variable was selected as the first one to start a tree (**`times_a_root`**).
+
+-   The probability of a variable to be in more nodes than what would be expected by chance (**`p_value`**).
+
+The code chunk below performs this operation:
 
 ```{r}
 importance.df <- randomForestExplainer::measure_importance(
@@ -147,6 +293,8 @@ importance.df <- randomForestExplainer::measure_importance(
   measures = c("mean_min_depth", "no_of_nodes", "times_a_root", "p_value")
   )
 ```
+
+The resulting data frame, **`importance.df`**, contains the variable importance scores for each measure. This data frame can be printed in a tidy format using the **`kableExtra::kbl()`** function:
 
 ```{r}
 kableExtra::kbl(
@@ -158,9 +306,15 @@ kableExtra::kbl(
   kableExtra::kable_paper("hover", full_width = T)
 ```
 
-# Contribution of predictors to model transferability
+This table provides a detailed view of the variable importance scores, allowing us to better understand the contribution of each predictor variable to the model.
 
-The new function [`rf_importance()`](https://blasbenito.github.io/spatialRF/reference/rf_importance.html) offers a way to assess to what extent each predictor contributes to model transferability (predictive ability on independent spatial folds measured with [`rf_evaluate()`](https://blasbenito.github.io/spatialRF/reference/rf_evaluate.html), see below). It does so by comparing the performance of the full model with models fitted without each one of the predictors. The difference in performance between the full model and a model without a given predictor represents the contribution of such predictor to model transferability.
+## 5.5 Assessing Predictor Contribution to Model Transferability
+
+The **`rf_importance()`** function from the **`spatialRF`** package provides a way to assess the extent to which each predictor contributes to model transferability. Model transferability refers to the model's predictive ability on independent spatial folds, which can be measured with the **`rf_evaluate()`** function (discussed later).
+
+The **`rf_importance()`** function assesses predictor contribution by comparing the performance of the full model with models fitted without each predictor. The difference in performance between the full model and a model without a given predictor represents the contribution of that predictor to model transferability.
+
+The code chunk below performs this operation:
 
 ```{r}
 #| eval: false
@@ -171,13 +325,18 @@ non.spatial.rf <- spatialRF::rf_importance(
 
 ```{r}
 #| echo: false
+#| eval: false
 #| fig-height: 10
 read_rds("data/rds/transferability.plot.rds")
 ```
 
-# Partial dependence plot (PDP)
+## 5.6 Partial Dependence Plot (PDP)
 
-To understand and visualize how the model predictions are influenced by each predictor when all other predictors are being controlled, we can generate partial dependence plots (PDPs) of the predictors of the model. Partial dependence plots, introduced by Friedman (2001) (Friedman, 2001), is used to interpret the output of complex machine learning models. In PDPs, the Y-axis value (ŷ) is defined by the average of all of the possible model predictions when the value of the objective predictor is at X.
+Partial dependence plots (PDPs) are a powerful tool in machine learning that allow us to visualize the relationship between predictor variables and the target outcome. Introduced by Friedman (2001), PDPs are used to interpret the output of complex machine learning models. They present the expected target outcomes as a function of the input variables and show the marginal effect one feature can have on the predicted outcome of the machine learning model.
+
+In PDPs, the Y-axis value (ŷ) is defined by the average of all possible model predictions when the value of the objective predictor is at X. PDPs can reveal whether the relationship between the target and a feature is linear, monotonic, curvilinear, or of other complex types.
+
+The code chunk below generates a partial dependence plot for our non-spatial random forest model:
 
 ```{r}
 #| fig-width: 10
@@ -190,78 +349,116 @@ spatialRF::plot_response_curves(
   )
 ```
 
-```{r}
-pacman::p_load(grid,gridExtra)
-```
+The above plot presents the PDPs of the 12 variables exhibiting the highest variable importance. For these plots, all other predictor variables are held constant at their median values (i.e., the 0.5 qu
 
-```{r}
-pdp_1 <- pdp::partial(
-  non.spatial.rf, 
-  train = training_data, 
-  pred.var = "Slope_Angle", 
-  plot = TRUE, 
-  grid.resolution = 200
-  )
+## 5.7 Model Performance
 
-pdp_2 <- pdp::partial(
-  non.spatial.rf, 
-  train = training_data, 
-  pred.var = "Profile_Curvature", 
-  plot = TRUE, 
-  grid.resolution = 200
-  )
+The **`performance`** slot of our non-spatial random forest model (**`non.spatial.rf$performance`**) contains several performance measures. These can be printed using the **`print_performance()`** function from the **`spatialRF`** package.
 
-pdp_1_2 <- pdp::partial(
-  non.spatial.rf,
-  train = training_data,
-  pred.var = c("Slope_Angle","Profile_Curvature"),
-  plot = TRUE,
-  grid.resolution = 10)
-```
+-   **R squared (oob)** and **RMSE (oob)**: These are the R squared and root mean squared error (RMSE) of the model when predicting the out-of-bag data (the fraction of data not used to train individual trees). Among all the values available in the **`performance`** slot, these are probably the most honest ones, as they provide a performance estimate on independent data. However, out-of-bag data is not fully independent, and therefore these values will still be inflated, especially if the data is highly aggregated in space.
 
-```{r}
-#| fig-width: 10
-grid.arrange(pdp_1,pdp_2, 
-             ncol= 2, 
-             top = textGrob("Partial Dependence Plot", gp=gpar(fontsize=20)))
+-   **R squared** and **pseudo R squared**: These are computed from the observations and the predictions, and indicate to what extent model outcomes represent the input data. These values will usually be high if the data is highly aggregated in space.
 
-pdp_1_2
-```
+-   **RMSE** and its normalized version: These are computed via the **`root_mean_squared_error()`** function, and are linear with R squared and pseudo R squared.
 
-## Model Performance
-
-The **performance** slot (in `model.non.spatial$performance`) contains the values of several performance measures. It be printed via the function [`print_performance()`](https://blasbenito.github.io/spatialRF/reference/print_performance.html).
-
--   `R squared (oob)` and `RMSE (oob)` are the R squared of the model and its root mean squared error when predicting the out-of-bag data (fraction of data not used to train individual trees). From all the values available in the `performance` slot, probably these the most honest ones, as it is the closer trying to get a performance estimate on independent data. However, out-of-bag data is not fully independent, and therefore will still be inflated, especially if the data is highly aggregated in space.
-
--   `R squared` and `pseudo R squared` are computed from the observations and the predictions, and indicate to what extent model outcomes represent the input data. These values will usually be high the data is highly aggregated in space.
-
--   The `RMSE` and its normalized version are computed via [`root_mean_squared_error()`](https://blasbenito.github.io/spatialRF/reference/root_mean_squared_error.html), and are linear with `R squared` and `pseudo R squared`.
+The code chunk below prints these performance measures:
 
 ```{r}
 spatialRF::print_performance(non.spatial.rf)
 ```
 
-# Geographical Random Forest
+## **5.8** Predicting onto New Data
 
-"Geographical Weighted Random Forest (GWRF) or local RF model is a spatial analysis method using a local version of the Random Forest Regresson Model. It allows for the investigation of the existence of spatial non-stationarity, in the relationship between a dependent and a set of independent variables. The latter is possible by fitting a sub-model for each observation in space, taking into account the neighbouring observations. This technique adopts the idea of the Geographically Weighted Regression, Kalogirou (2003). The main difference between a tradition (linear) GWR and GRF is that we can model non-stationarity coupled with a flexible non-linear model which is very hard to overfit due to its bootstrapping nature, thus relaxing the assumptions of traditional Gaussian statistics. Essential it was designed to be a bridge between machine learning and geographical models, combining inferential and explanatory power. Additionally, it is suited for datasets with numerous predictors, due to the robust nature of the random forest algorithm in high dimensionality."
+We can use our non-spatial random forest model to make predictions on the testing data. This is done using the **`stats::predict()`** function, which takes the model, the new data, and the type of prediction as arguments.
 
-# Fitting a spatial model with `rf_spatial()`
+The code chunk below performs this prediction:
+
+```{r}
+predicted <- stats::predict(
+  object = non.spatial.rf,
+  data = testing_data,
+  type = "response"
+  )$predictions
+```
+
+After making the predictions, we can create a confusion matrix to evaluate the results. The confusion matrix provides a summary of the model's performance by comparing the predicted values with the actual values.
+
+The code chunk below creates a confusion matrix:
+
+```{r}
+predicted_col <- ifelse(predicted > 0.5, 1, 0)
+predicted_col <- factor(predicted_col) 
+confusionMatrix(predicted_col, test_col)
+```
+
+## 5.9 Permutation Test
+
+Random Forest (RF) is a stochastic process, and to ensure that the results are not random, we can perform a permutation test. This involves repeating the RF process multiple times and comparing the results. In this case, we will repeat the process 30 times using the **`rf_repeat()`** function from the **`spatialRF`** package.
+
+The code chunk below performs this permutation test:
+
+```{r}
+#| eval: false
+non.spatial.rf.perm <- rf_repeat(
+  model = non.spatial.rf, 
+  repetitions = 30,
+  verbose = FALSE
+)
+
+plot_importance(non.spatial.rf.perm, verbose = FALSE)
+```
+
+After performing the permutation test, we can plot the variable importance scores and the partial dependence plots (PDPs) of the permuted RF model. These plots provide insights into the stability of the variable importance scores and the PDPs across the repeated RF processes.
+
+```{r}
+#| eval: false
+plot_response_curves(
+  non.spatial.rf.perm, 
+  quantiles = 0.5,
+  ncol = 3
+  )
+```
+
+# 6.0 Moran's Eigenvector Random Forest
+
+Borcard and Legendre developed an approach called the Principal Coordinates of Neighbour Matrices (PCNM) to create spatial predictors that can be incorporated into models. Dray and Legendre further \[2006\] improved mathematical foundations of PCNM and investigated its close relation to Moran's index of spatial autocorrelation (Moran's I). They proposed Moran's eigenvector approach which extract Moran's Eigenvector Maps (MEMs) from the spatial weighting matrix.
+
+The spatial weight matrix, denoted as W=\[ $w_ij$\] , is an n×n matrix that represents the spatial relationships between different locations of n observations in the dataset. Each entry  in the matrix represents the spatial relationship between location i and location j. The centring operator H subtracts the mean of each row and column from the elements of W, resulting in a doubly-centred weight matrix Ω where the row and column means are zero. By diagonalising this doubly-centred weight matrix Ω, eigenvectors obtained are orthogonal vectors with a unit norm that maximise Moran's *I*. These eigenvectors are called Moran's Eigenvector Maps (MEMs). The eigenvalues of MEMs are equal to the Moran's I coefficients of spatial autocorrelation and describe the local structures of the observations in the dataset.
+
+$Ω=HWH=(I-11^t/n) W (I-11^t/n)$
+
+where $I$ is the identity matrix, $1$ is the column vector of 1 and $1^t$ is the transpose of the column vector of 1.
+
+Using the concept of MEMs, Benito introduced a methodological framework that generate MEMs from weight matrix and uses them as spatial predictors to fit a non-spatial RF model into a spatial RF model, which will be termed as Moran's Eigenvector Random Forest (MERF) in this study. These spatial predictors can be used directly as explanatory variables to represent spatial processes not considered by the non-spatial predictors.
+
+## 6.1 Fitting MERF Model
+
+We use `rf_spatial` function to fit RF to MERF model by generating Moran's eigenvectors and inclduing them into training dataset through sequential selection.
 
 ```{r}
 #| eval: false
 spatial.rf <- spatialRF::rf_spatial(
   model = non.spatial.rf,
+  distance.matrix = distance.matrix,
+  distance.thresholds = distance.thresholds,
   method = "mem.moran.sequential",
   verbose = FALSE,
   seed = random.seed,
-  weight.r.squared = 0.5
+  n.cores = parallel::detectCores() - 2
   )
 ```
 
 ```{r}
-spatial.rf <- read_rds("data/rds/spatial_rf.rds")
+#| echo: false
+#write_rds(spatial.rf, "data/rds/spatial_rf_new.rds")
+spatial.rf <- read_rds("data/rds/spatial_rf_new.rds")
 ```
+
+## 6.2 Residual Spatial Autocorrelation Analysis
+
+Just like we did with the non-spatial RF model, we can also test the residual autocorrelation for both RF and MERF models and compare the results. This can be done using the **`plot_moran()`** function from the **`spatialRF`** package.
+
+The code chunk below performs residual spatial autocorrelation analysis for both RF and MERF models:
 
 ```{r}
 spatialRF::plot_moran(
@@ -275,7 +472,56 @@ spatialRF::plot_moran(
   )
 ```
 
-If we compare the variable importance plots of both models, we can see that the spatial model has an additional set of dots under the name "spatial_predictors", and that the maximum importance of a few of these *spatial predictors* matches the importance of the most relevant non-spatial predictors.
+From the plots above, MERF has effectively eliminated the spatial autocorrelation of the model residuals for every spatial scale. The magnitude of spatial autocorrelation was reduced, as indicated by the decrease in Moran's I values. The p-values of the Moran's I estimates for each neighbourhood distance were higher than 0.05, indicating that they were statistically not significant.
+
+## 6.3 Sequential Selection of Spatial Predictors
+
+As explained earlier, the **`rf_spatial`** function generates Moran's eigenvectors and includes them into the training dataset through sequential selection. The selection procedure is performed by the **`select_spatial_predictors_sequential()`** function, which finds the smaller subset of spatial predictors that maximizes the model's R squared and minimizes the Moran's I of the residuals. The **`rf_spatial`** function already automates this process, so there's no need to manually run it. However, we can use the **`plot_optimization()`** function to visualize the optimization process. In the plot below, dots linked by lines represent the selected spatial predictors.
+
+```{r}
+p <- spatialRF::plot_optimization(spatial.rf)
+```
+
+## 6.4 Plotting Spatial Predictors
+
+We can also visualize the spatial predictors obtained from the Moran's Eigenvector Random Forest (MERF) model. This can be done using the **`get_spatial_predictors()`** function from the **`spatialRF`** package, which retrieves the spatial predictors from the MERF model.
+
+The code chunk below performs this operation and generates a plot of the spatial predictors using appropriate `ggplot2` functions:
+
+```{r}
+spatial.predictors <- spatialRF::get_spatial_predictors(spatial.rf)
+pr <- data.frame(spatial.predictors, training_data[, c("X", "Y")])
+
+p1 <- ggplot2::ggplot() +
+  ggplot2::geom_sf(data = valtellina, fill = "white") +
+  ggplot2::geom_point(
+    data = pr,
+    ggplot2::aes(
+      x = X,
+      y = Y,
+      color = spatial_predictor_55_8
+    ),
+    size = 2.5
+  ) +
+  ggplot2::scale_color_viridis_c(option = "F") +
+  ggplot2::theme_bw() +
+  ggplot2::labs(color = "Eigenvalue") +
+  ggplot2::ggtitle("Variable: spatial_predictor_55_8") + 
+  ggplot2::theme(legend.position = "bottom",
+                 legend.key.width = unit(1, "cm"))+ 
+  ggplot2::xlab("Longitude") + 
+  ggplot2::ylab("Latitude")
+
+p1
+```
+
+## 6.5 MERF Variable Importance
+
+The **`importance`** slot of our MERF model (**`spatial.rf$variable.importance`**) contains the variable importance scores. These scores provide a measure of the contribution of each predictor variable to the predictive power of the model.
+
+We can visualize these importance scores using the **`plot_importance()`** function from the **`spatialRF`** package, print them with the **`print_importance()`** function, or retrieve the data frame of importance scores with the **`get_importance()`** function.
+
+The code chunk below generates plots of the variable importance scores for both the RF and MERF models:
 
 ```{r}
 #| fig-width: 10
@@ -292,6 +538,10 @@ p2 <- spatialRF::plot_importance(
 p1 | p2 
 ```
 
+If we compare the variable importance plots of both models, we can see that the spatial model has an additional set of dots under the name "spatial_predictors", and that the maximum importance of a few of these spatial predictors matches the importance of the most relevant non-spatial predictors.
+
+We can also plot the 50 most important variables as below. This table provides a detailed view of the 50 most improtant variable importance and their scores, allowing us to better understand the contribution of each predictor variable to the model.
+
 ```{r}
 kableExtra::kbl(
   head(spatial.rf$importance$per.variable, n = 50),
@@ -300,38 +550,9 @@ kableExtra::kbl(
   kableExtra::kable_paper("hover", full_width = F)
 ```
 
-```{r}
-non.spatial.rf.eval <- rf_evaluate(
-  non.spatial.rf,
-  xy = xy,
-  metrics = "auc",
-  verbose = FALSE
-)
+## 6.6 Partial Dependence Plots (PDP) for MERF
 
-print_evaluation(non.spatial.rf.eval)
-```
-
-```{r}
-#| eval: false
-spatial.rf.eval <- rf_evaluate(
-  spatial.rf,
-  xy = xy,
-  metrics = "auc",
-  verbose = FALSE
-)
-```
-
-```{r}
-#| echo: false
-#write_rds(spatial.rf.eval, "data/rds/spatial.rf.eval.rds")
-spatial.rf.eval <- read_rds("data/rds/spatial.rf.eval.rds")
-```
-
-```{r}
-print_evaluation(spatial.rf.eval)
-```
-
-# Partial Dependence Plots (PDP) for gwRF
+The code chunk below generates a partial dependence plot for our MERF forest model:
 
 ```{r}
 #| fig-width: 10
@@ -344,43 +565,136 @@ spatialRF::plot_response_curves(
   )
 ```
 
-# Using SpatialML
+## 6.7 Model Performance
+
+The **`performance`** slot of our MERF model (**`spatial.rf$performance`**) contains several performance measures. These can be printed using the **`print_performance()`** function from the **`spatialRF`** package. We can compare these performance measures with those of the non-spatial RF model to understand how the inclusion of spatial predictors has affected the model's performance.
+
+The code chunk below prints these performance measures:
 
 ```{r}
-coords_train <- st_coordinates(training_data_sf)
-coords_test <- st_coordinates(testing_data_sf)
+spatialRF::print_performance(spatial.rf)
+spatialRF::print_performance(non.spatial.rf)
 ```
+
+Based on our results, the performance of MERF model improved across all metrics compared to the basic RF model. This demonstrates the effectiveness of incorporating spatial variables into our model.
+
+## 6.8 Spatial-Folds Cross-Validation
+
+To further evaluate the performance of our models, we conducted spatial fold cross-validation for both the RF and MERF models. The function **`rf_evaluate()`** provides an honest performance estimate based on spatial cross-validation, overcoming the limitations of the performance scores explained above.
+
+In this process, we divided the training dataset into 10 spatially independent training and testing folds. We then fitted the model using each training fold and made predictions with each testing fold. Subsequently, we calculated the Area Under the Curve (AUC) values across the folds.
+
+The code chunk below carries out 10 spatial fold cross-validation on RF model:
+
+```{r}
+set.seed(1234)
+non.spatial.rf.eval <- rf_evaluate(
+  non.spatial.rf,
+  repetitions = 10,
+  xy = xy,
+  metrics = c("auc"),
+  verbose = FALSE
+)
+
+print_evaluation(non.spatial.rf.eval)
+```
+
+We can also visualize the training and testing data of each spatial fold. The maps below show two sets of training and testing folds.
+
+```{r}
+pr <- training_data[, c("X", "Y")]
+pr$group.2 <- pr$group.1 <- "Training"
+pr[non.spatial.rf$evaluation$spatial.folds[[1]]$testing, "group.1"] <- "Testing"
+pr[non.spatial.rf$evaluation$spatial.folds[[10]]$testing, "group.2"] <- "Testing"
+
+p1 <- ggplot2::ggplot() +
+  ggplot2::geom_sf(data = valtellina, fill = "white") +
+  ggplot2::geom_point(data = pr,
+          ggplot2::aes(
+            x = X,
+            y = Y,
+            color = group.1
+            ),
+          size = 2
+          ) +
+  ggplot2::scale_color_viridis_d(
+    direction = -1, 
+    end = 0.5, 
+    alpha = 0.8, 
+    option = "F"
+    ) +
+  ggplot2::theme_bw() +
+  ggplot2::labs(color = "Group") +
+  ggplot2::ggtitle("Spatial fold 1") + 
+  ggplot2::theme(
+    plot.title = ggplot2::element_text(hjust = 0.5)
+  ) + 
+  ggplot2::xlab("Longitude") + 
+  ggplot2::ylab("Latitude")
+
+p2 <- ggplot2::ggplot() +
+  ggplot2::geom_sf(data = valtellina, fill = "white") +
+  ggplot2::geom_point(data = pr,
+          ggplot2::aes(
+            x = X,
+            y = Y,
+            color = group.2
+            ),
+          size = 2
+          ) +
+  ggplot2::scale_color_viridis_d(
+    direction = -1, 
+    end = 0.5, 
+    alpha = 0.8, 
+    option = "F"
+    ) +
+  ggplot2::theme_bw() +
+  ggplot2::labs(color = "Group") +
+  ggplot2::theme(
+    plot.title = ggplot2::element_text(hjust = 0.5)
+  ) + 
+  ggplot2::ggtitle("Spatial fold 10") + 
+  ggplot2::xlab("Longitude") + 
+  ggplot2::ylab("")
+
+p1 | p2
+```
+
+We will do the same 10 spatial fold cross-validation for the MERF model as well:
 
 ```{r}
 set.seed(1234)
 
-rf <- ranger(Landslide ~ Elevation + 
-                 Aspect_North + Aspect_NorthEast + 
-                 Aspect_East + Aspect_SouthEast + 
-                 Aspect_South + Aspect_SouthWest + 
-                 Aspect_West + Profile_Curvature + 
-                 Plan_Curvature + Slope_Angle + 
-                 Lithology_Metamorphic + 
-                 Lithology_Sedimentary + 
-                 Lithology_Plutonic +
-                 Lithology_Unconsolidated +
-                 Proximity_Settlement +
-                 Proximity_Stream +
-                 Proximity_Road + Proximity_Fault + 
-                 Landuse_Vegetation + Precipitation + 
-                 TWI + SPI + STI,
-             data=training_data,
-             importance = "impurity")
-rf
+#| eval: false
+spatial.rf.eval <- rf_evaluate(
+  spatial.rf,
+  repetitions = 10,
+  xy = xy,
+  metrics = "auc",
+  verbose = FALSE
+)
+print_evaluation(spatial.rf.eval)
 ```
 
-Note: permutations of bandwidth selection is done previously. Refer to the Data Preparation document to check the logs.
+# 7.0 Geographically Weighted Random Forest
+
+Geographically Weighted Random Forest (GWRF), proposed by (Georganos et al., 2019) is a spatial disaggregation of Random Forest (RF) models into an ensemble of local models. This formulation is based on the principles of the Geographically Weighted Regression (GWR) framework (Fotheringham et al., 2010) wherein a global process is decomposed into several local sub-models. This approach suggest that spatial interactions are better captured by an ensemble of local models, rather than including extensive spatial predictors in a single, global model such as MERF approach.
+
+GWRF can be used as both a predictive and an explanatory tool. Similar to GWLR approach, a local RF sub-model is computed for each observation i and only including n number of nearby observations based on a pre-determined bandwidth. Essentially, this leads to the calculation of an RF in each training data point, with its own performance, predictive power and feature importance. The local feature importance values for each explanatory variable can be represented as a surface and depict the spatial non-stationary effects, similar to GWLR.
+
+## 7.1 Bandwidth Selection
+
+Before we fit the GWRF model, have to select bandwidth, we need to select an optimal bandwidth. The **`grf.bw`** function from the **`gwrf`** package is used for this purpose.
+
+The **`step`** parameter is used to define the increment in the bandwidth during the optimization process. The **`bw.min`** and **`bw.max`** parameters define the range within which the optimal bandwidth is searched.geo.weighted. The **`geo.weighted`** parameter is a boolean flag that determines the type of random forest algorithm to use. If **`geo.weighted`** is set to **`TRUE`**, the algorithm calculates a Geographically Weighted Random Forest using the **`case.weights`** option of the **`ranger`** package. This means that each observation in the local dataset is weighted based on its geographical location. If **`geo.weighted`** is set to **`FALSE`**, it will calculate local random forests without weighting each observation in the local dataset.
+
+Below is the code chunk for calculating bandwidth selection
 
 ```{r}
 #| eval: false
 
 set.seed(1234)
-grf.bw.260.orig <- grf.bw(Landslide ~ Elevation + 
+grf.bw.orig <- grf.bw(Landslide ~ Elevation + 
                  Aspect_North + Aspect_NorthEast + 
                  Aspect_East + Aspect_SouthEast + 
                  Aspect_South + Aspect_SouthWest + 
@@ -398,8 +712,8 @@ grf.bw.260.orig <- grf.bw(Landslide ~ Elevation +
        data=training_data, 
        kernel="adaptive", 
        coords=coords_train, 
-       bw.min = 260,
-       bw.max = 260, 
+       bw.min = 1,
+       bw.max = 306, 
        step = 1, 
        trees= 500, 
        importance="impurity",
@@ -407,18 +721,137 @@ grf.bw.260.orig <- grf.bw(Landslide ~ Elevation +
        geo.weighted = TRUE)
 ```
 
-```{r}
-#| eval: false
+::: callout-note
+## Long Computation Time
 
-write_rds(grf.bw.260.orig, "data/rds/gwRF.bw.260.orig.rds")
-#grf.bw.100 <- read_rds("data/rds/grf.bw.100.rds")
-grf.bw.260.orig$tested.bandwidths
-```
+The above step is computationally intensive due to the brute force approach used in searching for the optimal bandwidth. This means that the function will try all possible bandwidths within the specified range and select the one that results in the best model performance. This can take a significant amount of time, especially if the range of possible bandwidths is large. It's important to be aware of this when running the code.
+:::
+
+The code chunk above calculates the Out-of-Bag (OOB) $R^2$ value for different bandwidths. A higher R2 value indicates a better fit of the model to the data. We have selected bandwidths of **59**, **92**, **154**, **189**, **260**, and **306**, as these values yielded the highest $R^2$ values, indicating optimal model performance.
+
+## 7.2 Fitting GWRF Models with Different Bandwidths
+
+In this section, we use the selected bandwidths to run different GWLR models. By comparing the results of these models, we can determine which bandwidth provides the best balance between model complexity and performance.
+
+::: panel-tabset
+#### 59-Bandwidth GWRF
 
 ```{r}
 #| eval: false
 set.seed(1234)
-gwRF_adaptive <- grf(formula = Landslide ~ Elevation + 
+gwRF_adaptive_59 <- grf(formula = Landslide ~ Elevation + 
+                 Aspect_North + Aspect_NorthEast + 
+                 Aspect_East + Aspect_SouthEast + 
+                 Aspect_South + Aspect_SouthWest + 
+                 Aspect_West + Profile_Curvature + 
+                 Plan_Curvature + Slope_Angle + 
+                 Lithology_Metamorphic + 
+                 Lithology_Sedimentary + 
+                 Lithology_Plutonic +
+                 Lithology_Unconsolidated +
+                 Proximity_Settlement +
+                 Proximity_Stream +
+                 Proximity_Road + Proximity_Fault + 
+                 Landuse_Vegetation + Precipitation + 
+                 TWI + SPI + STI,
+                 dframe=training_data, 
+                 bw=59,
+                 kernel="adaptive",
+                 coords=coords_train)
+
+write_rds(gwRF_adaptive_59, "data/rds/gwRF_adaptive_59.rds")
+```
+
+#### 92-Bandwidth GWRF
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_adaptive_92 <- grf(formula = Landslide ~ Elevation + 
+                 Aspect_North + Aspect_NorthEast + 
+                 Aspect_East + Aspect_SouthEast + 
+                 Aspect_South + Aspect_SouthWest + 
+                 Aspect_West + Profile_Curvature + 
+                 Plan_Curvature + Slope_Angle + 
+                 Lithology_Metamorphic + 
+                 Lithology_Sedimentary + 
+                 Lithology_Plutonic +
+                 Lithology_Unconsolidated +
+                 Proximity_Settlement +
+                 Proximity_Stream +
+                 Proximity_Road + Proximity_Fault + 
+                 Landuse_Vegetation + Precipitation + 
+                 TWI + SPI + STI,
+                 dframe=training_data, 
+                 bw= 92,
+                 kernel="adaptive",
+                 coords=coords_train)
+
+write_rds(gwRF_adaptive_92, "data/rds/gwRF_adaptive_92.rds")
+```
+
+#### 154-Bandwidth GWRF
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_adaptive_154 <- grf(formula = Landslide ~ Elevation + 
+                 Aspect_North + Aspect_NorthEast + 
+                 Aspect_East + Aspect_SouthEast + 
+                 Aspect_South + Aspect_SouthWest + 
+                 Aspect_West + Profile_Curvature + 
+                 Plan_Curvature + Slope_Angle + 
+                 Lithology_Metamorphic + 
+                 Lithology_Sedimentary + 
+                 Lithology_Plutonic +
+                 Lithology_Unconsolidated +
+                 Proximity_Settlement +
+                 Proximity_Stream +
+                 Proximity_Road + Proximity_Fault + 
+                 Landuse_Vegetation + Precipitation + 
+                 TWI + SPI + STI,
+                 dframe=training_data, 
+                 bw=154,
+                 kernel="adaptive",
+                 coords=coords_train)
+
+write_rds(gwRF_adaptive_154, "data/rds/gwRF_adaptive_154.rds")
+```
+
+#### 189-Bandwidth GWRF
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_adaptive_189 <- grf(formula = Landslide ~ Elevation + 
+                 Aspect_North + Aspect_NorthEast + 
+                 Aspect_East + Aspect_SouthEast + 
+                 Aspect_South + Aspect_SouthWest + 
+                 Aspect_West + Profile_Curvature + 
+                 Plan_Curvature + Slope_Angle + 
+                 Lithology_Metamorphic + 
+                 Lithology_Sedimentary + 
+                 Lithology_Plutonic +
+                 Lithology_Unconsolidated +
+                 Proximity_Settlement +
+                 Proximity_Stream +
+                 Proximity_Road + Proximity_Fault + 
+                 Landuse_Vegetation + Precipitation + 
+                 TWI + SPI + STI,
+                 dframe=training_data, 
+                 bw=189,
+                 kernel="adaptive",
+                 coords=coords_train)
+
+write_rds(gwRF_adaptive_189, "data/rds/gwRF_adaptive_189.rds")
+```
+
+#### 260-Bandwidth GWRF
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_adaptive_260 <- grf(formula = Landslide ~ Elevation + 
                  Aspect_North + Aspect_NorthEast + 
                  Aspect_East + Aspect_SouthEast + 
                  Aspect_South + Aspect_SouthWest + 
@@ -437,46 +870,3646 @@ gwRF_adaptive <- grf(formula = Landslide ~ Elevation +
                  bw=260,
                  kernel="adaptive",
                  coords=coords_train)
+
+write_rds(gwRF_adaptive_260, "data/rds/gwRF_adaptive_260.rds")
+```
+
+#### 306-Bandwidth GWRF
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_adaptive_306 <- grf(formula = Landslide ~ Elevation + 
+                 Aspect_North + Aspect_NorthEast + 
+                 Aspect_East + Aspect_SouthEast + 
+                 Aspect_South + Aspect_SouthWest + 
+                 Aspect_West + Profile_Curvature + 
+                 Plan_Curvature + Slope_Angle + 
+                 Lithology_Metamorphic + 
+                 Lithology_Sedimentary + 
+                 Lithology_Plutonic +
+                 Lithology_Unconsolidated +
+                 Proximity_Settlement +
+                 Proximity_Stream +
+                 Proximity_Road + Proximity_Fault + 
+                 Landuse_Vegetation + Precipitation + 
+                 TWI + SPI + STI,
+                 dframe=training_data, 
+                 bw=306,
+                 kernel="adaptive",
+                 coords=coords_train)
+
+write_rds(gwRF_adaptive_306, "data/rds/gwRF_adaptive_306.rds")
+```
+:::
+
+```{r}
+#| eval: false
+rm(gwRF_adaptive_59)
+rm(gwRF_adaptive_92)
+rm(gwRF_adaptive_154)
+rm(gwRF_adaptive_189)
+rm(gwRF_adaptive_260)
+rm(gwRF_adaptive_306)
+rm(ls_data)
+rm(ls_split)
+```
+
+## 7.2 Prediction with Various Spatial Weights
+
+In previous section, we fitted a total of 6 GWRF models, each having different bandwidth. In this section, we will use these models to predict using different spatial weights.
+
+In GWRF framework, prediction is carried out the fusion of global and local predictions using a weight parameter. This fusion of predictions enables the extraction of the locally heterogeneous signal (low bias) from the local sub-model and its integration with that of a global model which uses more data (low variance).
+
+The weight parameter, denoted as α can be varied and user-specified. A purely global model is indicated by an α value of 0, which means it is devoid of any local model influence. Conversely, an α value of 1 denotes a purely local model, with no influence from the global model. For values between these thresholds, the weighting varies. For instance, an α value of 0.25 suggests a diminished weighting for the local model, thereby favouring the global one, while an α value of 0.75 implies a more favourable weighting for the local model over the global one. An α value of 0.50 signifies an equal weighting for both the local and global models.
+
+Below is the code chunk for making predictions with various spatial weights.
+
+-   Preidctions are made using GWRF model with specific bandwidth and weight parameter.
+
+-   Predictions are then converted to binary values.
+
+-   Confusion matrix is computed using `testing_data`
+
+-   Accurarcy, precision, recall, and F1 scores are computed.
+
+::: panel-tabset
+#### 59-Bandwidth GWRF
+
+```{r}
+#| eval: false
+gwRF_adaptive_59 <- read_rds("data/rds/gwRF_adaptive_59.rds")
+```
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_59 <- predict.grf(gwRF_adaptive_59,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0,
+                             global.w=1)
+
+write_rds(gwRF_pred_59, "data/rds/gwRF_pred_59_0.rds")
+
+pred_col_59 <- ifelse(gwRF_pred_59 > 0.5, 1, 0)
+pred_col_59 <- factor(pred_col_59)
+
+cm_59_0 <- confusionMatrix(pred_col_59, test_col)
+write_rds(cm_59_0, "data/rds/cm_59_0.rds")
+```
+
+```{r}
+cm_59_0 <- read_rds("data/rds/cm_59_0.rds")
+cm_59_0
+rm(cm_59_0)
+rm(gwRF_pred_59)
+```
+
+```{r}
+#| eval: false
+pred_weight_0 <- as.data.frame(pred_col_59)
+
+cm <- confusionMatrix(pred_col_59, test_col)
+
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision * recall) / (precision + recall)
+
+f1_score.df <- data.frame(
+  "pred_col_59" = rep(NA, 5),
+  row.names = c("0", "0.25", "0.5", "0.75", "1"),
+  stringsAsFactors = FALSE
+)
+
+f1_score.df["0", "pred_col_59"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.25
+
+```{r}
+#| eval: false
+
+set.seed(1234)
+gwRF_pred_59 <- predict.grf(gwRF_adaptive_59,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.25,
+                             global.w=0.75)
+
+write_rds(gwRF_pred_59, "data/rds/gwRF_pred_59_0.25.rds")
+
+pred_col_59 <- ifelse(gwRF_pred_59 > 0.5, 1, 0)
+pred_col_59 <- factor(pred_col_59)
+
+cm_59_0.25 <- confusionMatrix(pred_col_59, test_col)
+write_rds(cm_59_0.25, "data/rds/cm_59_0.25.rds")
+rm(gwRF_pred_59)
+```
+
+```{r}
+cm_59_0.25 <- read_rds("data/rds/cm_59_0.25.rds")
+cm_59_0.25
+rm(cm_59_0.25)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.25 <- as.data.frame(pred_col_59)
+
+cm <- confusionMatrix(pred_col_59, test_col)
+
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision * recall) / (precision + recall)
+
+f1_score.df["0.25", "pred_col_59"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.5
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_59 <- predict.grf(gwRF_adaptive_59,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.5,
+                             global.w=0.5)
+
+write_rds(gwRF_pred_59, "data/rds/gwRF_pred_59_0.5.rds")
+
+pred_col_59 <- ifelse(gwRF_pred_59 > 0.5, 1, 0)
+pred_col_59 <- factor(pred_col_59)
+
+cm_59_0.5 <- confusionMatrix(pred_col_59, test_col)
+write_rds(cm_59_0.5, "data/rds/cm_59_0.5.rds")
+rm(gwRF_pred_59)
+```
+
+```{r}
+cm_59_0.5 <- read_rds("data/rds/cm_59_0.5.rds")
+cm_59_0.5
+rm(cm_59_0.5)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.5 <- as.data.frame(pred_col_59)
+
+cm <- confusionMatrix(pred_col_59, test_col)
+
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision * recall) / (precision + recall)
+
+f1_score.df["0.5", "pred_col_59"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.75
+
+```{r}
+#| eval: false
+
+set.seed(1234)
+gwRF_pred_59 <- predict.grf(gwRF_adaptive_59,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.75,
+                             global.w=0.25)
+
+write_rds(gwRF_pred_59, "data/rds/gwRF_pred_59_0.75.rds")
+
+pred_col_59 <- ifelse(gwRF_pred_59 > 0.5, 1, 0)
+pred_col_59 <- factor(pred_col_59)
+
+cm_59_0.75 <- confusionMatrix(pred_col_59, test_col)
+write_rds(cm_59_0.75, "data/rds/cm_59_0.75.rds")
+rm(gwRF_pred_59)
+```
+
+```{r}
+cm_59_0.75 <- read_rds("data/rds/cm_59_0.75.rds")
+cm_59_0.75
+rm(cm_59_0.75)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.75 <- as.data.frame(pred_col_59)
+
+cm <- confusionMatrix(pred_col_59, test_col)
+
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision * recall) / (precision + recall)
+
+f1_score.df["0.75", "pred_col_59"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 1
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_59 <- predict.grf(gwRF_adaptive_59,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=1,
+                             global.w=0)
+
+write_rds(gwRF_pred_59, "data/rds/gwRF_pred_59_1.rds")
+
+pred_col_59 <- ifelse(gwRF_pred_59 > 0.5, 1, 0)
+pred_col_59 <- factor(pred_col_59)
+
+cm_59_1 <- confusionMatrix(pred_col_59, test_col)
+write_rds(cm_59_1, "data/rds/cm_59_1.rds")
+rm(gwRF_pred_59)
+```
+
+```{r}
+cm_59_1 <- read_rds("data/rds/cm_59_1.rds")
+cm_59_1
+rm(cm_59_1)
+```
+
+```{r}
+#| eval: false
+pred_weight_1 <- as.data.frame(pred_col_59)
+
+cm <- confusionMatrix(pred_col_59, test_col)
+
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision * recall) / (precision + recall)
+
+f1_score.df["1", "pred_col_59"] <- f1_score
+```
+
+```{r}
+#| eval: false
+rm(gwRF_adaptive_59)
+```
+:::
+
+#### 92-Bandwidth GWRF
+
+```{r}
+#| eval: false
+gwRF_adaptive_92 <- read_rds("data/rds/gwRF_adaptive_92.rds")
+```
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_92 <- predict.grf(gwRF_adaptive_92,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0,
+                             global.w=1)
+
+write_rds(gwRF_pred_92, "data/rds/gwRF_pred_92_0.rds")
+
+pred_col_92 <- ifelse(gwRF_pred_92 > 0.5, 1, 0)
+pred_col_92 <- factor(pred_col_92)
+
+cm_92_0 <- confusionMatrix(pred_col_92, test_col)
+write_rds(cm_92_0, "data/rds/cm_92_0.rds")
+rm(gwRF_pred_92)
+```
+
+```{r}
+cm_92_0 <- read_rds("data/rds/cm_92_0.rds")
+cm_92_0
+rm(cm_92_0)
+```
+
+```{r}
+#| eval: false
+pred_weight_0 <- cbind(pred_weight_0, pred_col_92) 
+
+cm <- confusionMatrix(pred_col_92, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision * recall) / (precision + recall)
+
+
+f1_score.df[,"pred_col_92"] <- NA
+
+f1_score.df["0","pred_col_92"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.25
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_92 <- predict.grf(gwRF_adaptive_92,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.25,
+                             global.w=0.75)
+
+write_rds(gwRF_pred_92, "data/rds/gwRF_pred_92_0.25.rds")
+
+pred_col_92 <- ifelse(gwRF_pred_92 > 0.5, 1, 0)
+pred_col_92 <- factor(pred_col_92)
+
+cm_92_0.25 <- confusionMatrix(pred_col_92, test_col)
+write_rds(cm_92_0.25, "data/rds/cm_92_0.25.rds")
+rm(gwRF_pred_92)
+```
+
+```{r}
+cm_92_0.25 <- read_rds("data/rds/cm_92_0.25.rds")
+cm_92_0.25
+rm(cm_92_0.25)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.25 <- cbind(pred_weight_0.25, pred_col_92) 
+
+cm <- confusionMatrix(pred_col_92, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision * recall) / (precision + recall)
+
+
+f1_score.df["0.25","pred_col_92"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.5
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_92 <- predict.grf(gwRF_adaptive_92,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.5,
+                             global.w=0.5)
+
+write_rds(gwRF_pred_92, "data/rds/gwRF_pred_92_0.5.rds")
+
+pred_col_92 <- ifelse(gwRF_pred_92 > 0.5, 1, 0)
+pred_col_92 <- factor(pred_col_92)
+
+cm_92_0.5 <- confusionMatrix(pred_col_92, test_col)
+write_rds(cm_92_0.5, "data/rds/cm_92_0.5.rds")
+rm(gwRF_pred_92)
+```
+
+```{r}
+cm_92_0.5 <- read_rds("data/rds/cm_92_0.5.rds")
+cm_92_0.5
+rm(cm_92_0.5)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.5 <- cbind(pred_weight_0.5, pred_col_92) 
+
+cm <- confusionMatrix(pred_col_92, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision * recall) / (precision + recall)
+
+
+f1_score.df["0.5","pred_col_92"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.75
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_92 <- predict.grf(gwRF_adaptive_92,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.75,
+                             global.w=0.25)
+
+write_rds(gwRF_pred_92, "data/rds/gwRF_pred_92_0.75.rds")
+
+read_rds("data/rds/gwRF_pred_92_0.75.rds")
+
+pred_col_92 <- ifelse(gwRF_pred_92 > 0.5, 1, 0)
+pred_col_92 <- factor(pred_col_92)
+
+cm_92_0.75 <- confusionMatrix(pred_col_92, test_col)
+write_rds(cm_92_0.75, "data/rds/cm_92_0.75.rds")
+rm(gwRF_pred_92)
+```
+
+```{r}
+cm_92_0.75 <- read_rds("data/rds/cm_92_0.75.rds")
+cm_92_0.75
+rm(cm_92_0.75)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.75 <- cbind(pred_weight_0.75, pred_col_92) 
+
+cm <- confusionMatrix(pred_col_92, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision * recall) / (precision + recall)
+
+
+f1_score.df["0.75","pred_col_92"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 1
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_92 <- predict.grf(gwRF_adaptive_92,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=1,
+                             global.w=0)
+
+write_rds(gwRF_pred_92, "data/rds/gwRF_pred_92_1.rds")
+
+pred_col_92 <- ifelse(gwRF_pred_92 > 0.5, 1, 0)
+pred_col_92 <- factor(pred_col_92)
+
+cm_92_1 <- confusionMatrix(pred_col_92, test_col)
+write_rds(cm_92_1, "data/rds/cm_92_1.rds")
+rm(gwRF_pred_92)
+```
+
+```{r}
+cm_92_1 <- read_rds("data/rds/cm_92_1.rds")
+cm_92_1
+rm(cm_92_1)
+```
+
+```{r}
+#| eval: false
+pred_weight_1 <- cbind(pred_weight_1, pred_col_92) 
+
+cm <- confusionMatrix(pred_col_92, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision * recall) / (precision + recall)
+
+
+f1_score.df["1","pred_col_92"] <- f1_score
+```
+
+```{r}
+#| eval: false
+rm(gwRF_adaptive_92)
+```
+:::
+
+#### 154-Bandwidth GWRF
+
+```{r}
+#| eval: false
+gwRF_adaptive_154 <- read_rds("data/rds/gwRF_adaptive_154.rds")
+```
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_154 <- predict.grf(gwRF_adaptive_154,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0,
+                             global.w=1)
+
+write_rds(gwRF_pred_154, "data/rds/gwRF_pred_154_0.rds")
+
+pred_col_154 <- ifelse(gwRF_pred_154 > 0.5, 1, 0)
+pred_col_154 <- factor(pred_col_154)
+
+cm_154_0 <- confusionMatrix(pred_col_154, test_col)
+write_rds(cm_154_0, "data/rds/cm_154_0.rds")
+rm(gwRF_pred_154)
+```
+
+```{r}
+cm_154_0 <- read_rds("data/rds/cm_154_0.rds")
+cm_154_0
+rm(cm_154_0)
 ```
 
 ```{r}
 #| eval: false
 
-#write_rds(gwRF_adaptive, "data/rds/gwRF_adaptive_260.rds")
-gwRF_adaptive <- read_rds("data/rds/gwRF_adaptive_260.rds")
+pred_weight_0 <- cbind(pred_weight_0, pred_col_154) 
+
+cm <- confusionMatrix(pred_col_92, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision * recall) / (precision + recall)
+
+
+f1_score.df[,"pred_col_154"] <- NA
+
+f1_score.df["0","pred_col_154"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.25
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_154 <- predict.grf(gwRF_adaptive_154,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.25,
+                             global.w=0.75)
+
+write_rds(gwRF_pred_154, "data/rds/gwRF_pred_154_0.25.rds")
+
+pred_col_154 <- ifelse(gwRF_pred_154 > 0.5, 1, 0)
+pred_col_154 <- factor(pred_col_154)
+
+cm_154_0.25 <- confusionMatrix(pred_col_154, test_col)
+write_rds(cm_154_0.25, "data/rds/cm_154_0.25.rds")
+rm(gwRF_pred_154)
+```
+
+```{r}
+cm_154_0.25 <- read_rds("data/rds/cm_154_0.25.rds")
+cm_154_0.25
+rm(cm_154_0.25)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.25 <- cbind(pred_weight_0.25, pred_col_154) 
+
+cm <- confusionMatrix(pred_col_154, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision * recall) / (precision + recall)
+
+
+f1_score.df["0.25","pred_col_154"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.5
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_154 <- predict.grf(gwRF_adaptive_154,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.5,
+                             global.w=0.5)
+
+write_rds(gwRF_pred_154, "data/rds/gwRF_pred_154_0.5.rds")
+
+pred_col_154 <- ifelse(gwRF_pred_154 > 0.5, 1, 0)
+pred_col_154 <- factor(pred_col_154)
+
+cm_154_0.5 <- confusionMatrix(pred_col_154, test_col)
+write_rds(cm_154_0.5, "data/rds/cm_154_0.5.rds")
+rm(gwRF_pred_154)
+```
+
+```{r}
+cm_154_0.5 <- read_rds("data/rds/cm_154_0.5.rds")
+cm_154_0.5
+rm(cm_154_0.5)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.5 <- cbind(pred_weight_0.5, pred_col_154) 
+
+cm <- confusionMatrix(pred_col_154, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision * recall) / (precision + recall)
+
+
+f1_score.df["0.5","pred_col_154"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.75
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_154 <- predict.grf(gwRF_adaptive_154,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.75,
+                             global.w=0.25)
+
+write_rds(gwRF_pred_154, "data/rds/gwRF_pred_154_0.75.rds")
+
+pred_col_154 <- ifelse(gwRF_pred_154 > 0.5, 1, 0)
+pred_col_154 <- factor(pred_col_154)
+
+cm_154_0.75 <- confusionMatrix(pred_col_154, test_col)
+write_rds(cm_154_0.75, "data/rds/cm_154_0.75.rds")
+rm(gwRF_pred_154)
+```
+
+```{r}
+cm_154_0.75 <- read_rds("data/rds/cm_154_0.75.rds")
+cm_154_0.75
+rm(cm_154_0.75)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.75 <- cbind(pred_weight_0.75, pred_col_154) 
+
+cm <- confusionMatrix(pred_col_154, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision * recall) / (precision + recall)
+
+
+f1_score.df["0.75","pred_col_154"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 1
+
+```{r}
+#| eval: false
+gwRF_pred_154 <- predict.grf(gwRF_adaptive_154,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=1,
+                             global.w=0)
+
+write_rds(gwRF_pred_154, "data/rds/gwRF_pred_154_1.rds")
+
+pred_col_154 <- ifelse(gwRF_pred_154 > 0.5, 1, 0)
+pred_col_154 <- factor(pred_col_154)
+
+cm_154_1 <- confusionMatrix(pred_col_154, test_col)
+write_rds(cm_154_1, "data/rds/cm_154_1.rds")
+rm(gwRF_pred_154)
+```
+
+```{r}
+cm_154_1 <- read_rds("data/rds/cm_154_1.rds")
+cm_154_1
+rm(cm_154_1)
+```
+
+```{r}
+#| eval: false
+pred_weight_1 <- cbind(pred_weight_1, pred_col_154) 
+
+cm <- confusionMatrix(pred_col_154, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision * recall) / (precision + recall)
+
+
+f1_score.df["1","pred_col_154"] <- f1_score
+```
+
+```{r}
+#| eval: false
+rm(gwRF_adaptive_154)
+```
+:::
+
+#### 189-Bandwidth GWRF
+
+```{r}
+#| eval: false
+gwRF_adaptive_189 <- read_rds("data/rds/gwRF_adaptive_189.rds")
+```
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_189 <- predict.grf(gwRF_adaptive_189,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0,
+                             global.w=1)
+
+write_rds(gwRF_pred_189, "data/rds/gwRF_pred_189_0.rds")
+
+pred_col_189 <- ifelse(gwRF_pred_189 > 0.5, 1, 0)
+pred_col_189 <- factor(pred_col_189)
+
+cm_189_0 <- confusionMatrix(pred_col_189, test_col)
+write_rds(cm_189_0, "data/rds/cm_189_0.rds")
+
+rm(gwRF_pred_189)
+```
+
+```{r}
+cm_189_0 <- read_rds("data/rds/cm_189_0.rds")
+cm_189_0
+rm(cm_189_0)
+```
+
+```{r}
+#| eval: false
+pred_weight_0 <- cbind(pred_weight_0,pred_col_189)
+
+cm <- confusionMatrix(pred_col_189, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df[,"pred_col_189"] <- NA
+
+f1_score.df["0","pred_col_189"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.25
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_189 <- predict.grf(gwRF_adaptive_189,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.25,
+                             global.w=0.75)
+
+write_rds(gwRF_pred_189, "data/rds/gwRF_pred_189_0.25.rds")
+
+pred_col_189 <- ifelse(gwRF_pred_189 > 0.5, 1, 0)
+pred_col_189 <- factor(pred_col_189)
+
+cm_189_0.25 <- confusionMatrix(pred_col_189, test_col)
+write_rds(cm_189_0.25, "data/rds/cm_189_0.25.rds")
+
+rm(gwRF_pred_189)
+```
+
+```{r}
+cm_189_0.25 <- read_rds("data/rds/cm_189_0.25.rds")
+cm_189_0.25
+rm(cm_189_0.25)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.25 <- cbind(pred_weight_0.25,pred_col_189)
+
+cm <- confusionMatrix(pred_col_189, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+
+f1_score.df["0.25","pred_col_189"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.5
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_189 <- predict.grf(gwRF_adaptive_189,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.5,
+                             global.w=0.5)
+
+write_rds(gwRF_pred_189, "data/rds/gwRF_pred_189_0.5.rds")
+
+pred_col_189 <- ifelse(gwRF_pred_189 > 0.5, 1, 0)
+pred_col_189 <- factor(pred_col_189)
+
+cm_189_0.5 <- confusionMatrix(pred_col_189, test_col)
+write_rds(cm_189_0.5, "data/rds/cm_189_0.5.rds")
+rm(gwRF_pred_189)
+```
+
+```{r}
+cm_189_0.5 <- read_rds("data/rds/cm_189_0.5.rds")
+cm_189_0.5
+rm(cm_189_0.5)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.5 <- cbind(pred_weight_0.5,pred_col_189)
+
+cm <- confusionMatrix(pred_col_189, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.5","pred_col_189"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.75
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_189 <- predict.grf(gwRF_adaptive_189,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.75,
+                             global.w=0.25)
+
+gwRF_pred_189 <- as.data.frame(gwRF_pred_189)
+
+write_rds(gwRF_pred_189, "data/rds/gwRF_pred_189_0.75.rds")
+
+pred_col_189 <- ifelse(gwRF_pred_189 > 0.5, 1, 0)
+pred_col_189 <- factor(pred_col_189)
+
+cm_189_0.75 <- confusionMatrix(pred_col_189, test_col)
+write_rds(cm_189_0.75, "data/rds/cm_189_0.75.rds")
+rm(gwRF_pred_189)
+```
+
+```{r}
+cm_189_0.75 <- read_rds("data/rds/cm_189_0.75.rds")
+cm_189_0.75
+rm(cm_189_0.75)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.75 <- cbind(pred_weight_0.75,pred_col_189)
+
+cm <- confusionMatrix(pred_col_189, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.75","pred_col_189"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 1
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_189 <- predict.grf(gwRF_adaptive_189,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=1,
+                             global.w=0)
+
+write_rds(gwRF_pred_189, "data/rds/gwRF_pred_189_1.rds")
+
+pred_col_189 <- ifelse(gwRF_pred_189 > 0.5, 1, 0)
+pred_col_189 <- factor(pred_col_189)
+
+cm_189_1 <- confusionMatrix(pred_col_189, test_col)
+write_rds(cm_189_1, "data/rds/cm_189_1.rds")
+rm(gwRF_pred_189)
+```
+
+```{r}
+cm_189_1 <- read_rds("data/rds/cm_189_1.rds")
+cm_189_1
+rm(cm_189_1)
+```
+
+```{r}
+#| eval: false
+pred_weight_1 <- cbind(pred_weight_1,pred_col_189)
+
+cm <- confusionMatrix(pred_col_189, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["1","pred_col_189"] <- f1_score
+```
+
+```{r}
+#| eval: false
+rm(gwRF_adaptive_189)
+```
+:::
+
+#### 260-Bandwidth GWRF
+
+```{r}
+#| eval: false
+gwRF_adaptive_260 <- read_rds("data/rds/gwRF_adaptive_260.rds")
+```
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_260 <- predict.grf(gwRF_adaptive_260,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0,
+                             global.w=1)
+
+write_rds(gwRF_pred_260, "data/rds/gwRF_pred_260_0.rds")
+
+pred_col_260 <- ifelse(gwRF_pred_260 > 0.5, 1, 0)
+pred_col_260 <- factor(pred_col_260)
+
+cm_260_0 <- confusionMatrix(pred_col_260, test_col)
+write_rds(cm_260_0, "data/rds/cm_260_0.rds")
+rm(gwRF_pred_260)
+```
+
+```{r}
+cm_260_0 <- read_rds("data/rds/cm_260_0.rds")
+cm_260_0
+rm(cm_260_0)
+```
+
+```{r}
+#| eval: false
+pred_weight_0 <- cbind(pred_weight_0,pred_col_260)
+
+cm <- confusionMatrix(pred_col_260, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df[,"pred_col_260"] <- NA
+
+f1_score.df["0","pred_col_260"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.25
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_260 <- predict.grf(gwRF_adaptive_260,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.25,
+                             global.w=0.75)
+
+write_rds(gwRF_pred_260, "data/rds/gwRF_pred_260_0.25.rds")
+
+pred_col_260 <- ifelse(gwRF_pred_260 > 0.5, 1, 0)
+pred_col_260 <- factor(pred_col_260)
+
+cm_260_0.25 <- confusionMatrix(pred_col_260, test_col)
+write_rds(cm_260_0.25, "data/rds/cm_260_0.25.rds")
+rm(gwRF_pred_260)
+```
+
+```{r}
+cm_260_0.25 <- read_rds("data/rds/cm_260_0.25.rds")
+cm_260_0.25
+rm(cm_260_0.25)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.25 <- cbind(pred_weight_0.25,pred_col_260)
+
+cm <- confusionMatrix(pred_col_260, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.25","pred_col_260"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.5
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_260 <- predict.grf(gwRF_adaptive_260,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.5,
+                             global.w=0.5)
+
+write_rds(gwRF_pred_260, "data/rds/gwRF_pred_260_0.5.rds")
+
+pred_col_260 <- ifelse(gwRF_pred_260 > 0.5, 1, 0)
+pred_col_260 <- factor(pred_col_260)
+
+cm_260_0.5 <- confusionMatrix(pred_col_260, test_col)
+write_rds(cm_260_0.5, "data/rds/cm_260_0.5.rds")
+rm(gwRF_pred_260)
+```
+
+```{r}
+cm_260_0.5 <- read_rds("data/rds/cm_260_0.5.rds")
+cm_260_0.5
+rm(cm_260_0.5)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.5 <- cbind(pred_weight_0.5,pred_col_260)
+
+cm <- confusionMatrix(pred_col_260, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.5","pred_col_260"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.75
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_260 <- predict.grf(gwRF_adaptive_260,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.75,
+                             global.w=0.25)
+
+write_rds(gwRF_pred_260, "data/rds/gwRF_pred_260_0.75.rds")
+
+pred_col_260 <- ifelse(gwRF_pred_260 > 0.5, 1, 0)
+pred_col_260 <- factor(pred_col_260)
+
+cm_260_0.75 <- confusionMatrix(pred_col_260, test_col)
+write_rds(cm_260_0.75, "data/rds/cm_260_0.75.rds")
+rm(gwRF_pred_260)
+```
+
+```{r}
+cm_260_0.75 <- read_rds("data/rds/cm_260_0.75.rds")
+cm_260_0.75
+rm(cm_260_0.75)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.75 <- cbind(pred_weight_0.75,pred_col_260)
+
+cm <- confusionMatrix(pred_col_260, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.75","pred_col_260"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 1
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_260 <- predict.grf(gwRF_adaptive_260,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=1,
+                             global.w=0)
+
+write_rds(gwRF_pred_260, "data/rds/gwRF_pred_260_1.rds")
+
+pred_col_260 <- ifelse(gwRF_pred_260 > 0.5, 1, 0)
+pred_col_260 <- factor(pred_col_260)
+
+cm_260_1 <- confusionMatrix(pred_col_260, test_col)
+write_rds(cm_260_1, "data/rds/cm_260_1.rds")
+rm(gwRF_pred_260)
+```
+
+```{r}
+cm_260_1 <- read_rds("data/rds/cm_260_1.rds")
+cm_260_1
+rm(cm_260_1)
+```
+
+```{r}
+#| eval: false
+pred_weight_1 <- cbind(pred_weight_1,pred_col_260)
+
+cm <- confusionMatrix(pred_col_260, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["1","pred_col_260"] <- f1_score
+```
+
+```{r}
+#| eval: false
+rm(gwRF_adaptive_260)
+```
+:::
+
+#### 306-Bandwidth GWRF
+
+```{r}
+#| eval: false
+gwRF_adaptive_306 <- read_rds("data/rds/gwRF_adaptive_306.rds")
+```
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_306 <- predict.grf(gwRF_adaptive_306,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0,
+                             global.w=1)
+
+write_rds(gwRF_pred_306, "data/rds/gwRF_pred_306_0.rds")
+
+pred_col_306 <- ifelse(gwRF_pred_306 > 0.5, 1, 0)
+pred_col_306 <- factor(pred_col_306)
+
+cm_306_0 <- confusionMatrix(pred_col_306, test_col)
+write_rds(cm_306_0, "data/rds/cm_306_0.rds")
+rm(gwRF_pred_306)
+```
+
+```{r}
+cm_306_0 <- read_rds("data/rds/cm_306_0.rds")
+cm_306_0
+rm(cm_306_0)
+```
+
+```{r}
+#| eval: false
+pred_weight_0 <- cbind(pred_weight_0,pred_col_306)
+
+cm <- confusionMatrix(pred_col_306, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df[,"pred_col_306"] <- NA
+
+f1_score.df["0","pred_col_306"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.25
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_306 <- predict.grf(gwRF_adaptive_306,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.25,
+                             global.w=0.75)
+
+write_rds(gwRF_pred_306, "data/rds/gwRF_pred_306_0.25.rds")
+
+pred_col_306 <- ifelse(gwRF_pred_306 > 0.5, 1, 0)
+pred_col_306 <- factor(pred_col_306)
+
+cm_306_0.25 <- confusionMatrix(pred_col_306, test_col)
+write_rds(cm_306_0.25, "data/rds/cm_306_0.25.rds")
+rm(gwRF_pred_306) 
+```
+
+```{r}
+cm_306_0.25 <- read_rds("data/rds/cm_306_0.25.rds")
+cm_306_0.25
+rm(cm_306_0.25)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.25 <- cbind(pred_weight_0.25,pred_col_306)
+
+cm <- confusionMatrix(pred_col_306, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.25","pred_col_306"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.5
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_306 <- predict.grf(gwRF_adaptive_306,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.5,
+                             global.w=0.5)
+
+write_rds(gwRF_pred_306, "data/rds/gwRF_pred_306_0.5.rds")
+
+pred_col_306 <- ifelse(gwRF_pred_306 > 0.5, 1, 0)
+pred_col_306 <- factor(pred_col_306)
+
+cm_306_0.5 <- confusionMatrix(pred_col_306, test_col)
+write_rds(cm_306_0.5, "data/rds/cm_306_0.5.rds")
+rm(gwRF_pred_306) 
+```
+
+```{r}
+cm_306_0.5 <- read_rds("data/rds/cm_306_0.5.rds")
+cm_306_0.5
+rm(cm_306_0.5)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.5 <- cbind(pred_weight_0.5,pred_col_306)
+
+cm <- confusionMatrix(pred_col_306, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.5","pred_col_306"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.75
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_306 <- predict.grf(gwRF_adaptive_306,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.75,
+                             global.w=0.25)
+
+write_rds(gwRF_pred_306, "data/rds/gwRF_pred_306_0.75.rds")
+
+pred_col_306 <- ifelse(gwRF_pred_306 > 0.5, 1, 0)
+pred_col_306 <- factor(pred_col_306)
+
+cm_306_0.75 <- confusionMatrix(pred_col_306, test_col)
+write_rds(cm_306_0.75, "data/rds/cm_306_0.75.rds")
+rm(gwRF_pred_306) 
+```
+
+```{r}
+cm_306_0.75 <- read_rds("data/rds/cm_306_0.75.rds")
+cm_306_0.75
+rm(cm_306_0.75)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.75 <- cbind(pred_weight_0.75,pred_col_306)
+
+cm <- confusionMatrix(pred_col_306, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.75","pred_col_306"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 1
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_306 <- predict.grf(gwRF_adaptive_306,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=1,
+                             global.w=0)
+
+write_rds(gwRF_pred_306, "data/rds/gwRF_pred_306_1.rds")
+
+pred_col_306 <- ifelse(gwRF_pred_306 > 0.5, 1, 0)
+pred_col_306 <- factor(pred_col_306)
+
+cm_306_1 <- confusionMatrix(pred_col_306, test_col)
+write_rds(cm_306_1, "data/rds/cm_306_1.rds")
+rm(gwRF_pred_306) 
+```
+
+```{r}
+cm_306_1 <- read_rds("data/rds/cm_306_1.rds")
+cm_306_1
+rm(cm_306_1)
+```
+
+```{r}
+#| eval: false
+pred_weight_1 <- cbind(pred_weight_1,pred_col_306)
+
+cm <- confusionMatrix(pred_col_306, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["1","pred_col_306"] <- f1_score
+```
+
+```{r}
+#| eval: false
+rm(gwRF_adaptive_306)
+```
+:::
+:::
+
+## 7.3 Plotting GWRF Model Prediction Accuracy at Incrementing Weight & Optimised Bandwidth
+
+In this section, we are plotting the prediction accuracy of the GWRFmodels at incrementing weight parameters and optimised bandwidths. The weight parameters range from 0 to 1 in increments of 0.25, and the optimised bandwidths used are 59, 92, 154, 189, 260, and 306.
+
+The code chunk below creates a data frame with all combinations of weights and bandwidths, adds the accuracy values for each combination, and then creates a line plot of the accuracy against the bandwidth for each weight.
+
+```{r}
+weights <- c("0", "0.25", "0.50", "0.75", "1")
+bandwidths <- c(59, 92, 154, 189, 260, 306)
+
+# Create a data frame with all combinations of weights and bandwidths
+df_gwRF <- expand.grid(Weight = weights, Bandwidth = bandwidths)
+
+# Add your accuracy values
+
+df_gwRF$Accuracy <-  c(
+  0.8487, 0.8670, 0.8768, 0.8684, 0.8523, 
+  0.8487, 0.8657, 0.8747, 0.8699, 0.8565,
+  0.8487, 0.8639, 0.8739, 0.8738, 0.8641,
+  0.8487, 0.8264, 0.8728, 0.8756, 0.8667,
+  0.8487, 0.8599, 0.8709, 0.8723, 0.8686,
+  0.8487, 0.8599, 0.8708, 0.8723, 0.8684
+)
+
+# Create the plot
+ggplot(df_gwRF, aes(x = Bandwidth, y = Accuracy, color = Weight)) +
+  geom_line() +
+  geom_point(shape = 9, size = 2.5) +
+  labs(x = "Bandwidth", y = "Accuracy", title = "GWRF Model Prediction Accuracy \nat Incrementing Weight & Optimised Bandwidth") +
+  scale_x_continuous(breaks = c(59, 92, 154, 189, 260,306)) +
+  scale_y_continuous(limits = c(0.82, 0.89)) +
+  scale_color_manual(values = c("#e4c838", "#de573e", "#b977cb", "#4225df", "#32c962")) +
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),  # Remove internal grid lines
+    panel.border = element_rect(color = "black", fill = NA),
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "bottom"
+  )
+```
+
+## 7.4 Iteraction with Standardised Bandwidths
+
+In the previous sections, we fitted, trained, and tested Geographically Weighted Random Forest (GWRF) models using optimised bandwidth values. However, the bandwidths used were random with different steps between them, which may make the observed result patterns not generalisable. To see if the patterns we observed earlier can be generalised (at least for our dataset), we will use standardised bandwidths with 50 steps to fit new models. We will use 50, 100, 150, 200, 250, and 300 as bandwidths.
+
+Below is the code chunk that accomplishes this:
+
+::: panel-tabset
+#### 50-Bandwidth GWRF
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_adaptive_50 <- grf(formula = Landslide ~ Elevation + 
+                 Aspect_North + Aspect_NorthEast + 
+                 Aspect_East + Aspect_SouthEast + 
+                 Aspect_South + Aspect_SouthWest + 
+                 Aspect_West + Profile_Curvature + 
+                 Plan_Curvature + Slope_Angle + 
+                 Lithology_Metamorphic + 
+                 Lithology_Sedimentary + 
+                 Lithology_Plutonic +
+                 Lithology_Unconsolidated +
+                 Proximity_Settlement +
+                 Proximity_Stream +
+                 Proximity_Road + Proximity_Fault + 
+                 Landuse_Vegetation + Precipitation + 
+                 TWI + SPI + STI,
+                 dframe=training_data, 
+                 bw=50,
+                 kernel="adaptive",
+                 coords=coords_train)
+
+write_rds(gwRF_adaptive_50, "data/rds/gwRF_adaptive_50.rds")
+```
+
+#### 100-Bandwidth GWRF
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_adaptive_100 <- grf(formula = Landslide ~ Elevation + 
+                 Aspect_North + Aspect_NorthEast + 
+                 Aspect_East + Aspect_SouthEast + 
+                 Aspect_South + Aspect_SouthWest + 
+                 Aspect_West + Profile_Curvature + 
+                 Plan_Curvature + Slope_Angle + 
+                 Lithology_Metamorphic + 
+                 Lithology_Sedimentary + 
+                 Lithology_Plutonic +
+                 Lithology_Unconsolidated +
+                 Proximity_Settlement +
+                 Proximity_Stream +
+                 Proximity_Road + Proximity_Fault + 
+                 Landuse_Vegetation + Precipitation + 
+                 TWI + SPI + STI,
+                 dframe=training_data, 
+                 bw= 100,
+                 kernel="adaptive",
+                 coords=coords_train)
+
+write_rds(gwRF_adaptive_100, "data/rds/gwRF_adaptive_100.rds")
+```
+
+#### 150-Bandwidth GWRF
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_adaptive_150 <- grf(formula = Landslide ~ Elevation + 
+                 Aspect_North + Aspect_NorthEast + 
+                 Aspect_East + Aspect_SouthEast + 
+                 Aspect_South + Aspect_SouthWest + 
+                 Aspect_West + Profile_Curvature + 
+                 Plan_Curvature + Slope_Angle + 
+                 Lithology_Metamorphic + 
+                 Lithology_Sedimentary + 
+                 Lithology_Plutonic +
+                 Lithology_Unconsolidated +
+                 Proximity_Settlement +
+                 Proximity_Stream +
+                 Proximity_Road + Proximity_Fault + 
+                 Landuse_Vegetation + Precipitation + 
+                 TWI + SPI + STI,
+                 dframe=training_data, 
+                 bw=150,
+                 kernel="adaptive",
+                 coords=coords_train)
+
+write_rds(gwRF_adaptive_150, "data/rds/gwRF_adaptive_150.rds")
+```
+
+#### 200-Bandwidth GWRF
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_adaptive_200 <- grf(formula = Landslide ~ Elevation + 
+                 Aspect_North + Aspect_NorthEast + 
+                 Aspect_East + Aspect_SouthEast + 
+                 Aspect_South + Aspect_SouthWest + 
+                 Aspect_West + Profile_Curvature + 
+                 Plan_Curvature + Slope_Angle + 
+                 Lithology_Metamorphic + 
+                 Lithology_Sedimentary + 
+                 Lithology_Plutonic +
+                 Lithology_Unconsolidated +
+                 Proximity_Settlement +
+                 Proximity_Stream +
+                 Proximity_Road + Proximity_Fault + 
+                 Landuse_Vegetation + Precipitation + 
+                 TWI + SPI + STI,
+                 dframe=training_data, 
+                 bw=200,
+                 kernel="adaptive",
+                 coords=coords_train)
+
+write_rds(gwRF_adaptive_200, "data/rds/gwRF_adaptive_200.rds")
+```
+
+#### 250-Bandwidth GWRF
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_adaptive_250 <- grf(formula = Landslide ~ Elevation + 
+                 Aspect_North + Aspect_NorthEast + 
+                 Aspect_East + Aspect_SouthEast + 
+                 Aspect_South + Aspect_SouthWest + 
+                 Aspect_West + Profile_Curvature + 
+                 Plan_Curvature + Slope_Angle + 
+                 Lithology_Metamorphic + 
+                 Lithology_Sedimentary + 
+                 Lithology_Plutonic +
+                 Lithology_Unconsolidated +
+                 Proximity_Settlement +
+                 Proximity_Stream +
+                 Proximity_Road + Proximity_Fault + 
+                 Landuse_Vegetation + Precipitation + 
+                 TWI + SPI + STI,
+                 dframe=training_data, 
+                 bw=250,
+                 kernel="adaptive",
+                 coords=coords_train)
+
+write_rds(gwRF_adaptive_250, "data/rds/gwRF_adaptive_250.rds")
+```
+
+#### 300-Bandwidth GWRF
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_adaptive_300 <- grf(formula = Landslide ~ Elevation + 
+                 Aspect_North + Aspect_NorthEast + 
+                 Aspect_East + Aspect_SouthEast + 
+                 Aspect_South + Aspect_SouthWest + 
+                 Aspect_West + Profile_Curvature + 
+                 Plan_Curvature + Slope_Angle + 
+                 Lithology_Metamorphic + 
+                 Lithology_Sedimentary + 
+                 Lithology_Plutonic +
+                 Lithology_Unconsolidated +
+                 Proximity_Settlement +
+                 Proximity_Stream +
+                 Proximity_Road + Proximity_Fault + 
+                 Landuse_Vegetation + Precipitation + 
+                 TWI + SPI + STI,
+                 dframe=training_data, 
+                 bw=300,
+                 kernel="adaptive",
+                 coords=coords_train)
+
+write_rds(gwRF_adaptive_300, "data/rds/gwRF_adaptive_300.rds")
+```
+:::
+
+```{r}
+#| eval: false
+rm(gwRF_adaptive_50)
+rm(gwRF_adaptive_100)
+rm(gwRF_adaptive_150)
+rm(gwRF_adaptive_200)
+rm(gwRF_adaptive_250)
+rm(gwRF_adaptive_300)
+```
+
+## 7.5 Prediction with Various Spatial Weights
+
+In this section, we will test the predictions using the newly fitted Geographically Weighted Random Forest (GWRF) models with standardised bandwidths at different weight parameters. This process is similar to what we did in the previous sections.
+
+We will use these models to make predictions and then extract the performance metrics. These metrics will allow us to evaluate the performance of each model and compare the results with the GWRF models that were fitted with optimised bandwidths.
+
+Below is the code chunk that accomplishes this:
+
+::: panel-tabset
+#### 50-Bandwidth GWRF
+
+```{r}
+#| eval: false
+gwRF_adaptive_50 <- read_rds("data/rds/gwRF_adaptive_50.rds")
+```
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_50 <- predict.grf(gwRF_adaptive_50,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0,
+                             global.w=1)
+
+write_rds(gwRF_pred_50, "data/rds/gwRF_pred_50_0.rds")
+
+gwRF_pred_50 <- read_rds("data/rds/gwRF_pred_50_0.rds")
+
+pred_col_50 <- ifelse(gwRF_pred_50 > 0.5, 1, 0)
+pred_col_50 <- factor(pred_col_50)
+
+cm_50_0 <- confusionMatrix(pred_col_50, test_col)
+write_rds(cm_50_0, "data/rds/cm_50_0.rds")
+rm(gwRF_pred_50)
+```
+
+```{r}
+cm_50_0 <- read_rds("data/rds/cm_50_0.rds")
+cm_50_0
+rm(cm_50_0)
+```
+
+```{r}
+#| eval: false
+pred_weight_0 <- cbind(pred_weight_0,pred_col_50)
+
+cm <- confusionMatrix(pred_col_50, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df[,"pred_col_50"] <- NA
+
+f1_score.df["0","pred_col_50"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.25
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_50 <- predict.grf(gwRF_adaptive_50,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.25,
+                             global.w=0.75)
+
+write_rds(gwRF_pred_50, "data/rds/gwRF_pred_50_0.25.rds")
+
+gwRF_pred_50 <- read_rds("data/rds/gwRF_pred_50_0.25.rds")
+
+pred_col_50 <- ifelse(gwRF_pred_50 > 0.5, 1, 0)
+pred_col_50 <- factor(pred_col_50)
+
+cm_50_0.25 <- confusionMatrix(pred_col_50, test_col)
+write_rds(cm_50_0.25, "data/rds/cm_50_0.25.rds")
+rm(gwRF_pred_50)
+```
+
+```{r}
+cm_50_0.25 <- read_rds("data/rds/cm_50_0.25.rds")
+cm_50_0.25
+rm(cm_50_0.25)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.25 <- cbind(pred_weight_0.25,pred_col_50)
+
+cm <- confusionMatrix(pred_col_50, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.25","pred_col_50"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.5
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_50 <- predict.grf(gwRF_adaptive_50,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.5,
+                             global.w=0.5)
+
+write_rds(gwRF_pred_50, "data/rds/gwRF_pred_50_0.5.rds")
+
+gwRF_pred_50 <- read_rds("data/rds/gwRF_pred_50_0.5.rds")
+
+pred_col_50 <- ifelse(gwRF_pred_50 > 0.5, 1, 0)
+pred_col_50 <- factor(pred_col_50)
+
+cm_50_0.5 <- confusionMatrix(pred_col_50, test_col)
+write_rds(cm_50_0.5, "data/rds/cm_50_0.5.rds")
+rm(gwRF_pred_50)
+```
+
+```{r}
+cm_50_0.5 <- read_rds("data/rds/cm_50_0.5.rds")
+cm_50_0.5
+rm(cm_50_0.5)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.5 <- cbind(pred_weight_0.5,pred_col_50)
+
+cm <- confusionMatrix(pred_col_50, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.5","pred_col_50"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.75
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_50 <- predict.grf(gwRF_adaptive_50,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.75,
+                             global.w=0.25)
+
+
+write_rds(gwRF_pred_50, "data/rds/gwRF_pred_50_0.75.rds")
+
+gwRF_pred_50 <- read_rds("data/rds/gwRF_pred_50_0.75.rds")
+
+pred_col_50 <- ifelse(gwRF_pred_50 > 0.5, 1, 0)
+pred_col_50 <- factor(pred_col_50)
+
+cm_50_0.75 <- confusionMatrix(pred_col_50, test_col)
+write_rds(cm_50_0.75, "data/rds/cm_50_0.75.rds")
+rm(gwRF_pred_50)
+```
+
+```{r}
+cm_50_0.75 <- read_rds("data/rds/cm_50_0.75.rds")
+cm_50_0.75
+rm(cm_50_0.75)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.75 <- cbind(pred_weight_0.75,pred_col_50)
+
+cm <- confusionMatrix(pred_col_50, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.75","pred_col_50"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 1
+
+```{r}
+#| eval: false
+set.seed(1234) 
+gwRF_pred_50 <- predict.grf(gwRF_adaptive_50,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=1,
+                             global.w=0)
+write_rds(gwRF_pred_50, "data/rds/gwRF_pred_50_1.rds")
+
+gwRF_pred_50 <- read_rds("data/rds/gwRF_pred_50_1.rds")
+
+pred_col_50 <- ifelse(gwRF_pred_50 > 0.5, 1, 0)
+pred_col_50 <- factor(pred_col_50)
+
+cm_50_1 <- confusionMatrix(pred_col_50, test_col)
+write_rds(cm_50_1, "data/rds/cm_50_1.rds")
+rm(gwRF_pred_50)
+```
+
+```{r}
+cm_50_1 <- read_rds("data/rds/cm_50_1.rds")
+cm_50_1
+rm(cm_50_1)
+```
+
+```{r}
+#| eval: false
+pred_weight_1 <- cbind(pred_weight_1,pred_col_50)
+
+cm <- confusionMatrix(pred_col_50, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["1","pred_col_50"] <- f1_score
+```
+
+```{r}
+#| eval: false
+rm(gwRF_adaptive_50)
+```
+:::
+
+#### 100-Bandwidth GWRF
+
+```{r}
+#| eval: false
+
+gwRF_adaptive_100 <- read_rds("data/rds/gwRF_adaptive_100.rds")
+```
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_100 <- predict.grf(gwRF_adaptive_100,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0,
+                             global.w=1)
+
+write_rds(gwRF_pred_100, "data/rds/gwRF_pred_100_0.rds")
+
+gwRF_pred_100 <- read_rds("data/rds/gwRF_pred_100_0.rds")
+
+pred_col_100 <- ifelse(gwRF_pred_100 > 0.5, 1, 0)
+pred_col_100 <- factor(pred_col_100)
+
+cm_100_0 <- confusionMatrix(pred_col_100, test_col)
+write_rds(cm_100_0, "data/rds/cm_100_0.rds")
+rm(gwRF_pred_100)
+```
+
+```{r}
+cm_100_0 <- read_rds("data/rds/cm_100_0.rds")
+cm_100_0
+rm(cm_100_0)
+```
+
+```{r}
+#| eval: false
+pred_weight_0 <- cbind(pred_weight_0,pred_col_100)
+
+cm <- confusionMatrix(pred_col_100, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df[,"pred_col_100"] <- NA
+
+f1_score.df["0","pred_col_100"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.25
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_100 <- predict.grf(gwRF_adaptive_100,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.25,
+                             global.w=0.75)
+
+write_rds(gwRF_pred_100, "data/rds/gwRF_pred_100_0.25.rds")
+
+gwRF_pred_100 <- read_rds("data/rds/gwRF_pred_100_0.25.rds")
+
+pred_col_100 <- ifelse(gwRF_pred_100 > 0.5, 1, 0)
+pred_col_100 <- factor(pred_col_100)
+
+cm_100_0.25 <- confusionMatrix(pred_col_100, test_col)
+write_rds(cm_100_0.25, "data/rds/cm_100_0.25.rds")
+
+rm(gwRF_pred_100)
+```
+
+```{r}
+cm_100_0.25 <- read_rds("data/rds/cm_100_0.25.rds")
+cm_100_0.25
+rm(cm_100_0.25)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.25 <- cbind(pred_weight_0.25,pred_col_100)
+
+cm <- confusionMatrix(pred_col_100, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.25","pred_col_100"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.5
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_100 <- predict.grf(gwRF_adaptive_100,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.5,
+                             global.w=0.5)
+
+write_rds(gwRF_pred_100, "data/rds/gwRF_pred_100_0.5.rds")
+
+gwRF_pred_100 <- read_rds("data/rds/gwRF_pred_100_0.5.rds")
+
+pred_col_100 <- ifelse(gwRF_pred_100 > 0.5, 1, 0)
+pred_col_100 <- factor(pred_col_100)
+
+cm_100_0.5 <- confusionMatrix(pred_col_100, test_col)
+write_rds(cm_100_0.5, "data/rds/cm_100_0.5.rds")
+
+rm(gwRF_pred_100)
+```
+
+```{r}
+cm_100_0.5 <- read_rds("data/rds/cm_100_0.5.rds")
+cm_100_0.5
+rm(cm_100_0.5)
+```
+
+```{r}
+#| eval: false
+set.seed(1234)
+pred_weight_0.5 <- cbind(pred_weight_0.5,pred_col_100)
+
+cm <- confusionMatrix(pred_col_100, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.5","pred_col_100"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.75
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_100 <- predict.grf(gwRF_adaptive_100,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.75,
+                             global.w=0.25)
+write_rds(gwRF_pred_100, "data/rds/gwRF_pred_100_0.75.rds")
+
+gwRF_pred_100 <- read_rds("data/rds/gwRF_pred_100_0.75.rds")
+
+pred_col_100 <- ifelse(gwRF_pred_100 > 0.5, 1, 0)
+pred_col_100 <- factor(pred_col_100)
+
+cm_100_0.75 <- confusionMatrix(pred_col_100, test_col)
+write_rds(cm_100_0.75, "data/rds/cm_100_0.75.rds")
+
+rm(gwRF_pred_100)
+```
+
+```{r}
+cm_100_0.75 <- read_rds("data/rds/cm_100_0.75.rds")
+cm_100_0.75
+rm(cm_100_0.75)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.75 <- cbind(pred_weight_0.75,pred_col_100)
+
+cm <- confusionMatrix(pred_col_100, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.75","pred_col_100"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 1
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_100 <- predict.grf(gwRF_adaptive_100,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=1,
+                             global.w=0)
+
+write_rds(gwRF_pred_100, "data/rds/gwRF_pred_100_1.rds")
+
+gwRF_pred_100 <- read_rds("data/rds/gwRF_pred_100_1.rds")
+
+pred_col_100 <- ifelse(gwRF_pred_100 > 0.5, 1, 0)
+pred_col_100 <- factor(pred_col_100)
+
+cm_100_1 <- confusionMatrix(pred_col_100, test_col)
+write_rds(cm_100_1, "data/rds/cm_100_1.rds")
+
+rm(gwRF_pred_100)
+```
+
+```{r}
+cm_100_1 <- read_rds("data/rds/cm_100_1.rds")
+cm_100_1
+rm(cm_100_1)
+```
+
+```{r}
+#| eval: false
+pred_weight_1 <- cbind(pred_weight_1,pred_col_100)
+
+cm <- confusionMatrix(pred_col_100, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df[,"pred_col_100"] <- NA
+
+f1_score.df["1","pred_col_100"] <- f1_score
+```
+
+```{r}
+#| eval: false
+rm(gwRF_adaptive_100)
+```
+:::
+
+#### 150-Bandwidth GWRF
+
+```{r}
+#| eval: false
+gwRF_adaptive_150 <- read_rds("data/rds/gwRF_adaptive_150.rds")
+```
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_150 <- predict.grf(gwRF_adaptive_150,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0,
+                             global.w=1)
+
+write_rds(gwRF_pred_150, "data/rds/gwRF_pred_150_0.rds")
+
+gwRF_pred_150 <- read_rds("data/rds/gwRF_pred_150_0.rds")
+
+pred_col_150 <- ifelse(gwRF_pred_150 > 0.5, 1, 0)
+pred_col_150 <- factor(pred_col_150)
+
+cm_150_0 <- confusionMatrix(pred_col_150, test_col)
+write_rds(cm_150_0, "data/rds/cm_150_0.rds")
+
+rm(gwRF_pred_150) 
+```
+
+```{r}
+cm_150_0 <- read_rds("data/rds/cm_150_0.rds")
+cm_150_0
+rm(cm_150_0)
+```
+
+```{r}
+#| eval: false
+pred_weight_0 <- cbind(pred_weight_0,pred_col_150)
+
+cm <- confusionMatrix(pred_col_150, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df[,"pred_col_150"] <- NA
+
+f1_score.df["0","pred_col_150"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.25
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_150 <- predict.grf(gwRF_adaptive_150,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.25,
+                             global.w=0.75)
+
+write_rds(gwRF_pred_150, "data/rds/gwRF_pred_150_0.25.rds")
+
+gwRF_pred_150 <- read_rds("data/rds/gwRF_pred_150_0.25.rds")
+
+pred_col_150 <- ifelse(gwRF_pred_150 > 0.5, 1, 0)
+pred_col_150 <- factor(pred_col_150)
+
+cm_150_0.25 <- confusionMatrix(pred_col_150, test_col)
+write_rds(cm_150_0.25, "data/rds/cm_150_0.25.rds")
+
+rm(gwRF_pred_150)
+```
+
+```{r}
+cm_150_0.25 <- read_rds("data/rds/cm_150_0.25.rds")
+cm_150_0.25
+rm(cm_150_0.25)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.25 <- cbind(pred_weight_0.25,pred_col_150)
+
+cm <- confusionMatrix(pred_col_150, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.25","pred_col_150"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.5
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_150 <- predict.grf(gwRF_adaptive_150,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.5,
+                             global.w=0.5)
+write_rds(gwRF_pred_150, "data/rds/gwRF_pred_150_0.5.rds")
+
+gwRF_pred_150 <- read_rds("data/rds/gwRF_pred_150_0.5.rds")
+
+pred_col_150 <- ifelse(gwRF_pred_150 > 0.5, 1, 0)
+pred_col_150 <- factor(pred_col_150)
+
+cm_150_0.5 <- confusionMatrix(pred_col_150, test_col)
+write_rds(cm_150_0.5, "data/rds/cm_150_0.5.rds")
+rm(gwRF_pred_150)
+```
+
+```{r}
+cm_150_0.5 <- read_rds("data/rds/cm_150_0.5.rds")
+cm_150_0.5
+rm(cm_150_0.5)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.5 <- cbind(pred_weight_0.5,pred_col_150)
+
+cm <- confusionMatrix(pred_col_150, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.5","pred_col_150"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.75
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_150 <- predict.grf(gwRF_adaptive_150,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.75,
+                             global.w=0.25)
+
+write_rds(gwRF_pred_150, "data/rds/gwRF_pred_150_0.75.rds")
+
+gwRF_pred_150 <- read_rds("data/rds/gwRF_pred_150_0.75.rds")
+
+pred_col_150 <- ifelse(gwRF_pred_150 > 0.5, 1, 0)
+pred_col_150 <- factor(pred_col_150)
+
+cm_150_0.75 <- confusionMatrix(pred_col_150, test_col)
+write_rds(cm_150_0.75, "data/rds/cm_150_0.75.rds")
+
+rm(gwRF_pred_150)
+```
+
+```{r}
+cm_150_0.75 <- read_rds("data/rds/cm_150_0.75.rds")
+cm_150_0.75
+rm(cm_150_0.75)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.75 <- cbind(pred_weight_0.75,pred_col_150)
+
+cm <- confusionMatrix(pred_col_150, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.75","pred_col_150"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 1
+
+```{r}
+#| eval: false 
+set.seed(1234)
+gwRF_pred_150 <- predict.grf(gwRF_adaptive_150,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=1,
+                             global.w=0)
+
+write_rds(gwRF_pred_150, "data/rds/gwRF_pred_150_1.rds")
+
+gwRF_pred_150 <- read_rds("data/rds/gwRF_pred_150_1.rds")
+
+pred_col_150 <- ifelse(gwRF_pred_150 > 0.5, 1, 0)
+pred_col_150 <- factor(pred_col_150)
+
+cm_150_1 <- confusionMatrix(pred_col_150, test_col)
+write_rds(cm_150_1, "data/rds/cm_150_1.rds")
+
+rm(gwRF_pred_150)
+```
+
+```{r}
+cm_150_1 <- read_rds("data/rds/cm_150_1.rds")
+cm_150_1
+rm(cm_150_1)
+```
+
+```{r}
+#| eval: false
+pred_weight_1 <- pred_weight_1[, -which(colnames(pred_weight_1) == "pred_col_150")]
+pred_weight_1 <- cbind(pred_weight_1,pred_col_150)
+
+cm <- confusionMatrix(pred_col_150, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["1","pred_col_150"] <- f1_score
+```
+
+```{r}
+#| eval: false
+rm(gwRF_adaptive_150)
+```
+:::
+
+#### 200-Bandwidth GWRF
+
+```{r}
+#| eval: false
+gwRF_adaptive_200 <- read_rds("data/rds/gwRF_adaptive_200.rds")
+```
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_200 <- predict.grf(gwRF_adaptive_200,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0,
+                             global.w=1)
+write_rds(gwRF_pred_200, "data/rds/gwRF_pred_200_0.rds")
+
+gwRF_pred_200 <- read_rds("data/rds/gwRF_pred_200_0.rds")
+
+pred_col_200 <- ifelse(gwRF_pred_200 > 0.5, 1, 0)
+pred_col_200 <- factor(pred_col_200)
+
+cm_200_0 <- confusionMatrix(pred_col_200, test_col)
+write_rds(cm_200_0, "data/rds/cm_200_0.rds")
+rm(gwRF_pred_200)
+```
+
+```{r}
+cm_200_0 <- read_rds("data/rds/cm_200_0.rds")
+cm_200_0
+rm(cm_200_0)
+```
+
+```{r}
+#| eval: false
+pred_weight_0 <- cbind(pred_weight_0,pred_col_200)
+
+cm <- confusionMatrix(pred_col_200, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df[,"pred_col_200"] <- NA
+
+f1_score.df["0","pred_col_200"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.25
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_200 <- predict.grf(gwRF_adaptive_200,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.25,
+                             global.w=0.75)
+
+write_rds(gwRF_pred_200, "data/rds/gwRF_pred_200_0.25.rds")
+
+gwRF_pred_200 <- read_rds("data/rds/gwRF_pred_200_0.25.rds")
+
+pred_col_200 <- ifelse(gwRF_pred_200 > 0.5, 1, 0)
+pred_col_200 <- factor(pred_col_200)
+
+cm_200_0.25 <- confusionMatrix(pred_col_200, test_col)
+write_rds(cm_200_0.25, "data/rds/cm_200_0.25.rds")
+
+rm(gwRF_pred_200)
+```
+
+```{r}
+cm_200_0.25 <- read_rds("data/rds/cm_200_0.25.rds")
+cm_200_0.25
+rm(cm_200_0.25)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.25 <- cbind(pred_weight_0.25,pred_col_200)
+
+cm <- confusionMatrix(pred_col_200, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.25","pred_col_200"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.5
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_200 <- predict.grf(gwRF_adaptive_200,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.5,
+                             global.w=0.5)
+write_rds(gwRF_pred_200, "data/rds/gwRF_pred_200_0.5.rds")
+
+gwRF_pred_200 <- read_rds("data/rds/gwRF_pred_200_0.5.rds")
+
+pred_col_200 <- ifelse(gwRF_pred_200 > 0.5, 1, 0)
+pred_col_200 <- factor(pred_col_200)
+
+cm_200_0.5 <- confusionMatrix(pred_col_200, test_col)
+write_rds(cm_200_0.5, "data/rds/cm_200_0.5.rds")
+rm(gwRF_pred_200)
+```
+
+```{r}
+cm_200_0.5 <- read_rds("data/rds/cm_200_0.5.rds")
+cm_200_0.5
+rm(cm_200_0.5)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.5 <- cbind(pred_weight_0.5,pred_col_200)
+
+cm <- confusionMatrix(pred_col_200, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.5","pred_col_200"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.75
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_200 <- predict.grf(gwRF_adaptive_200,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.75,
+                             global.w=0.25)
+
+
+write_rds(gwRF_pred_200, "data/rds/gwRF_pred_200_0.75.rds")
+
+gwRF_pred_200 <- read_rds("data/rds/gwRF_pred_200_0.75.rds")
+
+pred_col_200 <- ifelse(gwRF_pred_200 > 0.5, 1, 0)
+pred_col_200 <- factor(pred_col_200)
+
+cm_200_0.75 <- confusionMatrix(pred_col_200, test_col)
+write_rds(cm_200_0.75, "data/rds/cm_200_0.75.rds")
+
+rm(gwRF_pred_200)
+```
+
+```{r}
+cm_200_0.75 <- read_rds("data/rds/cm_200_0.75.rds")
+cm_200_0.75
+rm(cm_200_0.75)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.75 <- cbind(pred_weight_0.75,pred_col_200)
+
+cm <- confusionMatrix(pred_col_200, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.75","pred_col_200"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 1
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_200 <- predict.grf(gwRF_adaptive_200,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=1,
+                             global.w=0)
+
+write_rds(gwRF_pred_200, "data/rds/gwRF_pred_200_1.rds")
+
+gwRF_pred_200 <- read_rds("data/rds/gwRF_pred_200_1.rds")
+
+pred_col_200 <- ifelse(gwRF_pred_200 > 0.5, 1, 0)
+pred_col_200 <- factor(pred_col_200)
+
+cm_200_1 <- confusionMatrix(pred_col_200, test_col)
+write_rds(cm_200_1, "data/rds/cm_200_1.rds")
+rm(gwRF_pred_200)
+```
+
+```{r}
+cm_200_1 <- read_rds("data/rds/cm_200_1.rds")
+cm_200_1
+rm(cm_200_1)
+```
+
+```{r}
+#| eval: false
+pred_weight_1 <- cbind(pred_weight_1,pred_col_200)
+
+cm <- confusionMatrix(pred_col_200, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["1","pred_col_200"] <- f1_score
+```
+
+```{r}
+#| eval: false
+rm(gwRF_adaptive_200)
+```
+:::
+
+#### 250-Bandwidth GWRF
+
+```{r}
+#| eval: false
+gwRF_adaptive_250 <- read_rds("data/rds/gwRF_adaptive_250.rds")
+```
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_250 <- predict.grf(gwRF_adaptive_250,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0,
+                             global.w=1)
+
+write_rds(gwRF_pred_250, "data/rds/gwRF_pred_250_0.rds")
+
+gwRF_pred_250 <- read_rds("data/rds/gwRF_pred_250_0.rds")
+
+pred_col_250 <- ifelse(gwRF_pred_250 > 0.5, 1, 0)
+pred_col_250 <- factor(pred_col_250)
+
+cm_250_0 <- confusionMatrix(pred_col_250, test_col)
+write_rds(cm_250_0, "data/rds/cm_250_0.rds")
+rm(gwRF_pred_250)
+```
+
+```{r}
+#| eval: false
+cm_250_0 <- read_rds("data/rds/cm_250_0.rds")
+cm_250_0
+rm(cm_250_0)
+```
+
+```{r}
+#| eval: false
+pred_weight_0 <- cbind(pred_weight_0,pred_col_250)
+
+cm <- confusionMatrix(pred_col_250, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df[,"pred_col_250"] <- NA
+
+f1_score.df["0","pred_col_250"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.25
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_250 <- predict.grf(gwRF_adaptive_250,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.25,
+                             global.w=0.75)
+
+write_rds(gwRF_pred_250, "data/rds/gwRF_pred_250_0.25.rds")
+
+gwRF_pred_250 <- read_rds("data/rds/gwRF_pred_250_0.25.rds")
+
+pred_col_250 <- ifelse(gwRF_pred_250 > 0.5, 1, 0)
+pred_col_250 <- factor(pred_col_250)
+
+cm_250_0 <- confusionMatrix(pred_col_250, test_col)
+write_rds(cm_250_0, "data/rds/cm_250_0.25.rds")
+rm(gwRF_pred_250)
+```
+
+```{r}
+cm_250_0.25 <- read_rds("data/rds/cm_250_0.25.rds")
+cm_250_0.25
+rm(cm_250_0.25)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.25 <- cbind(pred_weight_0.25,pred_col_250)
+
+cm <- confusionMatrix(pred_col_250, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.25","pred_col_250"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.5
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_250 <- predict.grf(gwRF_adaptive_250,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.5,
+                             global.w=0.5)
+
+write_rds(gwRF_pred_250, "data/rds/gwRF_pred_250_0.5.rds")
+
+gwRF_pred_250 <- read_rds("data/rds/gwRF_pred_250_0.5.rds")
+
+pred_col_250 <- ifelse(gwRF_pred_250 > 0.5, 1, 0)
+pred_col_250 <- factor(pred_col_250)
+
+cm_250_0.5 <- confusionMatrix(pred_col_250, test_col)
+write_rds(cm_250_0.5, "data/rds/cm_250_0.5.rds")
+rm(gwRF_pred_250)
+```
+
+```{r}
+cm_250_0.5 <- read_rds("data/rds/cm_250_0.5.rds")
+cm_250_0.5
+rm(cm_250_0.5)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.5 <- cbind(pred_weight_0.5,pred_col_250)
+
+cm <- confusionMatrix(pred_col_250, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.5","pred_col_250"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.75
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_250 <- predict.grf(gwRF_adaptive_250,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.75,
+                             global.w=0.25)
+
+write_rds(gwRF_pred_250, "data/rds/gwRF_pred_250_0.75.rds")
+
+gwRF_pred_250 <- read_rds("data/rds/gwRF_pred_250_0.75.rds")
+
+pred_col_250 <- ifelse(gwRF_pred_250 > 0.5, 1, 0)
+pred_col_250 <- factor(pred_col_250)
+
+cm_250_0.75 <- confusionMatrix(pred_col_250, test_col)
+write_rds(cm_250_0.75, "data/rds/cm_250_0.75.rds")
+rm(gwRF_pred_250)
+```
+
+```{r}
+cm_250_0.75 <- read_rds("data/rds/cm_250_0.75.rds")
+cm_250_0.75
+rm(cm_250_0.75)
+```
+
+```{r}
+#| eval: false
+pred_weight_0.75 <- cbind(pred_weight_0.75,pred_col_250)
+
+cm <- confusionMatrix(pred_col_250, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.75","pred_col_250"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 1
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_250 <- predict.grf(gwRF_adaptive_250,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=1,
+                             global.w=0)
+
+
+write_rds(gwRF_pred_250, "data/rds/gwRF_pred_250_1.rds")
+
+gwRF_pred_250 <- read_rds("data/rds/gwRF_pred_250_1.rds")
+
+pred_col_250 <- ifelse(gwRF_pred_250 > 0.5, 1, 0)
+pred_col_250 <- factor(pred_col_250)
+
+cm_250_1 <- confusionMatrix(pred_col_250, test_col)
+write_rds(cm_250_1, "data/rds/cm_250_1.rds")
+rm(gwRF_pred_250)
+```
+
+```{r}
+cm_250_1 <- read_rds("data/rds/cm_250_1.rds")
+cm_250_1
+rm(cm_250_1)
+```
+
+```{r}
+#| eval: false
+pred_weight_1 <- cbind(pred_weight_1,pred_col_250)
+
+cm <- confusionMatrix(pred_col_250, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["1","pred_col_250"] <- f1_score
+```
+
+```{r}
+#| eval: false
+rm(gwRF_adaptive_250)
+```
+:::
+
+#### 300-Bandwidth GWRF
+
+```{r}
+#| eval: false
+gwRF_adaptive_300 <- read_rds("data/rds/gwRF_adaptive_300.rds")
+#f1_score.df <- read_rds("data/rds/f1_score.df.rds")
+```
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_300 <- predict.grf(gwRF_adaptive_300,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0,
+                             global.w=1)
+
+write_rds(gwRF_pred_300, "data/rds/gwRF_pred_300_0.rds")
+
+gwRF_pred_300 <- read_rds("data/rds/gwRF_pred_300_0.rds")
+
+pred_col_300 <- ifelse(gwRF_pred_300 > 0.5, 1, 0)
+pred_col_300 <- factor(pred_col_300)
+
+cm_300_0 <- confusionMatrix(pred_col_300, test_col)
+write_rds(cm_300_0, "data/rds/cm_300_0.rds")
+rm(gwRF_pred_300)
+```
+
+```{r}
+#| eval: false
+cm_300_0 <- read_rds("data/rds/cm_300_0.rds")
+cm_300_0
+rm(cm_300_0)
 ```
 
 ```{r}
 #| eval: false
 
-gwRF_pred_260 <- predict.grf(gwRF_adaptive, 
-                           testing_data, 
-                           x.var.name=predictor.variable.names,
-                           y.var.name=dependent.variable.name, 
-                           local.w=0.5,
-                           global.w=0.5)
+#pred_weight_0 <- as.data.frame(pred_col_300)
+pred_weight_0 <- cbind(pred_weight_0,pred_col_300)
+
+cm <- confusionMatrix(pred_col_300, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df[,"pred_col_300"] <- NA
+
+f1_score.df["0","pred_col_300"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.25
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_300 <- predict.grf(gwRF_adaptive_300,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.25,
+                             global.w=0.75)
+
+
+write_rds(gwRF_pred_300, "data/rds/gwRF_pred_300_0.25.rds")
+
+gwRF_pred_300 <- read_rds("data/rds/gwRF_pred_300_0.25.rds")
+
+pred_col_300 <- ifelse(gwRF_pred_300 > 0.5, 1, 0)
+pred_col_300 <- factor(pred_col_300)
+
+cm_300_0.25 <- confusionMatrix(pred_col_300, test_col)
+write_rds(cm_300_0.25, "data/rds/cm_300_0.25.rds")
+rm(gwRF_pred_300)
+```
+
+```{r}
+cm_300_0.25 <- read_rds("data/rds/cm_300_0.25.rds")
+cm_300_0.25
+rm(cm_300_0.25)
 ```
 
 ```{r}
 #| eval: false
-write_rds(gwRF_pred_260, "data/rds/gwRF_pred_260.rds")
+pred_weight_0.25 <- as.data.frame(pred_col_300)
+pred_weight_0.25 <- cbind(pred_weight_0.25,pred_col_300)
+
+cm <- confusionMatrix(pred_col_300, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.25","pred_col_300"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.5
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_300 <- predict.grf(gwRF_adaptive_300,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.5,
+                             global.w=0.5)
+
+write_rds(gwRF_pred_300, "data/rds/gwRF_pred_300_0.5.rds")
+
+gwRF_pred_300 <- read_rds("data/rds/gwRF_pred_300_0.5.rds")
+
+pred_col_300 <- ifelse(gwRF_pred_300 > 0.5, 1, 0)
+pred_col_300 <- factor(pred_col_300)
+
+cm_300_0.5 <- confusionMatrix(pred_col_300, test_col)
+write_rds(cm_300_0.5, "data/rds/cm_300_0.5.rds")
+rm(gwRF_pred_300)
+```
+
+```{r}
+cm_300_0.5 <- read_rds("data/rds/cm_300_0.5.rds")
+cm_300_0.5
+rm(cm_300_0.5)
 ```
 
 ```{r}
 #| eval: false
+pred_weight_0.5 <- as.data.frame(pred_col_300)
+pred_weight_0.5 <- cbind(pred_weight_0.5,pred_col_300)
 
-gwRF_pred_260_df <- as.data.frame(gwRF_pred_260)
+cm <- confusionMatrix(pred_col_300, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.5","pred_col_300"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 0.75
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_300 <- predict.grf(gwRF_adaptive_300,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=0.75,
+                             global.w=0.25)
+
+write_rds(gwRF_pred_300, "data/rds/gwRF_pred_300_0.75.rds")
+
+gwRF_pred_300 <- read_rds("data/rds/gwRF_pred_300_0.75.rds")
+
+pred_col_300 <- ifelse(gwRF_pred_300 > 0.5, 1, 0)
+pred_col_300 <- factor(pred_col_300)
+
+cm_300_0.75 <- confusionMatrix(pred_col_300, test_col)
+write_rds(cm_300_0.75, "data/rds/cm_300_0.75.rds")
+rm(gwRF_pred_300)
+```
+
+```{r}
+cm_300_0.75 <- read_rds("data/rds/cm_300_0.75.rds")
+cm_300_0.75
+rm(cm_300_0.75)
 ```
 
 ```{r}
 #| eval: false
+pred_weight_0.75 <- as.data.frame(pred_col_300)
+pred_weight_0.75 <- cbind(pred_weight_0.75,pred_col_300)
 
-testing_data_pred <- cbind(testing_data, gwRF_pred_260_df)
+cm <- confusionMatrix(pred_col_300, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["0.75","pred_col_300"] <- f1_score
+```
+:::
+
+::: {.callout-note collapse="true"}
+#### Local Weight: 1
+
+```{r}
+#| eval: false
+set.seed(1234)
+gwRF_pred_300 <- predict.grf(gwRF_adaptive_300,
+                             testing_data,
+                             x.var.name="X",
+                             y.var.name="Y",
+                             local.w=1,
+                             global.w=0)
+
+write_rds(gwRF_pred_300, "data/rds/gwRF_pred_300_1.rds")
+
+gwRF_pred_300 <- read_rds("data/rds/gwRF_pred_300_1.rds")
+
+pred_col_300 <- ifelse(gwRF_pred_300 > 0.5, 1, 0)
+pred_col_300 <- factor(pred_col_300)
+
+cm_300_1 <- confusionMatrix(pred_col_300, test_col)
+write_rds(cm_300_1, "data/rds/cm_300_1.rds")
+rm(gwRF_pred_300)
+```
+
+```{r}
+cm_300_1 <- read_rds("data/rds/cm_300_1.rds")
+cm_300_1
+rm(cm_300_1)
 ```
 
 ```{r}
 #| eval: false
+pred_weight_1 <- as.data.frame(pred_col_300)
+pred_weight_1 <- cbind(pred_weight_1,pred_col_300)
 
-rmse(testing_data_pred$Landslide, 
-     testing_data_pred$gwRF_pred_260)
+cm <- confusionMatrix(pred_col_300, test_col)
+
+tp <- cm$table[2, 2]  # True Positives
+fp <- cm$table[1, 2]  # False Positives
+fn <- cm$table[2, 1]  # False Negatives
+
+precision <- tp / (tp + fp)
+recall <- tp / (tp + fn)
+f1_score <- 2 * (precision*recall) / (precision + recall)
+
+f1_score.df["1","pred_col_300"] <- f1_score
+```
+
+```{r}
+#| eval: false
+rm(gwRF_adaptive_300)
+```
+:::
+:::
+
+## 7.6 Plotting GWRF Model Prediction Accuracy at Incrementing Weight & Standardised Bandwidth
+
+In this section, we are plotting the prediction accuracy of the GWRF models at incrementing weight parameters and standardised bandwidths. The weight parameters range from 0 to 1 in increments of 0.25, and the standardised bandwidths used are 50, 100, 150, 200, 250, and 300.
+
+The code chunk below creates a data frame with all combinations of weights and bandwidths, adds the accuracy values for each combination, and then creates a line plot of the accuracy against the bandwidth for each weight.
+
+```{r}
+weights <- c("0", "0.25", "0.50", "0.75", "1")
+bandwidths <- c(50, 100, 150, 200, 250,300)
+
+# Create a data frame with all combinations of weights and bandwidths
+df_gwRF <- expand.grid(Weight = weights, Bandwidth = bandwidths)
+
+# Add your accuracy values
+df_gwRF$Accuracy <- c(0.8813, 0.8961, 0.8995, 0.8582, 0.8816,
+                      0.8813, 0.8945, 0.8997, 0.8941, 0.8829,
+                      0.8813, 0.8932, 0.9, 0.8977, 0.8891,
+                      0.8813, 0.891, 0.8991, 0.8985, 0.8931,
+                      0.8813, 0.8902, 0.8959, 0.898, 0.8938,
+                      0.8813, 0.8901, 0.8952, 0.8978, 0.8946)
+
+# Create the plot
+ggplot(df_gwRF, aes(x = Bandwidth, y = Accuracy, color = Weight)) +
+  geom_line() +
+  geom_point(shape = 9, size = 2.5) +
+  labs(x = "Bandwidth", y = "Accuracy", title = "GWRF Model Prediction Accuracy \nat Incrementing Weight & Standardised Bandwidth") +
+  scale_x_continuous(breaks = c(50, 100, 150, 200, 250)) +
+  scale_y_continuous(limits = c(0.84, 0.911)) +
+  scale_color_manual(values = c("#e4c838", "#de573e", "#b977cb", "#4225df", "#32c962")) +
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),  # Remove internal grid lines
+    panel.border = element_rect(color = "black", fill = NA),
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "bottom"
+  )
+```
+
+```{r}
+#| eval: false
+write_rds(f1_score.df, "data/rds/f1_score.df.rds")
+write_rds(pred_weight_0, "data/rds/pred_weight_0.rds")
+write_rds(pred_weight_0.25, "data/rds/pred_weight_0.25.rds")
+write_rds(pred_weight_0.5, "data/rds/pred_weight_0.5.rds")
+write_rds(pred_weight_0.75, "data/rds/pred_weight_0.75.rds")
+write_rds(pred_weight_1, "data/rds/pred_weight_1.rds")
+```
+
+# 8.0 Kriging
+
+Kriging is a geostatistical interpolation technique that generates estimates of the uncertainty surrounding each interpolated value. It is particularly useful when there is moderate spatial autocorrelation, as it helps in preserving spatial variability.
+
+The general steps involved in Kriging are as follows:
+
+1.  **Fitting a Variogram**: The first step in Kriging is to fit a variogram to develop the spatial covariance structure of sampled points. A variogram is a function that describes the degree of spatial dependence of a spatial random field or stochastic process.
+
+2.  **Interpolating Values**: Once the variogram is fitted, it is used to interpolate values for unsampled points from derived weights of the covariance structure. This is done using the spatial covariance structure to optimally estimate the values at unsampled locations.
+
+```{r}
+#| echo: false
+pacman::p_load(sf, terra, gstat, automap,
+               tmap, viridis, tidyverse)
+```
+
+```{r}
+#| echo: false
+set.seed(1243)
+ls_split <- ls_data %>%
+  initial_split(prop = .2, 
+                strata = Landslide)
+
+training_data <- training(ls_split)
+testing_data  <- testing(ls_split)
+
+test_col <- as.factor(testing_data$Landslide)
+
+testing_data <- subset(testing_data, select = -c(Train_ID,Grid_ID))
+
+
+training_data_sf <- st_as_sf(training_data, coords = c("X", "Y"))
+testing_data_sf <- st_as_sf(testing_data, coords = c("X", "Y"))
+```
+
+```{r}
+#| echo: false
+gwRF_pred_189_0.75 <- read_rds("data/rds/gwRF_pred_189_0.75.rds")
+
+
+testing_data_sf <- cbind(testing_data_sf, gwRF_pred_189_0.75) 
+
+testing_data_sf <- rename(testing_data_sf,
+                          Predicted = "gwRF_pred_189")
+
+testing_data_sf <- testing_data_sf %>% st_set_crs(32632)
+
+testing_data_sf <- subset(testing_data_sf, select =  c(Predicted, geometry))
+```
+
+```{r}
+#| echo: false
+valtellina <- st_read("data/vector/valtellina.shp")
+```
+
+```{r}
+#| echo: false
+valtellina <- st_set_crs(valtellina, 32632)
+```
+
+## 8.1 Creating Raster Layer
+
+The **`terra::rast()`** function is used to create a raster layer from the **`valtellina`** object with 700 rows and 1066 columns.
+
+```{r}
+grid <- terra::rast(valtellina, 
+                    nrows = 700, 
+                    ncols = 1066)
+grid
+```
+
+## 8.2 Extracting Cell Coordinates
+
+The **`terra::xyFromCell()`** function is used to extract the x and y coordinates of each cell in the raster layer.
+
+```{r}
+xy <- terra::xyFromCell(grid, 
+                        1:ncell(grid))
+head(xy)
+```
+
+## 8.3 Creating Spatal Data Frame
+
+The **`st_as_sf()`** function from the **`sf`** package is used to convert the data frame of coordinates into a spatial data frame. The **`st_filter()`** function is then used to keep only the points that fall within the **`valtellina`** region.
+
+```{r}
+coop <- st_as_sf(as.data.frame(xy), 
+                 coords = c("x", "y"),
+                 crs = st_crs(valtellina))
+coop <- st_filter(coop, valtellina)
+head(coop)
+```
+
+## 8.4 Variogram
+
+A variogram is a tool used in geostatistics to quantify the spatial autocorrelation of a variable. It provides a visual depiction of the covariance exhibited between each pair of points in the sampled data. For each pair of points in the sampled data, the "semivariance" is plotted against the distance between the pairs.
+
+The **`variogram`** function from the **`gstat`** package in R is used to calculate the empirical variogram of the data. The **`fit.variogram`** function is then used to fit a theoretical variogram model to this empirical variogram. The **`vgm`** function is used to specify the theoretical variogram model to fit.
+
+The **`psill`** parameter is the maximum semivariance value, also known as the sill. The **`model`** parameter specifies the type of variogram model to use, in this case, a spherical model. The **`range`** parameter is the distance at which the semivariance reaches the specified sill. The **`nugget`** parameter represents the variance at zero distance, accounting for measurement errors or spatial sources of variation at distances smaller than the sampling interval.
+
+Spherical variogram models are commonly used in geostatistical applications as they often have a similar shape to empirical variograms.
+
+Here is the code chunk that accomplishes this:
+
+```{r}
+v <- variogram(Predicted ~ 1, 
+               data = testing_data_sf)
+plot(v)
+```
+
+```{r}
+fv <- fit.variogram(object = v,
+                    model = vgm(
+                      psill = 0.5, 
+                      model = "Sph",
+                      range = 5000, 
+                      nugget = 0.1))
+fv
+```
+
+```{r}
+plot(v, fv)
+```
+
+## 8.5 Creating Krige Object
+
+In this code chunk, we create a **`gstat`** object named **`k`** using the **`gstat`** function. This object represents a geostatistical model that we'll use for Kriging. The formula **`Predicted ~ 1`** specifies that we're modeling the **`Predicted`** variable as a function of a constant (i.e., we're fitting a mean model). The **`data`** argument is set to **`testing_data_sf`**. The **`model`** argument is set to **`fv`**.
+
+```{r}
+#| eval: false
+k <- gstat(formula = Predicted ~ 1, 
+           data = testing_data_sf, 
+           model = fv)
+k
+```
+
+## 8.6 Prediction with Krige Object
+
+In this code chunk, we use the **`predict`** function to make predictions from the Kriging model **`k`** for the locations specified in **`coop`**. The predictions are stored in **`resp`**. We then extract the x and y coordinates and the predicted values from **`resp`**.
+
+```{r}
+#| eval: false
+resp <- predict(k, coop)
+resp$x <- st_coordinates(resp)[,1]
+resp$y <- st_coordinates(resp)[,2]
+resp$pred <- resp$var1.pred
+resp$pred <- resp$pred
+resp
+```
+
+## 8.7 Rasterizing Predictions
+
+In this code chunk, we rasterize the predictions **`resp`** onto the raster grid **`grid`** using the **`terra::rasterize`** function. The rasterized predictions are stored in **`kpred`**.
+
+```{r}
+#| eval: false
+kpred <- terra::rasterize(resp, grid, 
+                         field = "pred")
+```
+
+Now we will save `kpred` for later use.
+
+```{r}
+#| eval: false
+writeRaster(kpred, "data/raster/kpred.tif", filetype="GTIFF")
+```
+
+```{r}
+#| echo: false
+kpred <- raster("data/raster/kpred.tif")
+```
+
+## 8.8 Creating Spatial Interpolated Map
+
+Now that we have the data ready, we use appropriate **`tmap`** functions to create a map.
+
+```{r}
+tmap_options(check.and.fix = TRUE)
+tmap_mode("plot")
+tm_shape(kpred) + 
+  tm_raster(alpha = 0.6, 
+            palette = "RdYlGn",
+            title = "Probability of Landslides") +
+  tm_layout(main.title = "Distribution of Predicted Landslides",
+            main.title.position = "center",
+            main.title.size = 1.2,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar() +
+  tm_grid(alpha =0.2)
 ```
