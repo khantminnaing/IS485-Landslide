@@ -4499,11 +4499,12 @@ Now that we have the data ready, we use appropriate **`tmap`** functions to crea
 
 ```{r}
 #| fig-width: 10
+#| fig-height: 10
 tmap_options(check.and.fix = TRUE)
 tmap_mode("plot")
 tm_shape(kpred) + 
   tm_raster(alpha = 1, 
-            palette = "RdYlGn",
+            palette = "-RdYlGn",
             title = "Probability of Landslides") +
   tm_layout(main.title = "Landslide Susceptibility Map (GWRF)",
             main.title.position = "center",
