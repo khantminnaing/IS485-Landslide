@@ -393,15 +393,14 @@ confusionMatrix(predicted_col, test_col)
 
 ## 5.9 Permutation Test
 
-Random Forest (RF) is a stochastic process, and to ensure that the results are not random, we can perform a permutation test. This involves repeating the RF process multiple times and comparing the results. In this case, we will repeat the process 30 times using the **`rf_repeat()`** function from the **`spatialRF`** package.
+Random Forest (RF) is a stochastic process, and to ensure that the results are not random, we can perform a permutation test. This involves repeating the RF process multiple times and comparing the results. In this case, we will repeat the process 10 times using the **`rf_repeat()`** function from the **`spatialRF`** package.
 
 The code chunk below performs this permutation test:
 
 ```{r}
-#| eval: false
 non.spatial.rf.perm <- rf_repeat(
   model = non.spatial.rf, 
-  repetitions = 30,
+  repetitions = 10,
   verbose = FALSE
 )
 
@@ -411,7 +410,6 @@ plot_importance(non.spatial.rf.perm, verbose = FALSE)
 After performing the permutation test, we can plot the variable importance scores and the partial dependence plots (PDPs) of the permuted RF model. These plots provide insights into the stability of the variable importance scores and the PDPs across the repeated RF processes.
 
 ```{r}
-#| eval: false
 plot_response_curves(
   non.spatial.rf.perm, 
   quantiles = 0.5,
@@ -588,7 +586,7 @@ The code chunk below carries out 10 spatial fold cross-validation on RF model:
 
 ```{r}
 set.seed(1234)
-non.spatial.rf.eval <- rf_evaluate(
+non.spatial.rf <- rf_evaluate(
   non.spatial.rf,
   repetitions = 10,
   xy = xy,
@@ -596,12 +594,14 @@ non.spatial.rf.eval <- rf_evaluate(
   verbose = FALSE
 )
 
-print_evaluation(non.spatial.rf.eval)
+print_evaluation(non.spatial.rf)
 ```
 
 We can also visualize the training and testing data of each spatial fold. The maps below show two sets of training and testing folds.
 
 ```{r}
+#| fig-width: 10
+
 pr <- training_data[, c("X", "Y")]
 pr$group.2 <- pr$group.1 <- "Training"
 pr[non.spatial.rf$evaluation$spatial.folds[[1]]$testing, "group.1"] <- "Testing"
@@ -657,7 +657,8 @@ p2 <- ggplot2::ggplot() +
   ggplot2::xlab("Longitude") + 
   ggplot2::ylab("")
 
-p1 | p2
+p1
+p2
 ```
 
 We will do the same 10 spatial fold cross-validation for the MERF model as well:
@@ -4497,13 +4498,14 @@ kpred <- raster("data/raster/kpred.tif")
 Now that we have the data ready, we use appropriate **`tmap`** functions to create a map.
 
 ```{r}
+#| fig-width: 10
 tmap_options(check.and.fix = TRUE)
 tmap_mode("plot")
 tm_shape(kpred) + 
-  tm_raster(alpha = 0.6, 
+  tm_raster(alpha = 1, 
             palette = "RdYlGn",
             title = "Probability of Landslides") +
-  tm_layout(main.title = "Distribution of Predicted Landslides",
+  tm_layout(main.title = "Landslide Susceptibility Map (GWRF)",
             main.title.position = "center",
             main.title.size = 1.2,
             legend.height = 0.45, 
