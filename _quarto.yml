@@ -27,7 +27,7 @@ website:
 
   page-footer:
     background: primary
-    left: "What Causes Landslides? Explanatory Landslide Susceptibility Modelling of Valtellina Valley, Lombardy Region, Italy"
+    left: "Is There a Space in Landslide Susceptibility Modelling: A Case Study of Valtellina Valley, Northern Italy"
 format:
   html:
     theme: pulse
