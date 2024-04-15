@@ -18,7 +18,7 @@ website:
         href: project.qmd
       - text: "Model Fitting and Results"
         menu:
-        - href: gwsmodelling_new.qmd
+        - href: explanatorymodelling.qmd
           text: "Statistical Modelling"
         - href: predictivemodelling.qmd
           text: "Machine Learning Modelling"

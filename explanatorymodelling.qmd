@@ -1,0 +1,554 @@
+---
+title: "Statistical Modelling"
+author:
+  - name: Khant Min Naing
+  - name: Ann Mei Yi Victoria Grace
+date: 01-07-2024 
+date-modified: "last-modified"
+categories:
+  - R
+  - sf
+  - gwmodel
+output:
+  distill::distill_article:
+    code_folding: false
+    toc: true
+    self_contained: false
+---
+
+To develop a landslide susceptibility methodology framework, we will explore and calibrate different statistical and machine learning models. This page focuses on statistical models first.
+
+# 1.0 Import Packages
+
+```{r}
+pacman::p_load(sp, sf, st, spdep, raster, spatstat, tmap, devtools,vtable,ggplot2,egg, corrplot, patchwork, ggstats, ggstatsplot, GWmodel, tidyverse, gtsummary,vtable, sjPlot, sjmisc, sjlabelled, tableHTML, olsrr, car, blorr,ISLR, klaR, rsample,kableExtra, performance)
+```
+
+# 2.0 Import Data
+
+```{r}
+valtellina <- read_sf(dsn = "data/vector", layer = "valtellina")
+train_grids_v4 <- read.csv("data/aspatial/train_grid_v4.csv")
+```
+
+```{r}
+train_grid_v4.sf <- st_as_sf(train_grids_v4,
+                            coords = c("X", "Y"))
+train_grid_v4.sf <- st_set_crs(train_grid_v4.sf, 32632) 
+```
+
+# 3.0 Exploratory Spatial Data Analysis (ESDA)
+
+To calculate the summary statistics of `landslide_train` data frame, we use `st()`.
+
+```{r}
+st(train_grids_v4)
+```
+
+Next, we will create atrellis plot by using `ggarrange()` of [**ggpubr**](https://cran.r-project.org/web/packages/ggpubr/) package. In this way, we can see the distribution plots of different parameters at the same time.4.1 Correlation Matrix Using Corrplot
+
+Before building a logistic regression model, it is important to ensure that the indepdent variables used are **not highly correlated** to each other. If these highly correlated independent variables are used in building a regression model by mistake, the quality of the model will be compromised. This phenomenon is known as **multicollinearity** in statistics.
+
+Correlation matrix is commonly used to visualise the relationships between the independent variables. In this section, the [**corrplot**](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html) package will be used to display the correlation matrix.
+
+### 3.1 Correlation Matrix Using ggstats
+
+```{r}
+#| fig-width: 10
+
+set.seed(123)
+## producing the correlation matrix
+ggcorrmat(
+  data = train_grids_v4[, 6:29],  
+          matrix.type = "upper",
+  type = "parametric",
+  tr = 0.2,
+  partial = FALSE,
+  k = 2L,
+  sig.level = 0.05,
+  conf.level = 0.95,
+  bf.prior = 0.707,
+  ggcorrplot.args = list(
+     tl.cex = 10,
+     pch.cex = 5,
+     lab_size = 3
+  )) + ## modification outside `{ggstatsplot}` using `{ggplot2}` functions
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(
+      margin = ggplot2::margin(t = 0.15, r = 0.15, b = 0.15, l = 0.15, unit = "cm")
+    )
+  )
+```
+
+# 4.0 Multiple Logistic Regression
+
+The `glm` function fits generalized linear models, a class of models that includes logistic regression. The syntax of the `glm` function is similar to that of `lm`, except that we must pass the argument `family = binomial` in order to tell R to run a logistic regression rather than some other type of generalized linear model.
+
+## 4.1 Logistic Regression Model 1
+
+Under general logistic regression, all variables are considered first.
+
+```{r}
+set.seed(1234)
+
+landslide.lr <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic+Lithology_Unconsolidated + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, family = "binomial", data = train_grids_v4)
+```
+
+```{r}
+sum_lr <- summary(landslide.lr)
+sum_lr
+```
+
+```{r}
+pd <- 100*with(summary(landslide.lr), 1 - deviance/null.deviance)
+pd
+confint(landslide.lr)
+```
+
+```{r}
+vif <- multicollinearity(landslide.lr)
+vif
+```
+
+```{r}
+plot(vif)
+```
+
+```{r}
+train_grids_v4 <- subset(train_grids_v4, select = -Lithology_Unconsolidated)
+```
+
+```{r}
+landslide.lr <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, family = "binomial", data = train_grids_v4)
+```
+
+```{r}
+plot(multicollinearity(landslide.lr))
+```
+
+### 4.1.1 Stepwise Selection
+
+For the initial/ first cut model, all the independent variables are put into the model. Our goal is to include a limited number of independent variables (5-15) which are all significant, without sacrificing too much on the model performance. The rationale behind including not too many variables is that the model would be overfitted and would become unstable when tested on the validation sample. The variable reduction is done using forward or backward or stepwise variable selection procedures. We will use `blr_step_aic_both()` to shortlist predictors for our model.
+
+```{r}
+#| eval: false
+stepwise_1 <- blr_step_aic_both(landslide.lr)
+write_rds(stepwise_1, "data/rds/stepwise1.rds")
+```
+
+```{r}
+stepwise1 <- read_rds("data/rds/stepwise1.rds")
+stepwise1
+```
+
+::: callout-note
+#### Stepwise Selection Result
+
+17 explanatory variables have been selected in this stepwise selection process.
+:::
+
+Plot the Akaike Information Criterion curve as it is the main threshold.
+
+```{r}
+plot(stepwise1)
+```
+
+::: callout-note
+#### Observation
+
+In our first stepwise selection, `Slope_Angle` has the highest AIC value followed by `Profile_Curvature`.
+:::
+
+### 4.1.2 Validating Logistic Regression Model 1
+
+```{r}
+cm <- blr_confusion_matrix(landslide.lr, cutoff = 0.5)
+cm
+```
+
+## 4.2 Logistic Regression Model 2
+
+Here, we recalibrate the model by updating the logistic regression with the selected variables.
+
+```{r}
+set.seed(1234)
+
+landslide.lr2 <- glm(Landslide ~ Slope_Angle + Profile_Curvature +
+                       Plan_Curvature + Landuse_Vegetation +
+                       Lithology_Plutonic + Precipitation +
+                       Proximity_Fault + TWI + Lithology_Sedimentary +
+                       Lithology_Metamorphic +  Proximity_Stream +
+                       Aspect_SouthEast + Proximity_Road + Aspect_South +
+                       Aspect_NorthEast + Aspect_East +
+                       Proximity_Settlement + SPI , family = "binomial",
+                       data = train_grids_v4)
+```
+
+```{r}
+sum_lr2 <- summary(landslide.lr2)
+sum_lr2
+```
+
+```{r}
+pd2 <- 100*with(summary(landslide.lr2), 1 - deviance/null.deviance)
+pd2
+confint(landslide.lr2)
+```
+
+::: callout-note
+#### Observation
+
+The model is still overfitting and AIC of 23157 is very high.
+:::
+
+### 4.2.1 Validating Logistic Regression Model 2
+
+```{r}
+cm2 <- blr_confusion_matrix(landslide.lr2, cutoff = 0.5)
+
+cm2
+```
+
+### 4.2.2 Comparing LR Models 1 & 2
+
+The two models thus far yield similar results with small changes in accuracy, sensitivity and specificity despite a reduced number of variables from the first to the second model.
+
+```{r}
+#| echo: false
+
+m_comparison <- data.frame(
+  Information = c("Sample Size","Non-Landslide",
+                  "Landslide","Explanatory Variable",
+                  "Accuracy", "AIC",
+                  "Sensitivity", "Specificity", 
+                  "Percentage Deviant"),
+  Model1 = c(50563L,
+             8783L,41780L,24L,cm$accuracy, sum_lr$aic,
+             cm$sensitivity, 
+             cm$specificity, pd),
+  Model2 = c(50563L,8783L,41780L,17L,cm2$accuracy, sum_lr2$aic,
+             cm2$sensitivity,
+             cm2$specificity, pd2)
+)
+
+# round evaluators to 4 d.p.
+m_comparison[5:9, -1] <- round(m_comparison[5:9, -1], 4)
+
+
+kable(m_comparison,
+      format="html",
+      caption="Comparing LR Model 1 and LR Model 2")
+```
+
+### 4.2.3 Weight of Evidence & Information Value
+
+Weight of Evidence (WoE) is a variable transformation technique meant for independent variables according to Information Theory. WoE measures **how good** each grouped attribute or bin of a feature can predict the target variable.
+
+WoE is formulated as:
+
+$$
+W~i^+ = ln \frac{P\{E~i/I\}}{P\{E~i/\overline{I}\}}
+$$
+
+$$
+W~i^- = ln \frac{P\{\overline{E}~i/I\}}{P\{\overline{E}~-i/\overline{I}\}}
+$$
+
+$$
+W~i = W~i^+ + W~i^-
+$$
+
+Information value (IV) explains the predictive power of the entirety of the feature.
+
+<insert formula later>
+
+Here is the IV for all the predictors.
+
+```{r}
+library("Information")
+
+IV <- create_infotables(data=train_grids_v4[, 5:28],
+                        valid=train_grids_v4[, 5:28],
+                        y="Landslide")
+kable(IV$Summary[,1:2], row.names=FALSE)
+```
+
+::: callout-note
+#### Observation
+
+`Slope_Angle` indeed has the most predictive power compared to other variables.
+:::
+
+`Slope_Angle` has to be further investigated to understand why it has the greatest predictive power.
+
+### 4.2.4 Slope Distribution
+
+Our data points are located in various places with varying slope angles. Since our initial IV analysis flags out its influence over our model results, the slope distribution can be first viewed with a histogram.
+
+Distribution of Landslide Samples
+
+```{r}
+ls_data <- train_grids_v4[train_grids_v4$Landslide==1,]
+
+ggplot(data=ls_data, aes(x= `Slope_Angle`)) +
+  geom_histogram(bins=100, color="black", fill="#e9531e") +
+  labs(title="Distribution of slope values in landslide samples") + 
+  geom_vline(xintercept = 20, color = "red")
+```
+
+Distribution of Non-Landslide Samples
+
+```{r}
+non_ls_data <- train_grids_v4[train_grids_v4$Landslide==0,]
+
+ggplot(data=non_ls_data, aes(x= `Slope_Angle`)) +
+  geom_histogram(bins=100, color="black", fill="#e9531e") +
+  labs(title="Distribution of slope values in non-landslide samples") + 
+  geom_vline(xintercept = 20, color = "red")
+```
+
+::: callout-insight
+#### Quasi-separation Present
+
+The majority of landslide samples have slope angles larger than 20°. In similar contrast, the majority of non-landslide samples have slope angles less than 20°.
+
+As such, the model currently predicts any instances with a slope angle **greater than 20°** to be a landslide.
+:::
+
+## 4.3 Logistic Regression Model 3
+
+### 4.3.1 Stratified Slope Sampling
+
+To address the data bias with the evidence of quasi-separation, we use a 15° cut-off based on the first quantile result and slope (%) reference from the Barcelona Field Studies Centre.
+
+```{r}
+slope_angle <- train_grids_v4$Slope_Angle
+
+quantile(slope_angle, probs = seq(0, 1, 0.25))
+```
+
+[![Standard Slope Descriptors (Source: Barcelona Field Studies Centre)](images/bfc_slope_descriptors.png)](https://geographyfieldwork.com/SlopeSteepnessIndex.htm)
+
+Distribution of Landslide Samples
+
+```{r}
+ls_data_20 <- train_grids_v4[train_grids_v4$Landslide==1 & train_grids_v4$Slope_Angle <= 20,]
+
+ggplot(data=ls_data_20, aes(x= `Slope_Angle`)) +
+  geom_histogram(bins=40, color="black", fill="#e9531e") +
+  labs(title="Distribution of slope values in landslide samples (15° slope cut-off)")
+```
+
+Distribution of Non-Landslide Samples
+
+```{r}
+non_ls_data_20 <- train_grids_v4[train_grids_v4$Landslide==0 & train_grids_v4$Slope_Angle <= 20,]
+
+ggplot(data=non_ls_data_20, aes(x= `Slope_Angle`)) +
+  geom_histogram(bins=40, color="black", fill="#e9531e") +
+  labs(title="Distribution of slope values in non-landslide samples (20° slope cut-off)")
+```
+
+::: callout-note
+### Observation
+
+Although the distribution for this stratified non-landslide sample is left-skewed, the data skewness has been reduced significantly.
+:::
+
+We then perform the logistic regression model with the stratified sample.
+
+```{r}
+#| echo: false
+set.seed(1234)
+
+data_20 <- read_rds("data/rds/sample_Q6.rds")
+```
+
+```{r}
+landslide.lr3 <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, family = "binomial", data = data_20)
+```
+
+### 4.3.2 Validating Logistic Regression Model 3
+
+```{r}
+sum_lr3 <- summary(landslide.lr3)
+sum_lr3
+```
+
+```{r}
+cm3 <- blr_confusion_matrix(landslide.lr3, cutoff = 0.5)
+cm3
+```
+
+```{r}
+stepwise_3 <- blr_step_aic_both(landslide.lr3)
+```
+
+```{r}
+#| echo: false
+
+m_comparison <- data.frame(
+  Information = c("Sample Size","Non-Landslide",
+                  "Landslide","Explanatory Variable",
+                  "Accuracy", "AIC",
+                  "Sensitivity", "Specificity", 
+                  "Percentage Deviant"),
+  Model_1 = c(50563L,
+             8783L,41780L,24L,cm$accuracy, sum_lr$aic,
+             cm$sensitivity, 
+             cm$specificity, pd),
+  Model_2 = c(50563L,8783L,41780L,17L,cm2$accuracy, sum_lr2$aic,
+             cm2$sensitivity,
+             cm2$specificity, pd2),
+  Model_3 = c(9899L,4630L,2304L,24L,cm3$accuracy, sum_lr3$aic,
+             cm3$sensitivity,
+             cm3$specificity, pd2)
+)
+
+# round evaluators to 4 d.p.
+m_comparison[5:9, -1] <- round(m_comparison[5:9, -1], 4)
+
+
+kable(m_comparison,
+      format="html",
+      caption="Comparing LR Model 1, 2 and 3")
+```
+
+::: callout-note
+### Observation
+
+LR 3 has the best AIC at the expense of having the lowest accuracy and sensitivity rates so far. As such, the overall performance was compromised after conducting stratified sampling.
+:::
+
+### 4.3.3 Spatial Weights
+
+Variables are more often than not influenced by geographic factors and to name a few, topography, lithology, and slope gradient.
+
+## 4.4 Geographically Weighted Logistic Regression Model 1
+
+Imposing a Geographically Weighted Logistic Regression (GWLR) Model aims to improve the model performance and more importantly, detect any spatial relationship between explanatory variables and the target variable.
+
+Our above LR model will be calibrated into GWLR by incorporating spatial weight-matrix, weighting function and bandwidth parameters.
+
+### 4.4.1 Data Sampling
+
+There is a limit to the number of observations the GWModel can take. Hence only 20% of the landslide data is taken into account.
+
+```{r}
+ls_data_sf <- st_as_sf(data_20, coords = c("X", "Y"))
+ls_data_sf <- st_set_crs(ls_data_sf, 32632) 
+set.seed(1243)
+
+ls_split <- ls_data_sf %>%
+  initial_split(prop = .2, 
+                strata = Landslide)
+
+training_data_sf <- training(ls_split)
+testing_data_sf  <- testing(ls_split)
+
+training_data_sp <- as_Spatial(training_data_sf)
+```
+
+### 4.4.2 Calculating Distance Matrix
+
+```{r}
+distMAT <- gw.dist(dp.locat=
+                     coordinates(training_data_sp))
+```
+
+### 4.4.3 Computing Adaptive Bandwidth
+
+```{r}
+#| eval: false
+bw.adaptive <- bw.ggwr(formula = 
+                       Landslide ~ Slope_Angle, 
+                       family = "binomial", 
+                       data = training_data_sp, 
+                       approach="CV", 
+                       kernel="gaussian", 
+                       adaptive= TRUE, 
+                       longlat=FALSE, 
+                       p=2,
+                       theta=0,
+                       dMat=distMAT)
+```
+
+::: callout-note
+### Note
+
+The above step is computationally intensive. The resulting adaptive bandwidth value is 20.
+:::
+
+The input variables for the geographically weighted logistic regression model would be the selected independent variables for the formula, the training data in SpatialPointDataFrame object, the adaptive bandwidth value 20, where kernel is set to Gaussian and family is set as binomial due to the binary nature of the data.
+
+```{r}
+#| eval: false
+gwlr <- ggwr.basic(Landslide ~ Aspect_North + 
+                     Aspect_SouthEast + Profile_Curvature + 
+                     Plan_Curvature + Slope_Angle + 
+                     Lithology_Sedimentary + Lithology_Plutonic +
+                     Lithology_Unconsolidated + Proximity_Stream +
+                     Landuse_Vegetation + Precipitation, 
+                   data = training_data_sp, 
+                   bw = 20, 
+                   family = "binomial", 
+                   kernel = "gaussian", 
+                   adaptive = TRUE, 
+                   cv = T, 
+                   tol = 1e-05, 
+                   maxiter = 20, 
+                   p = 2, 
+                   theta = 0, 
+                   longlat = FALSE, 
+                   dMat = distMAT)
+```
+
+```{r}
+#| echo: false
+gwlr <- read_rds("data/rds/gwlr_aicc-vic.rds")
+```
+
+```{r}
+gwlr
+```
+
+::: callout-tip
+### Observation
+
+-   Adjusted R-squared and AIC perform better with a 200 point improvement on average with GWR
+
+-   Significant improvements from using global LR to local GWR
+:::
+
+### 4.4.5 Correlation Matrix Using ggstats
+
+```{r}
+#| fig-width: 10
+
+training_data_cal <- training_data_sf %>% 
+  st_drop_geometry()
+
+training_data_cal <- training_data_cal[, c(5, 13, 14, 23, 17, 21, 15, 24)]
+  
+set.seed(123)
+ggcorrmat(
+  data = training_data_cal,  
+          matrix.type = "upper",
+  type = "parametric",
+  tr = 0.2,
+  partial = FALSE,
+  k = 2L,
+  sig.level = 0.05,
+  conf.level = 0.95,
+  bf.prior = 0.707,
+  ggcorrplot.args = list(
+     tl.cex = 10,
+     pch.cex = 5,
+     lab_size = 3
+  )) + ## modification outside `{ggstatsplot}` using `{ggplot2}` functions
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(
+      margin = ggplot2::margin(t = 0.15, r = 0.15, b = 0.15, l = 0.15, unit = "cm")
+    )
+  )
+```

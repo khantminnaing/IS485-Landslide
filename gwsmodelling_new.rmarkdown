@@ -16,15 +16,23 @@ output:
     self_contained: false
 ---
 
+
+
 To develop a landslide susceptibility methodology framework, we will explore and calibrate different statistical and machine learning models. This page focuses on statistical models first.
 
 # 1.0 Import Packages
+
+
 
 ```{r}
 pacman::p_load(sp, sf, st, spdep, raster, spatstat, tmap, devtools,vtable,ggplot2,egg, corrplot, patchwork, ggstats, ggstatsplot, GWmodel, tidyverse, gtsummary,vtable, sjPlot, sjmisc, sjlabelled, tableHTML, olsrr, car, blorr,ISLR, klaR, rsample,kableExtra, performance)
 ```
 
+
+
 # 2.0 Import Data
+
+
 
 ```{r}
 valtellina <- read_sf(dsn = "data/vector", layer = "valtellina")
@@ -37,13 +45,19 @@ train_grid_v4.sf <- st_as_sf(train_grids_v4,
 train_grid_v4.sf <- st_set_crs(train_grid_v4.sf, 32632) 
 ```
 
+
+
 # 3.0 Exploratory Spatial Data Analysis (ESDA)
 
 To calculate the summary statistics of `landslide_train` data frame, we use `st()`.
 
+
+
 ```{r}
 st(train_grids_v4)
 ```
+
+
 
 Next, we will create atrellis plot by using `ggarrange()` of [**ggpubr**](https://cran.r-project.org/web/packages/ggpubr/) package. In this way, we can see the distribution plots of different parameters at the same time.4.1 Correlation Matrix Using Corrplot
 
@@ -52,6 +66,8 @@ Before building a logistic regression model, it is important to ensure that the 
 Correlation matrix is commonly used to visualise the relationships between the independent variables. In this section, the [**corrplot**](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html) package will be used to display the correlation matrix.
 
 ### 3.1 Correlation Matrix Using ggstats
+
+
 
 ```{r}
 #| fig-width: 10
@@ -80,6 +96,8 @@ ggcorrmat(
   )
 ```
 
+
+
 # 4.0 Multiple Logistic Regression
 
 The `glm` function fits generalized linear models, a class of models that includes logistic regression. The syntax of the `glm` function is similar to that of `lm`, except that we must pass the argument `family = binomial` in order to tell R to run a logistic regression rather than some other type of generalized linear model.
@@ -87,6 +105,8 @@ The `glm` function fits generalized linear models, a class of models that includ
 ## 4.1 Logistic Regression Model 1
 
 Under general logistic regression, all variables are considered first.
+
+
 
 ```{r}
 set.seed(1234)
@@ -126,9 +146,13 @@ landslide.lr <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_
 plot(multicollinearity(landslide.lr))
 ```
 
+
+
 ### 4.1.1 Stepwise Selection
 
 For the initial/ first cut model, all the independent variables are put into the model. Our goal is to include a limited number of independent variables (5-15) which are all significant, without sacrificing too much on the model performance. The rationale behind including not too many variables is that the model would be overfitted and would become unstable when tested on the validation sample. The variable reduction is done using forward or backward or stepwise variable selection procedures. We will use `blr_step_aic_both()` to shortlist predictors for our model.
+
+
 
 ```{r}
 #| eval: false
@@ -141,6 +165,8 @@ stepwise1 <- read_rds("data/rds/stepwise1.rds")
 stepwise1
 ```
 
+
+
 ::: callout-note
 #### Stepwise Selection Result
 
@@ -149,9 +175,13 @@ stepwise1
 
 Plot the Akaike Information Criterion curve as it is the main threshold.
 
+
+
 ```{r}
 plot(stepwise1)
 ```
+
+
 
 ::: callout-note
 #### Observation
@@ -161,14 +191,20 @@ In our first stepwise selection, `Slope_Angle` has the highest AIC value followe
 
 ### 4.1.2 Validating Logistic Regression Model 1
 
+
+
 ```{r}
 cm <- blr_confusion_matrix(landslide.lr, cutoff = 0.5)
 cm
 ```
 
+
+
 ## 4.2 Logistic Regression Model 2
 
 Here, we recalibrate the model by updating the logistic regression with the selected variables.
+
+
 
 ```{r}
 set.seed(1234)
@@ -195,6 +231,8 @@ pd2
 confint(landslide.lr2)
 ```
 
+
+
 ::: callout-note
 #### Observation
 
@@ -203,15 +241,21 @@ The model is still overfitting and AIC of 23157 is very high.
 
 ### 4.2.1 Validating Logistic Regression Model 2
 
+
+
 ```{r}
 cm2 <- blr_confusion_matrix(landslide.lr2, cutoff = 0.5)
 
 cm2
 ```
 
+
+
 ### 4.2.2 Comparing LR Models 1 & 2
 
 The two models thus far yield similar results with small changes in accuracy, sensitivity and specificity despite a reduced number of variables from the first to the second model.
+
+
 
 ```{r}
 #| echo: false
@@ -240,6 +284,8 @@ kable(m_comparison,
       caption="Comparing LR Model 1 and LR Model 2")
 ```
 
+
+
 ### 4.2.3 Weight of Evidence & Information Value
 
 Weight of Evidence (WoE) is a variable transformation technique meant for independent variables according to Information Theory. WoE measures **how good** each grouped attribute or bin of a feature can predict the target variable.
@@ -264,6 +310,8 @@ Information value (IV) explains the predictive power of the entirety of the feat
 
 Here is the IV for all the predictors.
 
+
+
 ```{r}
 library("Information")
 
@@ -272,6 +320,8 @@ IV <- create_infotables(data=train_grids_v4[, 5:28],
                         y="Landslide")
 kable(IV$Summary[,1:2], row.names=FALSE)
 ```
+
+
 
 ::: callout-note
 #### Observation
@@ -287,6 +337,8 @@ Our data points are located in various places with varying slope angles. Since o
 
 Distribution of Landslide Samples
 
+
+
 ```{r}
 ls_data <- train_grids_v4[train_grids_v4$Landslide==1,]
 
@@ -296,7 +348,11 @@ ggplot(data=ls_data, aes(x= `Slope_Angle`)) +
   geom_vline(xintercept = 20, color = "red")
 ```
 
+
+
 Distribution of Non-Landslide Samples
+
+
 
 ```{r}
 non_ls_data <- train_grids_v4[train_grids_v4$Landslide==0,]
@@ -306,6 +362,8 @@ ggplot(data=non_ls_data, aes(x= `Slope_Angle`)) +
   labs(title="Distribution of slope values in non-landslide samples") + 
   geom_vline(xintercept = 20, color = "red")
 ```
+
+
 
 ::: callout-insight
 #### Quasi-separation Present
@@ -321,15 +379,21 @@ As such, the model currently predicts any instances with a slope angle **greater
 
 To address the data bias with the evidence of quasi-separation, we use a 15° cut-off based on the first quantile result and slope (%) reference from the Barcelona Field Studies Centre.
 
+
+
 ```{r}
 slope_angle <- train_grids_v4$Slope_Angle
 
 quantile(slope_angle, probs = seq(0, 1, 0.25))
 ```
 
+
+
 [![Standard Slope Descriptors (Source: Barcelona Field Studies Centre)](images/bfc_slope_descriptors.png)](https://geographyfieldwork.com/SlopeSteepnessIndex.htm)
 
 Distribution of Landslide Samples
+
+
 
 ```{r}
 ls_data_20 <- train_grids_v4[train_grids_v4$Landslide==1 & train_grids_v4$Slope_Angle <= 20,]
@@ -339,7 +403,11 @@ ggplot(data=ls_data_20, aes(x= `Slope_Angle`)) +
   labs(title="Distribution of slope values in landslide samples (15° slope cut-off)")
 ```
 
+
+
 Distribution of Non-Landslide Samples
+
+
 
 ```{r}
 non_ls_data_20 <- train_grids_v4[train_grids_v4$Landslide==0 & train_grids_v4$Slope_Angle <= 20,]
@@ -349,6 +417,8 @@ ggplot(data=non_ls_data_20, aes(x= `Slope_Angle`)) +
   labs(title="Distribution of slope values in non-landslide samples (20° slope cut-off)")
 ```
 
+
+
 ::: callout-note
 ### Observation
 
@@ -356,6 +426,8 @@ Although the distribution for this stratified non-landslide sample is left-skewe
 :::
 
 We then perform the logistic regression model with the stratified sample.
+
+
 
 ```{r}
 #| echo: false
@@ -368,7 +440,11 @@ data_20 <- read_rds("data/rds/sample_Q6.rds")
 landslide.lr3 <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, family = "binomial", data = data_20)
 ```
 
+
+
 ### 4.3.2 Validating Logistic Regression Model 3
+
+
 
 ```{r}
 sum_lr3 <- summary(landslide.lr3)
@@ -414,6 +490,8 @@ kable(m_comparison,
       caption="Comparing LR Model 1, 2 and 3")
 ```
 
+
+
 ::: callout-note
 ### Observation
 
@@ -434,6 +512,8 @@ Our above LR model will be calibrated into GWLR by incorporating spatial weight-
 
 There is a limit to the number of observations the GWModel can take. Hence only 20% of the landslide data is taken into account.
 
+
+
 ```{r}
 ls_data_sf <- st_as_sf(data_20, coords = c("X", "Y"))
 ls_data_sf <- st_set_crs(ls_data_sf, 32632) 
@@ -449,14 +529,22 @@ testing_data_sf  <- testing(ls_split)
 training_data_sp <- as_Spatial(training_data_sf)
 ```
 
+
+
 ### 4.4.2 Calculating Distance Matrix
+
+
 
 ```{r}
 distMAT <- gw.dist(dp.locat=
                      coordinates(training_data_sp))
 ```
 
+
+
 ### 4.4.3 Computing Adaptive Bandwidth
+
+
 
 ```{r}
 #| eval: false
@@ -473,6 +561,8 @@ bw.adaptive <- bw.ggwr(formula =
                        dMat=distMAT)
 ```
 
+
+
 ::: callout-note
 ### Note
 
@@ -480,6 +570,8 @@ The above step is computationally intensive. The resulting adaptive bandwidth va
 :::
 
 The input variables for the geographically weighted logistic regression model would be the selected independent variables for the formula, the training data in SpatialPointDataFrame object, the adaptive bandwidth value 20, where kernel is set to Gaussian and family is set as binomial due to the binary nature of the data.
+
+
 
 ```{r}
 #| eval: false
@@ -512,6 +604,8 @@ gwlr <- read_rds("data/rds/gwlr_aicc-vic.rds")
 gwlr
 ```
 
+
+
 ::: callout-tip
 ### Observation
 
@@ -520,9 +614,16 @@ gwlr
 -   Significant improvements from using global LR to local GWR
 :::
 
+## 4.5 Analysing Residual Spatial Autocorrelation
+
+### 4.5.1 Residual Spatial Autocorrelation in LR Model
+
+
+
 ```{r}
 GLM <- gwlr$glms
 residuals.sf <- cbind(training_data_sf, residuals = GLM$residuals)
+residuals.sf <- residuals.sf %>% dplyr::select(Train_ID, Landslide, residuals, geometry)
 st_crs(residuals.sf)
 residuals.sp <- as(residuals.sf, "Spatial")
 ```
@@ -548,16 +649,95 @@ tm_shape(residuals.sf)+
     legend.position = c("right", "bottom"))
 ```
 
+
+
+#### Moran's I Analysis
+
+
+
+```{r}
+knear <- knearneigh(coordinates(residuals.sp), k=200) 
+knear_nb <- knn2nb(knear)
+listw <- nb2listw(knear_nb, style="W")
+moran.test(residuals.sp$residuals, listw)
+```
+
+```{r}
+localMI <- localmoran(residuals.sp$residuals, listw)
+head(localMI)
+```
+
+```{r}
+lr.localMI <- cbind(residuals.sf,localMI) %>%
+  rename(Pr.Ii = Pr.z....E.Ii..)
+```
+
+```{r}
+tmap_mode("view")
+tmap_options(check.and.fix = TRUE)+
+tm_shape(valtellina)+
+  tm_polygons()+
+tm_shape(lr.localMI)+
+  tm_dots(col = "Ii",  style="pretty", title= "Local Moran's I") +
+  tm_layout(
+    main.title = "Residual Spatial Autocorrelation of Generalised Linear (Logistic) Regression Model",
+    main.title.size = 1,
+    main.title.position = "center",
+    legend.position = c("right", "bottom"))
+```
+
+```{r}
+quadrant <- vector(mode="numeric",length=nrow(localMI))
+residuals.sf$lag_residuals <- lag.listw(listw, residuals.sf$residuals)
+DV <- residuals.sf$lag_residuals - mean(residuals.sf$lag_residuals)   
+LM_I <- localMI[,1] - mean(localMI[,1])    
+signif <- 0.05
+quadrant[DV <0 & LM_I>0] <- 1
+quadrant[DV >0 & LM_I<0] <- 2
+quadrant[DV <0 & LM_I<0] <- 3  
+quadrant[DV >0 & LM_I>0] <- 4 
+quadrant[localMI[,5]>signif] <- 0
+```
+
+```{r}
+lr.localMI$quadrant <- quadrant
+colors <- c("#ffffff", "#2c7bb6", "#abd9e9", "#fdae61", "#d7191c")
+clusters <- c("insignificant", "low-low", "low-high", "high-low", "high-high")
+
+tmap_mode("view")
+tmap_options(check.and.fix = TRUE)+
+tm_shape(valtellina)+
+  tm_polygons()+
+tm_shape(lr.localMI)+
+  tm_dots(col = "quadrant",
+          style = "cat", 
+          palette = colors[c(sort(unique(quadrant)))+1], 
+          labels = clusters[c(sort(unique(quadrant)))+1],
+          title= "LISA Cluster")+
+  tm_layout(
+    main.title = "Residual LISA Classifications of Generalised Linear (Logistic) Regression Model",
+    main.title.size = 1,
+    main.title.position = "center",
+    legend.position = c("right", "bottom"))
+```
+
+
+
+### 4.5.1 Residual Spatial Autocorrelation in GWLR Model
+
+
+
 ```{r}
 SDF <- gwlr$SDF
 SDF.sf <- st_as_sf(SDF)
 SDF.sf <- st_set_crs(SDF.sf, 32632) 
-st_crs(SDF.sf)
-SDF.sp <- as(SDF.sf, "Spatial")
+gwlr.residuals.sf <- SDF.sf %>% dplyr::select(y, yhat, residual, geometry)
+st_crs(gwlr.residuals.sf)
+gwlr.residuals.sp <- as(gwlr.residuals.sf, "Spatial")
 ```
 
 ```{r}
-ggplot(SDF.sf, aes(x=residual)) +
+ggplot(gwlr.residuals.sf, aes(x=residual)) +
   geom_histogram(color="white") +
   labs(title="Residuals of Geographically Weighted Logistic Regression Model", x="Residuals", y="Count")  +
   coord_cartesian(xlim = c(-1, 1))
@@ -568,7 +748,7 @@ tmap_mode("view")
 tmap_options(check.and.fix = TRUE)+
 tm_shape(valtellina)+
   tm_polygons()+
-tm_shape(SDF.sf)+
+tm_shape(gwlr.residuals.sf)+
   tm_dots(col = "residual", midpoint = NA, palette ="RdYlGn",  style="quantile", auto.palette.mapping=FALSE) +
   tm_layout(
     main.title = "Residuals of Geographically Weighted Logistic Regression Model",
@@ -577,9 +757,13 @@ tm_shape(SDF.sf)+
     legend.position = c("right", "bottom"))
 ```
 
+
+
 ### 4.4.4 Moran's $I$ for Residuals
 
 #### Moran's $I$ of LR Residuals
+
+
 
 ```{r}
 coords <- coordinates(residuals.sp)
@@ -600,14 +784,11 @@ listw <- nb2listw(dnear_nb_198, style="W", zero.policy=TRUE)
 moran.test(residuals.sp$residuals, listw)
 ```
 
-```{r}
-knear <- knearneigh(coordinates(residuals.sp), k=20) 
-knear_nb <- knn2nb(knear)
-listw <- nb2listw(knear_nb, style="W")
-moran.test(residuals.sp$residuals, listw)
-```
+
 
 #### Moran's $I$ of GWLR Residuals
+
+
 
 ```{r}
 dnear_nb <- dnearneigh(coordinates(SDF.sp), 0, 2922, longlat = FALSE)
@@ -622,7 +803,11 @@ listw <- nb2listw(knear_nb, style="W")
 moran.test(SDF.sp$residual, listw)
 ```
 
+
+
 ### 4.4.5 Correlation Matrix Using ggstats
+
+
 
 ```{r}
 #| fig-width: 10
@@ -654,3 +839,4 @@ ggcorrmat(
     )
   )
 ```
+
