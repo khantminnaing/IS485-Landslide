@@ -1,5 +1,5 @@
 ---
-title: "Statistical Modelling"
+title: "Explanatory Landslide Susceptibility Modelling"
 author:
   - name: Khant Min Naing
   - name: Ann Mei Yi Victoria Grace
@@ -16,45 +16,98 @@ output:
     self_contained: false
 ---
 
-To develop a landslide susceptibility methodology framework, we will explore and calibrate different statistical and machine learning models. This page focuses on statistical models first.
+# Explanatory Landslide Susceptibility Modelling Using Statistical Modelling Techniques
+
+Landslide susceptibility modelling is emerging field of research that aims to identify the contributing factors of landslides and predict areas that are most susceptible. These studies serve as a valuable decision-support tool, helping us identify the areas at highest risk and implement preventive measures accordingly. In this research project, we aims to demonstrate the potential contribution of spatial non-stationarity in landslide susceptibility modelling. Particuarly, two statistical model frameworks are employed to model explanatory landslide susceptibility.
+
+-   **Logistic Regression** (`stats` package)
+
+-   **Geographically Weighted Logistic Regression** (`GWmodel` package)
+
+The modelling will start with the parametric tests and analyses associated with the fundamental concepts and theories of these frameworks. This is followed by model training, validation, and evaluation. Subsequently, measures of variable coefficients as well as target outcome estimates are extracted and interpolated to discuss the model results, culminating in the creation of the landslide susceptibility map.
 
 # 1.0 Import Packages
 
+Before we start the analysis, we will need to import necessary R packages first. In particular, we will import three packages that will allow us to fit two statistical models we mentioned above.
+
+-   The package **`stats`** allows fast implementation of Random Forests, particularly suited for high dimensional data. Particularly, `glm` function can be used to fit generalized linear models, specified by giving a symbolic description of the linear predictor and a description of the error distribution.
+
+-   The package **`GWmodel`** facilitates fitting geographically weighted regression models when data are not described well by some global model, but where there are spatial regions where a suitably localised calibration provides a better description.
+
 ```{r}
-pacman::p_load(sp, sf, st, spdep, raster, spatstat, tmap, devtools,vtable,ggplot2,egg, corrplot, patchwork, ggstats, ggstatsplot, GWmodel, tidyverse, gtsummary,vtable, sjPlot, sjmisc, sjlabelled, tableHTML, olsrr, car, blorr,ISLR, klaR, rsample,kableExtra, performance)
+pacman::p_load(sp, sf, st, spdep, raster, spatstat, tmap, devtools,vtable, ggplot2, egg, corrplot, ggstats, ggstatsplot, GWmodel, tidyverse, gtsummary, olsrr, car, blorr,ISLR, klaR, rsample,kableExtra, performance)
 ```
 
-# 2.0 Import Data
+# 2.0 Import Datasets
+
+In this session, we will use two datasets.
+
+-   The first dataset, **`valtellina`**, is a geospatial dataset that delineates the boundary of our study area - Valtellina Valley. This data is presented in the ESRI shapefile format and is based on the Italy Geographic Coordinate System.
+
+-   The second dataset, `train_grids_v4` is a comma-separated values (csv) dataset that includes the entire inventory landslide and non-landslide samples collected from multiple data sources. We will use it to sample data for model fitting, training and testing.
 
 ```{r}
 valtellina <- read_sf(dsn = "data/vector", layer = "valtellina")
 train_grids_v4 <- read.csv("data/aspatial/train_grid_v4.csv")
 ```
 
+# 3.0 Data Wrangling
+
+## 3.1 Checking Data Class
+
+First, we need to check the class of our datasets to ensure they are suitable for spatial analysis in R.
+
+```{r}
+class(valtellina)
+class(train_grids_v4)
+```
+
+From the results, we find that **`valtellina`** is already an **`sf`** object, which is suitable for spatial analysis in R. However, we find that **`train_grids_v4`** is a data.frame.
+
+## 3.2 Transforming Data to Simple Feature Objects
+
+To facilitate spatial data manipulation in R, we will convert it to a simple features (**`sf`**) object. The **`st_as_sf`** function from the **`sf`** package is used for this conversion. The **`X`** and **`Y`** columns in **`train_grids_v4`** provide the XY-coordinates for each data observation.
+
 ```{r}
 train_grid_v4.sf <- st_as_sf(train_grids_v4,
                             coords = c("X", "Y"))
+```
+
+To ensure accurate spatial analysis, it\'s crucial that our spatial data is in the correct coordinate reference system (CRS). Different CRSs can lead to different results. Therefore, we will set the CRS of **`train_grid_v4.sf`** to WGS 84 / UTM zone 32N (EPSG code 32632), which is suitable for accurate distance and area calculations.
+
+The code chunk below sets the CRS for `train_grid_v4.sf`
+
+```{r}
 train_grid_v4.sf <- st_set_crs(train_grid_v4.sf, 32632) 
 ```
 
-# 3.0 Exploratory Spatial Data Analysis (ESDA)
+By setting the appropriate CRS, we ensure that our spatial data is in a projected system suitable for accurate distance and area calculations. This is a crucial step in preparing our data for further spatial analysis.
 
-To calculate the summary statistics of `landslide_train` data frame, we use `st()`.
+# 4.0 Exploratory Data Analysis (ESDA)
+
+## 4.1 Summary Statistics 
+
+First, we calculate the summary statistics of the **`train_grids_v4`** data frame using the **`st()`** function. This will provide us with a general understanding of the dataset\'s characteristics.
 
 ```{r}
 st(train_grids_v4)
 ```
 
-Next, we will create atrellis plot by using `ggarrange()` of [**ggpubr**](https://cran.r-project.org/web/packages/ggpubr/) package. In this way, we can see the distribution plots of different parameters at the same time.4.1 Correlation Matrix Using Corrplot
+## 4.2 Correlation Matrix
 
-Before building a logistic regression model, it is important to ensure that the indepdent variables used are **not highly correlated** to each other. If these highly correlated independent variables are used in building a regression model by mistake, the quality of the model will be compromised. This phenomenon is known as **multicollinearity** in statistics.
+Before building a logistic regression model, it\'s important to ensure that the independent variables used are not highly correlated with each other. If highly correlated independent variables are used in building a regression model, the quality of the model will be compromised.
 
-Correlation matrix is commonly used to visualise the relationships between the independent variables. In this section, the [**corrplot**](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html) package will be used to display the correlation matrix.
+Pearson\'s correlation is a commonly used correlation coefficient to calculate and visualize the relationships between the independent variables. It measures the linear relationship between the two variables and takes values between -1 and 1; -1 means a total negative linear correlation, 0 means no correlation, and 1 means a total positive correlation. Pearson\'s correlation can be calculated using the formula:
 
-### 3.1 Correlation Matrix Using ggstats
+$$
+r = \frac{\sum{(x_i - \bar{x})(y_i - \bar{y})}}{\sqrt{\sum{(x_i - \bar{x})^2(y_i - \bar{y})^2}}}
+$$
+
+We use **`ggcorrmat`** to create the correlation matrix. This function from the **`ggstatsplot`** package allows us to visualize the correlation matrix in a more aesthetically pleasing and informative manner.
 
 ```{r}
 #| fig-width: 10
+#| eval: false
 
 set.seed(123)
 ## producing the correlation matrix
@@ -80,13 +133,43 @@ ggcorrmat(
   )
 ```
 
-# 4.0 Multiple Logistic Regression
+![](images/Screenshot 2024-04-15 at 9.26.55 PM.png)
+
+The use of color intensity and symbols (X for non-significant correlations) makes it easy to identify strong, weak, or non-existent correlations quickly. The colors range from green (positive correlation) through white (no correlation) to orange (negative correlation). An \"X\" mark is placed on cells where the correlation is not statistically significant at p \< 0.05 after adjustment for multiple comparisons using Holm\'s method. This helps in distinguishing meaningful relationships from random associations.
+
+::: callout-note
+#### Observation
+
+The maximum correlation coefficient area is observed at 0.55 for pair between elevation and distance to settlement and at 0.49 for pair between elevation and distance to road as well as SPI and STI. Modern civilisation is built on lower elevations and accounts for the moderate coefficients. Other factors exhibit a range of low to moderate correlations. Overall, no factors among those selected for this study exhibit high positive correlation.
+:::
+
+# 5.0 Logistic Regression
+
+**Logistic Regression (LR)** is a multivariate statistical method that has proven to be reliable and is frequently used for evaluating landslide susceptibility. It is particularly useful in this context due to the binary nature of the response variable, which represents either the presence (value of 1) or absence (value of 0) of a landslide. Moreover, the predictor variables (landslide susceptibility factors) can be either discrete or continuous and are not required to satisfy the normal distribution. LR fits a sigmoid function by taking a linear regression between a binary dependent variable and continuous or categorial independent variables
+
+The LR model can be formulated in two part. The first equation is for the probability of a binary outcome given input features, formulated as follow:
+
+$$
+p(y = 1|x) = \frac{e^{\beta_0+\beta_1x_1+...+\beta_kx_k}}{1 + e^{\beta_0+\beta_1x_1+...+\beta_kx_k}}
+$$
+
+where $p(y=1∣x)$ is the probability of the outcome being 1 given the input features, e is the base of the natural logarithm. $β_0​,β_1​,...,β_k​$ are the coefficients of the logistic regression model. $x_1​,...,x_k$​ are the input features.
+
+The second equation is the log-odds or logit transformation of the probability, simplifying the expression to a linear combination of features and coefficients, formulated as follows:
+
+$$
+\log\left(\frac{p}{1 - p}\right) = \beta_0 + \beta_1x_1 + ... + \beta_kx_k
+$$
+
+where $\log\left(\frac{p}{1 - p}\right)$ is the log-odds or logit of the probability.
+
+LR follows from the principle of maximum likelihood estimation, which maximizes the probability of getting the observed results, based on the fitted regression coefficients.
+
+## 5.1 Fitting Logistic Regression Model 1
 
 The `glm` function fits generalized linear models, a class of models that includes logistic regression. The syntax of the `glm` function is similar to that of `lm`, except that we must pass the argument `family = binomial` in order to tell R to run a logistic regression rather than some other type of generalized linear model.
 
-## 4.1 Logistic Regression Model 1
-
-Under general logistic regression, all variables are considered first.
+Under general logistic regression, all variables are considered first. We use the **`glm`** function to fit a basic LR model (LR 1) with all the variables.
 
 ```{r}
 set.seed(1234)
@@ -94,16 +177,72 @@ set.seed(1234)
 landslide.lr <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic+Lithology_Unconsolidated + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, family = "binomial", data = train_grids_v4)
 ```
 
+### 5.1.1 Printing Model Summary
+
+We can print the summary of the model to understand the coefficients, standard errors, and significance levels of the variables. The **`summary`** function from the **`base`** package in R is used for this purpose.
+
 ```{r}
 sum_lr <- summary(landslide.lr)
 sum_lr
 ```
 
+### 5.1.2 Calculating Percentage of Deviance Explained
+
+In Generalized Linear Models (GLMs), deviance is a measure of goodness of fit. Specifically, deviance is a measure of the discrepancy between the data and the model\'s predictions. The null deviance shows how well the response variable is predicted by a model that includes only the intercept (no predictors). The model\'s deviance shows how well the response variable is predicted by the model.
+
+In mathematical terms, the percentage of deviance explained is calculated as:
+
+$$
+\text{Percentage of Deviance Explained} = \left(1 - \frac{D_{\text{model}}}{D_{\text{null}}} \right) \times 100
+$$
+
+Below is the code chunk used to calculate the percentage of deviance using the following steps
+
+1.  Calculate the total deviance, which is the null deviance.
+
+2.  Subtract the model\'s deviance from the null deviance. This gives the amount of deviance explained by the model.
+
+3.  Divide the explained deviance by the null deviance and multiply by 100 to get the percentage.
+
 ```{r}
 pd <- 100*with(summary(landslide.lr), 1 - deviance/null.deviance)
 pd
+```
+
+### 5.1.2 Computing Confidence Intervals
+
+We calculate the confidence intervals for the coefficients of the variables in our model. The **`confint`** function from the **`stats`** package in R is used for this purpose.
+
+```{r}
 confint(landslide.lr)
 ```
+
+### 5.1.3 Validating Logistic Regression Model 1
+
+In this step, we validate the logistic regression model that we built in the previous step. Validation is a crucial part of the modeling process because it helps us understand how well our model performs on unseen data.
+
+We use the **`blr_confusion_matrix`** function from the **`blr`** package in R to create a confusion matrix for our model. A confusion matrix is a table that is often used to describe the performance of a classification model on a set of data for which the true values are known.
+
+The **`cutoff`** argument in the **`blr_confusion_matrix`** function is used to decide the threshold for classifying a probability into a binary outcome. In this case, we set the cutoff to 0.5, which means that if the predicted probability is greater than or equal to 0.5, the outcome is classified as 1 (landslide), otherwise it is classified as 0 (no landslide).
+
+```{r}
+cm <- blr_confusion_matrix(landslide.lr, cutoff = 0.5)
+cm
+```
+
+The output **`cm`** is the confusion matrix for our logistic regression model. It shows the number of true positives, true negatives, false positives, and false negatives. This information can be used to calculate various performance metrics such as accuracy, precision, recall, and F1 score.
+
+## 5.2 Curse of Multicollinearity
+
+Regression models are sensitive to multicollinearity. Multicollinearity arises when two or more explanatory variables in a regression model display moderate or high correlation among each other. The presence of multicollinearity makes it difficult to assess the individual importance and significance of a predictor. Subsequently, variance inflation factor (VIF) and tolerance (TOL) values are calculated to further evaluate landslide variables. VIF is a statistical measure used in regression analysis to observe the increase in variance of the regression coefficient estimates due to multicollinearity. Mathematically, VIF can be calculated using the formula:
+
+$$
+VIF = \frac{1}{1 - R_j^2} = \frac{1}{TOL}
+$$
+
+### 5.2.1 Calculate Variance Inflation Factor (VIF)
+
+We use the **`multicollinearity`** function from the **`performance`** package to calculate the VIF.
 
 ```{r}
 vif <- multicollinearity(landslide.lr)
@@ -114,40 +253,76 @@ vif
 plot(vif)
 ```
 
+There are currently no established criteria for identifying the extent of variance inflation factors that
+result in poorly estimated coefficients. A frequently used benchmark for VIF in numerous regression
+studies is VIF ≥ 5. Values ≥ 5 indicate significant multicollinearity and may necessitate further
+investigation or actions.
+
+::: callout-note
+#### Observation
+
+Results of multicollinearity test between explanatory landslide factors are presented in Table 2. Three lithological categories -- metamorphic, sedimentary and unconsolidated shows high VIF values of 7.85, 5.98 and 9.42 respectively, indicating moderate multicollinearity.
+:::
+
+### **5.2.2 Remove Variable with High Multicollinearity**
+
+To avoid potential issues in subsequent modelling results, the variable with the highest VIF value, lithology (unconsolidated) is removed from the dataset.
+
 ```{r}
 train_grids_v4 <- subset(train_grids_v4, select = -Lithology_Unconsolidated)
 ```
+
+We then fit the logistic regression model again without the **`Lithology_Unconsolidated`** variable.
 
 ```{r}
 landslide.lr <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, family = "binomial", data = train_grids_v4)
 ```
 
+We can plot the VIF values again to check if the multicollinearity problem has been resolved.
+
 ```{r}
 plot(multicollinearity(landslide.lr))
 ```
 
-### 4.1.1 Stepwise Selection
+::: callout-note
+#### Observation
 
-For the initial/ first cut model, all the independent variables are put into the model. Our goal is to include a limited number of independent variables (5-15) which are all significant, without sacrificing too much on the model performance. The rationale behind including not too many variables is that the model would be overfitted and would become unstable when tested on the validation sample. The variable reduction is done using forward or backward or stepwise variable selection procedures. We will use `blr_step_aic_both()` to shortlist predictors for our model.
+All the VIF values after the removal are less than 2.27 and TOL values are all above 0.44, indicating that there is no more collinearity problem observed among factors.
+:::
+
+## 5.3 Stepwise Selection
+
+In the initial model, all the independent variables are included. However, including too many variables in a model can lead to overfitting. Overfitting is a modeling error that occurs when a function is too closely aligned to a limited set of data points. An overfitted model may result in an algorithm that is excessively complex, such as one involving a function that has too many parameters relative to the number of observations. A model that has been overfitted will generally have poor predictive performance, as it can exaggerate minor fluctuations in the data.
+
+The goal of this step is to create a more parsimonious model, which means we aim to include a limited number of independent variables (between 5 and 15) that are all statistically significant, without sacrificing too much on the model\'s performance.
+
+To achieve this, we employ a stepwise variable selection procedure. Stepwise selection is a method of fitting regression models in which the choice of predictive variables is carried out by an automatic procedure. In each step, a variable is considered for addition to or subtraction from the set of explanatory variables based on some prespecified criterion.
+
+We use the **`blr_step_aic_both()`** function from the **`blr`** package in R for this purpose. This function performs both forward and backward stepwise variable selection based on the Akaike Information Criterion (AIC). The AIC is a measure of the relative quality of a statistical model for a given set of data. It provides a means for model selection by comparing different models and choosing the one that minimizes the information loss.
 
 ```{r}
 #| eval: false
 stepwise_1 <- blr_step_aic_both(landslide.lr)
-write_rds(stepwise_1, "data/rds/stepwise1.rds")
 ```
 
 ```{r}
+#| echo: false
 stepwise1 <- read_rds("data/rds/stepwise1.rds")
+```
+
+We then load the results of the stepwise selection process to see which variables were selected.
+
+```{r}
 stepwise1
 ```
 
 ::: callout-note
-#### Stepwise Selection Result
+#### Observation
 
-17 explanatory variables have been selected in this stepwise selection process.
+17 explanatory variables have been selected in this stepwise selection process. This is a significant reduction from the initial model, which should help to mitigate the risk of overfitting.
 :::
 
-Plot the Akaike Information Criterion curve as it is the main threshold.
+We can also plot the AIC values for the different models considered during the stepwise selection process. This helps us visualize how the AIC changes as different variables are added or removed from the model.
 
 ```{r}
 plot(stepwise1)
@@ -156,19 +331,12 @@ plot(stepwise1)
 ::: callout-note
 #### Observation
 
-In our first stepwise selection, `Slope_Angle` has the highest AIC value followed by `Profile_Curvature`.
+In our first stepwise selection, **`Slope_Angle`** has the highest AIC value followed by **`Profile_Curvature`**. This suggests that these variables contribute the most information to the model, and removing them would result in the greatest loss of information.
 :::
 
-### 4.1.2 Validating Logistic Regression Model 1
+## 5.4 Fitting Logistic Regression Model 2
 
-```{r}
-cm <- blr_confusion_matrix(landslide.lr, cutoff = 0.5)
-cm
-```
-
-## 4.2 Logistic Regression Model 2
-
-Here, we recalibrate the model by updating the logistic regression with the selected variables.
+In this step, we recalibrate the first model we fitted `landslide.lr` by updating the logistic regression with the selected variables from stepwise selection.
 
 ```{r}
 set.seed(1234)
@@ -184,24 +352,41 @@ landslide.lr2 <- glm(Landslide ~ Slope_Angle + Profile_Curvature +
                        data = train_grids_v4)
 ```
 
+### 5.4.1 Printing Model Summary
+
+We can print the summary of the LR Model 2 to understand the coefficients, standard errors, and significance levels of the variables.
+
 ```{r}
 sum_lr2 <- summary(landslide.lr2)
 sum_lr2
 ```
 
+### 5.4.2 Calculating Percentage of Deviance Explained
+
+Next, we calculate the percentage of deviance to understand how well LR Model 2 fits the data.
+
 ```{r}
 pd2 <- 100*with(summary(landslide.lr2), 1 - deviance/null.deviance)
 pd2
+```
+
+### 5.4.3 Computing Confidence Intervals
+
+We calculate the confidence intervals for the coefficients of the variables in LR Model 2.
+
+```{r}
 confint(landslide.lr2)
 ```
 
 ::: callout-note
 #### Observation
 
-The model is still overfitting and AIC of 23157 is very high.
+LR Model 2 is still overfitting and AIC of 23157 is very high.
 :::
 
-### 4.2.1 Validating Logistic Regression Model 2
+### 5.4.4 Validating Logistic Regression Model 2
+
+Agian, we use the **`blr_confusion_matrix`** function from the **`blr`** package in R to create a confusion matrix for LR Model 2.
 
 ```{r}
 cm2 <- blr_confusion_matrix(landslide.lr2, cutoff = 0.5)
@@ -209,9 +394,21 @@ cm2 <- blr_confusion_matrix(landslide.lr2, cutoff = 0.5)
 cm2
 ```
 
-### 4.2.2 Comparing LR Models 1 & 2
+## 5.5 Comparing LR Model 1 & 2
 
-The two models thus far yield similar results with small changes in accuracy, sensitivity and specificity despite a reduced number of variables from the first to the second model.
+The two models thus far yield similar results with small changes in accuracy, sensitivity and specificity despite a reduced number of variables from the first to the second model. We create a comparison table using the **`data.frame`** function from the **`base`** package in R to compare the performance metrics of the two models.
+
+The metrics we\'ve chosen to include in this comparison table are:
+
+-   **Accuracy**: This measures the proportion of total predictions that are correct.
+
+-   **AIC (Akaike Information Criterion)**: This is a measure of the relative quality of a statistical model for a given set of data. Lower values indicate better-fitting models.
+
+-   **Sensitivity**: This is the true positive rate, indicating the model\'s ability to correctly predict positive outcomes.
+
+-   **Specificity**: This is the true negative rate, reflecting the model\'s ability to correctly predict negative outcomes.
+
+-   **Percentage Deviance Explained**: This is a measure of the proportion of the total variability in the response variable that is accounted for by the predictors in the model.
 
 ```{r}
 #| echo: false
@@ -240,7 +437,9 @@ kable(m_comparison,
       caption="Comparing LR Model 1 and LR Model 2")
 ```
 
-### 4.2.3 Weight of Evidence & Information Value
+This comparison table provides a side-by-side comparison of the two models, making it easier to see how the performance metrics have changed from the first model to the second model.
+
+## 5.6 Weight of Evidence & Information Value
 
 Weight of Evidence (WoE) is a variable transformation technique meant for independent variables according to Information Theory. WoE measures **how good** each grouped attribute or bin of a feature can predict the target variable.
 
@@ -260,13 +459,14 @@ $$
 
 Information value (IV) explains the predictive power of the entirety of the feature.
 
-<insert formula later>
+$$
+IV = \sum_{i=1}^{n} (W_i \times (\%I - \%II))
+$$
 
-Here is the IV for all the predictors.
+To calculate the IV of all independent variables in our dataset, we use the **`create_infotables()`** function from the **`Information`** package.
 
 ```{r}
 library("Information")
-
 IV <- create_infotables(data=train_grids_v4[, 5:28],
                         valid=train_grids_v4[, 5:28],
                         y="Landslide")
@@ -276,16 +476,16 @@ kable(IV$Summary[,1:2], row.names=FALSE)
 ::: callout-note
 #### Observation
 
-`Slope_Angle` indeed has the most predictive power compared to other variables.
+Our analysis reveals that the **`Slope_Angle`** variable has the highest predictive power among all variables. This suggests that **`Slope_Angle`** may be overly dominant in predicting landslides, as indicated by its unusually high IV value. Further investigation is needed to understand why **`Slope_Angle`** has such a significant predictive power.
 :::
 
-`Slope_Angle` has to be further investigated to understand why it has the greatest predictive power.
+## 5.7 Stratified Slope Sampling
 
-### 4.2.4 Slope Distribution
+Our data points are located in various places with varying slope angles. Since our initial IV analysis flags out the over-dominance of `Slope_Angle` over our model results, we first visualize the distribution of slope angles using a histogram. This will help us detect any unbalanced or irregular distribution patterns that could bias our model.
 
-Our data points are located in various places with varying slope angles. Since our initial IV analysis flags out its influence over our model results, the slope distribution can be first viewed with a histogram.
+### 5.7.1 Plotting Distribution of Slope Angles in Landslide and Non-Landslide Samples
 
-Distribution of Landslide Samples
+We start by plotting the distribution of **`Slope_Angle`** in landslide samples.
 
 ```{r}
 ls_data <- train_grids_v4[train_grids_v4$Landslide==1,]
@@ -296,7 +496,7 @@ ggplot(data=ls_data, aes(x= `Slope_Angle`)) +
   geom_vline(xintercept = 20, color = "red")
 ```
 
-Distribution of Non-Landslide Samples
+Next, we plot the distribution of **`Slope_Angle`** in non-landslide samples.
 
 ```{r}
 non_ls_data <- train_grids_v4[train_grids_v4$Landslide==0,]
@@ -308,42 +508,35 @@ ggplot(data=non_ls_data, aes(x= `Slope_Angle`)) +
 ```
 
 ::: callout-insight
-#### Quasi-separation Present
+#### Observation
 
-The majority of landslide samples have slope angles larger than 20°. In similar contrast, the majority of non-landslide samples have slope angles less than 20°.
-
-As such, the model currently predicts any instances with a slope angle **greater than 20°** to be a landslide.
+The majority of landslide samples have slope angles larger than 20°. In contrast, the majority of non-landslide samples have slope angles less than 20°. As such, the current model predicts any instances with a slope angle greater than 20° to be a landslide. This observation suggests that the **`Slope_Angle`** variable might be a strong predictor of landslides.
 :::
 
-## 4.3 Logistic Regression Model 3
+### 5.7.2 Implementing Stratified Slope Sampling
 
-### 4.3.1 Stratified Slope Sampling
+To address the data bias with the evidence of quasi-separation, we use a 20° cut-off based on the observation above. Quasi-separation is a situation in logistic regression where the outcome variable separates a predictor variable completely, leading to overfitting. By implementing stratified slope sampling, we aim to create a more balanced dataset that can lead to a more robust model.
 
-To address the data bias with the evidence of quasi-separation, we use a 15° cut-off based on the first quantile result and slope (%) reference from the Barcelona Field Studies Centre.
-
-```{r}
-slope_angle <- train_grids_v4$Slope_Angle
-
-quantile(slope_angle, probs = seq(0, 1, 0.25))
-```
-
-[![Standard Slope Descriptors (Source: Barcelona Field Studies Centre)](images/bfc_slope_descriptors.png)](https://geographyfieldwork.com/SlopeSteepnessIndex.htm)
-
-Distribution of Landslide Samples
+Below is the code chunk for implementing stratified slope sampling. Here, we create two new datasets: **`ls_data_20`** and **`non_ls_data_20`**. These datasets contain landslide and non-landslide samples, respectively, with a slope angle of 20° or less.
 
 ```{r}
 ls_data_20 <- train_grids_v4[train_grids_v4$Landslide==1 & train_grids_v4$Slope_Angle <= 20,]
+non_ls_data_20 <- train_grids_v4[train_grids_v4$Landslide==0 & train_grids_v4$Slope_Angle <= 20,]
+```
 
+### 5.7.3 Plotting Distribution of Slope Angles in Slope-Stratified Landslide and Non-Landslide Samples
+
+We then plot the new distribution of slope in landslide samples.
+
+```{r}
 ggplot(data=ls_data_20, aes(x= `Slope_Angle`)) +
   geom_histogram(bins=40, color="black", fill="#e9531e") +
   labs(title="Distribution of slope values in landslide samples (15° slope cut-off)")
 ```
 
-Distribution of Non-Landslide Samples
+We also plot the new distribution of slope in non-landslide samples.
 
 ```{r}
-non_ls_data_20 <- train_grids_v4[train_grids_v4$Landslide==0 & train_grids_v4$Slope_Angle <= 20,]
-
 ggplot(data=non_ls_data_20, aes(x= `Slope_Angle`)) +
   geom_histogram(bins=40, color="black", fill="#e9531e") +
   labs(title="Distribution of slope values in non-landslide samples (20° slope cut-off)")
@@ -352,10 +545,8 @@ ggplot(data=non_ls_data_20, aes(x= `Slope_Angle`)) +
 ::: callout-note
 ### Observation
 
-Although the distribution for this stratified non-landslide sample is left-skewed, the data skewness has been reduced significantly.
+Although the distribution for this stratified non-landslide sample is left-skewed, the data skewness has been reduced significantly. This indicates that our stratified sampling approach has helped to balance the distribution of the **`Slope_Angle`** feature in our dataset, which should lead to a more robust and reliable model.
 :::
-
-We then perform the logistic regression model with the stratified sample.
 
 ```{r}
 #| echo: false
@@ -364,29 +555,46 @@ set.seed(1234)
 data_20 <- read_rds("data/rds/sample_Q6.rds")
 ```
 
+## 5.8 Fitting Logistic Regression Model 3
+
+In this section, we fit LR Model 3 using the stratified sample created in the previous section. The goal is to see if the stratified sampling approach improves the model\'s performance.
+
 ```{r}
 landslide.lr3 <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, family = "binomial", data = data_20)
 ```
 
-### 4.3.2 Validating Logistic Regression Model 3
+### 5.8.1 Printing Model Summary
+
+We then print the summary statistics of Logistic Regression Model 3 to understand the model\'s performance and the significance of the explanatory variables.
 
 ```{r}
 sum_lr3 <- summary(landslide.lr3)
 sum_lr3
 ```
 
+### 5.8.2 Validating Logistic Regression Model 3
+
+Next, we validate Logistic Regression Model 3 by creating a confusion matrix. This allows us to see the model\'s accuracy, sensitivity, and specificity.
+
 ```{r}
 cm3 <- blr_confusion_matrix(landslide.lr3, cutoff = 0.5)
 cm3
 ```
 
+### 5.8.3 Stepwise Selection
+
+We then perform stepwise selection on Logistic Regression Model 3 to filter out only the statistically significant variables.
+
 ```{r}
 stepwise_3 <- blr_step_aic_both(landslide.lr3)
 ```
 
+## 5.9 Comparing LR Model 1 & 2 & 3
+
+In this section, we compare the three models - LR Model 1, 2, and 3. This comparison helps us understand the trade-offs between the models and decide which one to use for further analysis and calibration to GWLR.
+
 ```{r}
 #| echo: false
-
 m_comparison <- data.frame(
   Information = c("Sample Size","Non-Landslide",
                   "Landslide","Explanatory Variable",
@@ -417,22 +625,40 @@ kable(m_comparison,
 ::: callout-note
 ### Observation
 
-LR 3 has the best AIC at the expense of having the lowest accuracy and sensitivity rates so far. As such, the overall performance was compromised after conducting stratified sampling.
+LR Model 3 has the best Akaike Information Criterion (AIC) value, indicating that it might be the most efficient model among the three. However, it comes at the expense of having the lowest accuracy and sensitivity rates so far. As such, the overall performance was compromised after conducting stratified sampling. This suggests that while stratified sampling helped to balance the dataset, it may have introduced some bias that affected the model\'s predictive power. Further investigation and model tuning might be needed to improve the model\'s performance.
 :::
 
-### 4.3.3 Spatial Weights
+# 6.0 Geographically Weighted Logistic Regression 
 
-Variables are more often than not influenced by geographic factors and to name a few, topography, lithology, and slope gradient.
+Geographically Weighted Regression (GWR) is a local regression model that has been widely adopted in spatial research \[40\]. This model is particularly suited for spatial analysis as it extends traditional and global regression frameworks such as Ordinary Least Squares (OLS) and LR by integrating local parameters and spatial weights \[41\]. In contrast to the spatially constant regression parameter estimations by global regression models, GWR allows these estimates to vary based on location and GWLR can be
+formulated as:
 
-## 4.4 Geographically Weighted Logistic Regression Model 1
+$$
+P(u_i,v_i) = \frac{e^{\beta_0(u_i,v_j) + \beta_1(u_j,v_j)x_{i1} + ... + \beta_k(u_j,v_j)x_{ik}}}{1 + e^{\beta_0(u_j,v_j) + \beta_1(u_j,v_j)x_{i1} + ... + \beta_k(u_j,v_j)x_{ik}}}
+$$
 
-Imposing a Geographically Weighted Logistic Regression (GWLR) Model aims to improve the model performance and more importantly, detect any spatial relationship between explanatory variables and the target variable.
+where $P(u_i,v_i)$ denotes the coordinates of the ith sample in space. $\beta_k(u_j,v_j)$ is a realization of the continuous function $\beta_k(u,v)$ at point i and j, i.e., the coefficient estimates of independent variables are continuously changing at different sample points.
 
-Our above LR model will be calibrated into GWLR by incorporating spatial weight-matrix, weighting function and bandwidth parameters.
+As a result, GWLR equation do not assume the coefficients to be random, and factors in the spatial non-stationarity and variability between variables. In GWLR, the assigned weights to observations vary according to the proximity to location, i. Observations nearer to i are assigned more weight compared to those which are more distant. Spatialweighting function quantifies spatial dependencies between variables in which a weight matrix $W(u_i,v_i)$in a $n×n$ dimension encodes this. There are three key elements in building this weight matrix.
 
-### 4.4.1 Data Sampling
+1.  **Distance Metrix** : calculates Euclidean or Manhattan\'s distances between locations.
 
-There is a limit to the number of observations the GWModel can take. Hence only 20% of the landslide data is taken into account.
+2.  **Kernel Function** : defines how weights decay with distance where common kernels like Gaussian
+    and exponential assign higher weights to closer neighbours. Other kernel functions include box-car square and tri-cube. In LR, the kernel assigns the same unit weight to each observation leading to uniform estimates across space. In GWLR, the kernel function assigns different weights based on distance
+    and captures spatially varying relationships.
+
+![](images/Screenshot 2024-04-15 at 11.43.33 PM-01.png){fig-align="center" width="321"}
+
+3.  **Bandwidth** : controls a location\'s neighbourhood influence by a fixed distance, or an adaptive distance determined by a fixed number of neighbours which results in larger bandwidths for areas with sparse data and smaller in areas with dense data. A pre-specified bandwidth can be provided by the user, or an optimal bandwidth can be computed utilizing statistical methodologies such as cross-validation (CV), the Akaike Information Criterion
+(AIC), and the corrected Akaike Information Criterion (AICc).
+
+## 6.1 Data Preparation for GWLR Model
+
+In this section, we\'re preparing the data for fitting a Geographically Weighted Logistic Regression (GWLR) model.
+
+### 6.1.1 Data Downsampling
+
+The **`GWModel`** package has a limit on the number of observations it can handle. Therefore, we downsample our data to include only 20% of the initial data. We then split the data into training and testing sets. The **`initial_split`** function is used to ensure that the proportion of landslide data in both the training and testing sets is the same.
 
 ```{r}
 ls_data_sf <- st_as_sf(data_20, coords = c("X", "Y"))
@@ -449,14 +675,22 @@ testing_data_sf  <- testing(ls_split)
 training_data_sp <- as_Spatial(training_data_sf)
 ```
 
-### 4.4.2 Calculating Distance Matrix
+### 6.1.2 Calculating Distance Matrix
+
+Next, we calculate a distance matrix. This matrix contains the distances between all pairs of data points and is required for fitting the GWLR model.
 
 ```{r}
 distMAT <- gw.dist(dp.locat=
                      coordinates(training_data_sp))
 ```
 
-### 4.4.3 Computing Adaptive Bandwidth
+### 6.1.3 Computing Adaptive Bandwidth
+
+We then compute the adaptive bandwidth for our GWLR model. The bandwidth is a crucial parameter in GWLR models as it determines the extent of the geographical area that influences the prediction at each location. Bandwidth can be either fixed or adaptive. data as we see in the figure. In adaptive weighting scheme, the weight kernels have larger bandwidths where the data are sparse and have smaller bandwidths where the data are plentiful.​
+
+![](images/Screenshot 2024-04-15 at 11.42.19 PM.png){fig-align="center" width="328"}
+
+With fixed method, there is greater likelihood that some local calibrations will be based on only a few data points and so the resulting distribution of local esitmates will exhibit greater variation. We can reduce such estimation bias with adaptive approach.
 
 ```{r}
 #| eval: false
@@ -476,10 +710,12 @@ bw.adaptive <- bw.ggwr(formula =
 ::: callout-note
 ### Note
 
-The above step is computationally intensive. The resulting adaptive bandwidth value is 20.
+The computation of the adaptive bandwidth is a computationally intensive step. The resulting adaptive bandwidth value is 76. This means that the model considers the 76 closest data points when making a prediction at each location. This value was chosen to balance the trade-off between model accuracy and computational efficiency.
 :::
 
-The input variables for the geographically weighted logistic regression model would be the selected independent variables for the formula, the training data in SpatialPointDataFrame object, the adaptive bandwidth value 20, where kernel is set to Gaussian and family is set as binomial due to the binary nature of the data.
+## 6.2 Fitting GWLR Model
+
+In this section, we fit a Geographically Weighted Logistic Regression (GWLR) model. The **`bw`** parameter is set to 76, which is the adaptive bandwidth value we computed earlier. The **`family`** parameter is set to \"binomial\" due to the binary nature of the **`Landslide`** variable. The **`kernel`** parameter is set to \"gaussian\", which means that the weights decrease smoothly from the center of the kernel. The **`adaptive`** parameter is set to **`TRUE`**, which means that the bandwidth adapts to the density of the data points.
 
 ```{r}
 #| eval: false
@@ -490,7 +726,7 @@ gwlr <- ggwr.basic(Landslide ~ Aspect_North +
                      Lithology_Unconsolidated + Proximity_Stream +
                      Landuse_Vegetation + Precipitation, 
                    data = training_data_sp, 
-                   bw = 20, 
+                   bw = 76, 
                    family = "binomial", 
                    kernel = "gaussian", 
                    adaptive = TRUE, 
@@ -515,40 +751,168 @@ gwlr
 ::: callout-tip
 ### Observation
 
--   Adjusted R-squared and AIC perform better with a 200 point improvement on average with GWR
+Upon performing global LR Model and GWLR Model, it was observed that the GWLR model produced a significantly better adjusted R-squared value. This indicates that the GWLR model explains the variability of the response data around its mean better than the generalized LR model.
 
--   Significant improvements from using global LR to local GWR
+At the same time, there was an observable improvement in the **AIC** when using the GWLR model. A lower AIC suggests a better model fit, so this is a positive outcome.
+
+In global LR model, only singular estimate coefficients were generated for each explanatory variable. This means that each predictor has a fixed effect that does not vary across different geographical locations.
+
+On the other hand, the local GWLR model generated a range of coefficient estimates for each explanatory variable, including the minimum, maximum, and median values. This suggests that the effect of the predictors in the GWLR model varies across different geographical locations, which can provide more nuanced insights into the data.
 :::
 
-### 4.4.5 Correlation Matrix Using ggstats
+```{r}
+gwlr_result <- st_as_sf(gwlr$SDF) %>% st_set_crs(32632)
+gwlr_result <- subset(gwlr_result, select = c(yhat, geometry))
+```
+
+# 7.0 Kriging
+
+Kriging is a geostatistical interpolation technique that generates estimates of the uncertainty surrounding each interpolated value. It is particularly useful when there is moderate spatial autocorrelation, as it helps in preserving spatial variability.
+
+The general steps involved in Kriging are as follows:
+
+1.  **Fitting a Variogram**: The first step in Kriging is to fit a variogram to develop the spatial covariance structure of sampled points. A variogram is a function that describes the degree of spatial dependence of a spatial random field or stochastic process.
+
+2.  **Interpolating Values**: Once the variogram is fitted, it is used to interpolate values for unsampled points from derived weights of the covariance structure. This is done using the spatial covariance structure to optimally estimate the values at unsampled locations.
+
+```{r}
+#| echo: false
+pacman::p_load(sf, terra, gstat, automap,
+               tmap, viridis, tidyverse)
+```
+
+## 8.1 Creating Raster Layer
+
+The **`terra::rast()`** function is used to create a raster layer from the **`valtellina`** object with 700 rows and 1066 columns.
+
+```{r}
+grid <- terra::rast(valtellina, 
+                    nrows = 700, 
+                    ncols = 1066)
+grid
+```
+
+## 8.2 Extracting Cell Coordinates
+
+The **`terra::xyFromCell()`** function is used to extract the x and y coordinates of each cell in the raster layer.
+
+```{r}
+xy <- terra::xyFromCell(grid, 
+                        1:ncell(grid))
+head(xy)
+```
+
+## 8.3 Creating Spatal Data Frame
+
+The **`st_as_sf()`** function from the **`sf`** package is used to convert the data frame of coordinates into a spatial data frame. The **`st_filter()`** function is then used to keep only the points that fall within the **`valtellina`** region.
+
+```{r}
+coop <- st_as_sf(as.data.frame(xy), 
+                 coords = c("x", "y"),
+                 crs = st_crs(valtellina))
+coop <- st_filter(coop, valtellina)
+head(coop)
+```
+
+## 8.4 Variogram
+
+A variogram is a tool used in geostatistics to quantify the spatial autocorrelation of a variable. It provides a visual depiction of the covariance exhibited between each pair of points in the sampled data. For each pair of points in the sampled data, the "semivariance" is plotted against the distance between the pairs.
+
+The **`variogram`** function from the **`gstat`** package in R is used to calculate the empirical variogram of the data. The **`fit.variogram`** function is then used to fit a theoretical variogram model to this empirical variogram. The **`vgm`** function is used to specify the theoretical variogram model to fit.
+
+The **`psill`** parameter is the maximum semivariance value, also known as the sill. The **`model`** parameter specifies the type of variogram model to use, in this case, a spherical model. The **`range`** parameter is the distance at which the semivariance reaches the specified sill. The **`nugget`** parameter represents the variance at zero distance, accounting for measurement errors or spatial sources of variation at distances smaller than the sampling interval.
+
+Spherical variogram models are commonly used in geostatistical applications as they often have a similar shape to empirical variograms.
+
+Here is the code chunk that accomplishes this:
+
+```{r}
+v <- variogram(yhat ~ 1, 
+               data = gwlr_result)
+plot(v)
+```
+
+```{r}
+fv <- fit.variogram(object = v,
+                    model = vgm(
+                      psill = 0.5, 
+                      model = "Sph",
+                      range = 5000, 
+                      nugget = 0.1))
+fv
+```
+
+```{r}
+plot(v, fv)
+```
+
+## 8.5 Creating Krige Object
+
+In this code chunk, we create a **`gstat`** object named **`k`** using the **`gstat`** function. This object represents a geostatistical model that we'll use for Kriging. The formula **`Predicted ~ 1`** specifies that we're modeling the **`Predicted`** variable as a function of a constant (i.e., we're fitting a mean model). The **`data`** argument is set to **`testing_data_sf`**. The **`model`** argument is set to **`fv`**.
+
+```{r}
+#| eval: false
+k <- gstat(formula = yhat ~ 1, 
+           data = gwlr_result, 
+           model = fv)
+k
+```
+
+## 8.6 Prediction with Krige Object
+
+In this code chunk, we use the **`predict`** function to make predictions from the Kriging model **`k`** for the locations specified in **`coop`**. The predictions are stored in **`resp`**. We then extract the x and y coordinates and the predicted values from **`resp`**.
+
+```{r}
+#| eval: false
+resp <- predict(k, coop)
+resp$x <- st_coordinates(resp)[,1]
+resp$y <- st_coordinates(resp)[,2]
+resp$pred <- resp$var1.pred
+resp$pred <- resp$pred
+resp
+```
+
+## 8.7 Rasterizing Predictions
+
+In this code chunk, we rasterize the predictions **`resp`** onto the raster grid **`grid`** using the **`terra::rasterize`** function. The rasterized predictions are stored in **`kpred`**.
+
+```{r}
+#| eval: false
+kpred <- terra::rasterize(resp, grid, 
+                         field = "pred")
+```
+
+```{r}
+#| eval: false
+#| echo: false
+writeRaster(kpred, "data/raster/kpred_gwlr.tif", filetype="GTIFF")
+```
+
+```{r}
+#| echo: false
+kpred <- raster("data/raster/kpred_gwlr.tif")
+```
+
+## 8.8 Creating Spatial Interpolated Map
+
+Now that we have the data ready, we use appropriate **`tmap`** functions to create a map.
 
 ```{r}
 #| fig-width: 10
-
-training_data_cal <- training_data_sf %>% 
-  st_drop_geometry()
-
-training_data_cal <- training_data_cal[, c(5, 13, 14, 23, 17, 21, 15, 24)]
-  
-set.seed(123)
-ggcorrmat(
-  data = training_data_cal,  
-          matrix.type = "upper",
-  type = "parametric",
-  tr = 0.2,
-  partial = FALSE,
-  k = 2L,
-  sig.level = 0.05,
-  conf.level = 0.95,
-  bf.prior = 0.707,
-  ggcorrplot.args = list(
-     tl.cex = 10,
-     pch.cex = 5,
-     lab_size = 3
-  )) + ## modification outside `{ggstatsplot}` using `{ggplot2}` functions
-  ggplot2::theme(
-    axis.text.x = ggplot2::element_text(
-      margin = ggplot2::margin(t = 0.15, r = 0.15, b = 0.15, l = 0.15, unit = "cm")
-    )
-  )
+#| fig-height: 10
+tmap_options(check.and.fix = TRUE)
+tmap_mode("plot")
+tm_shape(kpred) + 
+  tm_raster(alpha = 1, 
+            palette = "-RdYlGn",
+            title = "Probability of Landslides") +
+  tm_layout(main.title = "Landslide Susceptibility Map (GWLR)",
+            main.title.position = "center",
+            main.title.size = 1.2,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar() +
+  tm_grid(alpha =0.2)
 ```

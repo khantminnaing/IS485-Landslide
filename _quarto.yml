@@ -14,8 +14,8 @@ website:
         href: studyarea.qmd
       - text: Methodology
         href: methodology.qmd
-      - text: EDA
-        href: project.qmd
+      - text: Data Preview
+        href: data.qmd
       - text: "Landslide Susceptibility Models"
         menu:
         - href: explanatorymodelling.qmd

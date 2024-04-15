@@ -10,7 +10,7 @@
 <meta name="author" content="Ann Mei Yi Victoria Grace">
 <meta name="dcterms.date" content="2024-01-07">
 
-<title>Statistical Modelling</title>
+<title>Explanatory Landslide Susceptibility Modelling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -134,7 +134,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./project.html" rel="" target="">
- <span class="menu-text">EDA</span></a>
+ <span class="menu-text">Data Preview</span></a>
   </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-landslide-susceptibility-models" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
@@ -181,39 +181,77 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#import-packages" id="toc-import-packages" class="nav-link active" data-scroll-target="#import-packages">1.0 Import Packages</a></li>
-  <li><a href="#import-data" id="toc-import-data" class="nav-link" data-scroll-target="#import-data">2.0 Import Data</a></li>
-  <li><a href="#exploratory-spatial-data-analysis-esda" id="toc-exploratory-spatial-data-analysis-esda" class="nav-link" data-scroll-target="#exploratory-spatial-data-analysis-esda">3.0 Exploratory Spatial Data Analysis (ESDA)</a>
+  <li><a href="#explanatory-landslide-susceptibility-modelling-using-statistical-modelling-techniques" id="toc-explanatory-landslide-susceptibility-modelling-using-statistical-modelling-techniques" class="nav-link active" data-scroll-target="#explanatory-landslide-susceptibility-modelling-using-statistical-modelling-techniques">Explanatory Landslide Susceptibility Modelling Using Statistical Modelling Techniques</a></li>
+  <li><a href="#import-packages" id="toc-import-packages" class="nav-link" data-scroll-target="#import-packages">1.0 Import Packages</a></li>
+  <li><a href="#import-datasets" id="toc-import-datasets" class="nav-link" data-scroll-target="#import-datasets">2.0 Import Datasets</a></li>
+  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">3.0 Data Wrangling</a>
   <ul class="collapse">
-  <li><a href="#correlation-matrix-using-ggstats" id="toc-correlation-matrix-using-ggstats" class="nav-link" data-scroll-target="#correlation-matrix-using-ggstats">3.1 Correlation Matrix Using ggstats</a></li>
+  <li><a href="#checking-data-class" id="toc-checking-data-class" class="nav-link" data-scroll-target="#checking-data-class">3.1 Checking Data Class</a></li>
+  <li><a href="#transforming-data-to-simple-feature-objects" id="toc-transforming-data-to-simple-feature-objects" class="nav-link" data-scroll-target="#transforming-data-to-simple-feature-objects">3.2 Transforming Data to Simple Feature Objects</a></li>
   </ul></li>
-  <li><a href="#multiple-logistic-regression" id="toc-multiple-logistic-regression" class="nav-link" data-scroll-target="#multiple-logistic-regression">4.0 Multiple Logistic Regression</a>
+  <li><a href="#exploratory-data-analysis-esda" id="toc-exploratory-data-analysis-esda" class="nav-link" data-scroll-target="#exploratory-data-analysis-esda">4.0 Exploratory Data Analysis (ESDA)</a>
   <ul class="collapse">
-  <li><a href="#logistic-regression-model-1" id="toc-logistic-regression-model-1" class="nav-link" data-scroll-target="#logistic-regression-model-1">4.1 Logistic Regression Model 1</a>
-  <ul class="collapse">
-  <li><a href="#stepwise-selection" id="toc-stepwise-selection" class="nav-link" data-scroll-target="#stepwise-selection">4.1.1 Stepwise Selection</a></li>
-  <li><a href="#validating-logistic-regression-model-1" id="toc-validating-logistic-regression-model-1" class="nav-link" data-scroll-target="#validating-logistic-regression-model-1">4.1.2 Validating Logistic Regression Model 1</a></li>
+  <li><a href="#summary-statistics" id="toc-summary-statistics" class="nav-link" data-scroll-target="#summary-statistics">4.1 Summary Statistics</a></li>
+  <li><a href="#correlation-matrix" id="toc-correlation-matrix" class="nav-link" data-scroll-target="#correlation-matrix">4.2 Correlation Matrix</a></li>
   </ul></li>
-  <li><a href="#logistic-regression-model-2" id="toc-logistic-regression-model-2" class="nav-link" data-scroll-target="#logistic-regression-model-2">4.2 Logistic Regression Model 2</a>
+  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression">5.0 Logistic Regression</a>
   <ul class="collapse">
-  <li><a href="#validating-logistic-regression-model-2" id="toc-validating-logistic-regression-model-2" class="nav-link" data-scroll-target="#validating-logistic-regression-model-2">4.2.1 Validating Logistic Regression Model 2</a></li>
-  <li><a href="#comparing-lr-models-1-2" id="toc-comparing-lr-models-1-2" class="nav-link" data-scroll-target="#comparing-lr-models-1-2">4.2.2 Comparing LR Models 1 &amp; 2</a></li>
-  <li><a href="#weight-of-evidence-information-value" id="toc-weight-of-evidence-information-value" class="nav-link" data-scroll-target="#weight-of-evidence-information-value">4.2.3 Weight of Evidence &amp; Information Value</a></li>
-  <li><a href="#slope-distribution" id="toc-slope-distribution" class="nav-link" data-scroll-target="#slope-distribution">4.2.4 Slope Distribution</a></li>
-  </ul></li>
-  <li><a href="#logistic-regression-model-3" id="toc-logistic-regression-model-3" class="nav-link" data-scroll-target="#logistic-regression-model-3">4.3 Logistic Regression Model 3</a>
+  <li><a href="#fitting-logistic-regression-model-1" id="toc-fitting-logistic-regression-model-1" class="nav-link" data-scroll-target="#fitting-logistic-regression-model-1">5.1 Fitting Logistic Regression Model 1</a>
   <ul class="collapse">
-  <li><a href="#stratified-slope-sampling" id="toc-stratified-slope-sampling" class="nav-link" data-scroll-target="#stratified-slope-sampling">4.3.1 Stratified Slope Sampling</a></li>
-  <li><a href="#validating-logistic-regression-model-3" id="toc-validating-logistic-regression-model-3" class="nav-link" data-scroll-target="#validating-logistic-regression-model-3">4.3.2 Validating Logistic Regression Model 3</a></li>
-  <li><a href="#spatial-weights" id="toc-spatial-weights" class="nav-link" data-scroll-target="#spatial-weights">4.3.3 Spatial Weights</a></li>
+  <li><a href="#printing-model-summary" id="toc-printing-model-summary" class="nav-link" data-scroll-target="#printing-model-summary">5.1.1 Printing Model Summary</a></li>
+  <li><a href="#calculating-percentage-of-deviance-explained" id="toc-calculating-percentage-of-deviance-explained" class="nav-link" data-scroll-target="#calculating-percentage-of-deviance-explained">5.1.2 Calculating Percentage of Deviance Explained</a></li>
+  <li><a href="#computing-confidence-intervals" id="toc-computing-confidence-intervals" class="nav-link" data-scroll-target="#computing-confidence-intervals">5.1.2 Computing Confidence Intervals</a></li>
+  <li><a href="#validating-logistic-regression-model-1" id="toc-validating-logistic-regression-model-1" class="nav-link" data-scroll-target="#validating-logistic-regression-model-1">5.1.3 Validating Logistic Regression Model 1</a></li>
   </ul></li>
-  <li><a href="#geographically-weighted-logistic-regression-model-1" id="toc-geographically-weighted-logistic-regression-model-1" class="nav-link" data-scroll-target="#geographically-weighted-logistic-regression-model-1">4.4 Geographically Weighted Logistic Regression Model 1</a>
+  <li><a href="#curse-of-multicollinearity" id="toc-curse-of-multicollinearity" class="nav-link" data-scroll-target="#curse-of-multicollinearity">5.2 Curse of Multicollinearity</a>
   <ul class="collapse">
-  <li><a href="#data-sampling" id="toc-data-sampling" class="nav-link" data-scroll-target="#data-sampling">4.4.1 Data Sampling</a></li>
-  <li><a href="#calculating-distance-matrix" id="toc-calculating-distance-matrix" class="nav-link" data-scroll-target="#calculating-distance-matrix">4.4.2 Calculating Distance Matrix</a></li>
-  <li><a href="#computing-adaptive-bandwidth" id="toc-computing-adaptive-bandwidth" class="nav-link" data-scroll-target="#computing-adaptive-bandwidth">4.4.3 Computing Adaptive Bandwidth</a></li>
-  <li><a href="#correlation-matrix-using-ggstats-1" id="toc-correlation-matrix-using-ggstats-1" class="nav-link" data-scroll-target="#correlation-matrix-using-ggstats-1">4.4.5 Correlation Matrix Using ggstats</a></li>
+  <li><a href="#calculate-variance-inflation-factor-vif" id="toc-calculate-variance-inflation-factor-vif" class="nav-link" data-scroll-target="#calculate-variance-inflation-factor-vif">5.2.1 Calculate Variance Inflation Factor (VIF)</a></li>
+  <li><a href="#remove-variable-with-high-multicollinearity" id="toc-remove-variable-with-high-multicollinearity" class="nav-link" data-scroll-target="#remove-variable-with-high-multicollinearity"><strong>5.2.2 Remove Variable with High Multicollinearity</strong></a></li>
   </ul></li>
+  <li><a href="#stepwise-selection" id="toc-stepwise-selection" class="nav-link" data-scroll-target="#stepwise-selection">5.3 Stepwise Selection</a></li>
+  <li><a href="#fitting-logistic-regression-model-2" id="toc-fitting-logistic-regression-model-2" class="nav-link" data-scroll-target="#fitting-logistic-regression-model-2">5.4 Fitting Logistic Regression Model 2</a>
+  <ul class="collapse">
+  <li><a href="#printing-model-summary-1" id="toc-printing-model-summary-1" class="nav-link" data-scroll-target="#printing-model-summary-1">5.4.1 Printing Model Summary</a></li>
+  <li><a href="#calculating-percentage-of-deviance-explained-1" id="toc-calculating-percentage-of-deviance-explained-1" class="nav-link" data-scroll-target="#calculating-percentage-of-deviance-explained-1">5.4.2 Calculating Percentage of Deviance Explained</a></li>
+  <li><a href="#computing-confidence-intervals-1" id="toc-computing-confidence-intervals-1" class="nav-link" data-scroll-target="#computing-confidence-intervals-1">5.4.3 Computing Confidence Intervals</a></li>
+  <li><a href="#validating-logistic-regression-model-2" id="toc-validating-logistic-regression-model-2" class="nav-link" data-scroll-target="#validating-logistic-regression-model-2">5.4.4 Validating Logistic Regression Model 2</a></li>
+  </ul></li>
+  <li><a href="#comparing-lr-model-1-2" id="toc-comparing-lr-model-1-2" class="nav-link" data-scroll-target="#comparing-lr-model-1-2">5.5 Comparing LR Model 1 &amp; 2</a></li>
+  <li><a href="#weight-of-evidence-information-value" id="toc-weight-of-evidence-information-value" class="nav-link" data-scroll-target="#weight-of-evidence-information-value">5.6 Weight of Evidence &amp; Information Value</a></li>
+  <li><a href="#stratified-slope-sampling" id="toc-stratified-slope-sampling" class="nav-link" data-scroll-target="#stratified-slope-sampling">5.7 Stratified Slope Sampling</a>
+  <ul class="collapse">
+  <li><a href="#plotting-distribution-of-slope-angles-in-landslide-and-non-landslide-samples" id="toc-plotting-distribution-of-slope-angles-in-landslide-and-non-landslide-samples" class="nav-link" data-scroll-target="#plotting-distribution-of-slope-angles-in-landslide-and-non-landslide-samples">5.7.1 Plotting Distribution of Slope Angles in Landslide and Non-Landslide Samples</a></li>
+  <li><a href="#implementing-stratified-slope-sampling" id="toc-implementing-stratified-slope-sampling" class="nav-link" data-scroll-target="#implementing-stratified-slope-sampling">5.7.2 Implementing Stratified Slope Sampling</a></li>
+  <li><a href="#plotting-distribution-of-slope-angles-in-slope-stratified-landslide-and-non-landslide-samples" id="toc-plotting-distribution-of-slope-angles-in-slope-stratified-landslide-and-non-landslide-samples" class="nav-link" data-scroll-target="#plotting-distribution-of-slope-angles-in-slope-stratified-landslide-and-non-landslide-samples">5.7.3 Plotting Distribution of Slope Angles in Slope-Stratified Landslide and Non-Landslide Samples</a></li>
+  </ul></li>
+  <li><a href="#fitting-logistic-regression-model-3" id="toc-fitting-logistic-regression-model-3" class="nav-link" data-scroll-target="#fitting-logistic-regression-model-3">5.8 Fitting Logistic Regression Model 3</a>
+  <ul class="collapse">
+  <li><a href="#printing-model-summary-2" id="toc-printing-model-summary-2" class="nav-link" data-scroll-target="#printing-model-summary-2">5.8.1 Printing Model Summary</a></li>
+  <li><a href="#validating-logistic-regression-model-3" id="toc-validating-logistic-regression-model-3" class="nav-link" data-scroll-target="#validating-logistic-regression-model-3">5.8.2 Validating Logistic Regression Model 3</a></li>
+  <li><a href="#stepwise-selection-1" id="toc-stepwise-selection-1" class="nav-link" data-scroll-target="#stepwise-selection-1">5.8.3 Stepwise Selection</a></li>
+  </ul></li>
+  <li><a href="#comparing-lr-model-1-2-3" id="toc-comparing-lr-model-1-2-3" class="nav-link" data-scroll-target="#comparing-lr-model-1-2-3">5.9 Comparing LR Model 1 &amp; 2 &amp; 3</a></li>
+  </ul></li>
+  <li><a href="#geographically-weighted-logistic-regression" id="toc-geographically-weighted-logistic-regression" class="nav-link" data-scroll-target="#geographically-weighted-logistic-regression">6.0 Geographically Weighted Logistic Regression</a>
+  <ul class="collapse">
+  <li><a href="#data-preparation-for-gwlr-model" id="toc-data-preparation-for-gwlr-model" class="nav-link" data-scroll-target="#data-preparation-for-gwlr-model">6.1 Data Preparation for GWLR Model</a>
+  <ul class="collapse">
+  <li><a href="#data-downsampling" id="toc-data-downsampling" class="nav-link" data-scroll-target="#data-downsampling">6.1.1 Data Downsampling</a></li>
+  <li><a href="#calculating-distance-matrix" id="toc-calculating-distance-matrix" class="nav-link" data-scroll-target="#calculating-distance-matrix">6.1.2 Calculating Distance Matrix</a></li>
+  <li><a href="#computing-adaptive-bandwidth" id="toc-computing-adaptive-bandwidth" class="nav-link" data-scroll-target="#computing-adaptive-bandwidth">6.1.3 Computing Adaptive Bandwidth</a></li>
+  </ul></li>
+  <li><a href="#fitting-gwlr-model" id="toc-fitting-gwlr-model" class="nav-link" data-scroll-target="#fitting-gwlr-model">6.2 Fitting GWLR Model</a></li>
+  </ul></li>
+  <li><a href="#kriging" id="toc-kriging" class="nav-link" data-scroll-target="#kriging">7.0 Kriging</a>
+  <ul class="collapse">
+  <li><a href="#creating-raster-layer" id="toc-creating-raster-layer" class="nav-link" data-scroll-target="#creating-raster-layer">8.1 Creating Raster Layer</a></li>
+  <li><a href="#extracting-cell-coordinates" id="toc-extracting-cell-coordinates" class="nav-link" data-scroll-target="#extracting-cell-coordinates">8.2 Extracting Cell Coordinates</a></li>
+  <li><a href="#creating-spatal-data-frame" id="toc-creating-spatal-data-frame" class="nav-link" data-scroll-target="#creating-spatal-data-frame">8.3 Creating Spatal Data Frame</a></li>
+  <li><a href="#variogram" id="toc-variogram" class="nav-link" data-scroll-target="#variogram">8.4 Variogram</a></li>
+  <li><a href="#creating-krige-object" id="toc-creating-krige-object" class="nav-link" data-scroll-target="#creating-krige-object">8.5 Creating Krige Object</a></li>
+  <li><a href="#prediction-with-krige-object" id="toc-prediction-with-krige-object" class="nav-link" data-scroll-target="#prediction-with-krige-object">8.6 Prediction with Krige Object</a></li>
+  <li><a href="#rasterizing-predictions" id="toc-rasterizing-predictions" class="nav-link" data-scroll-target="#rasterizing-predictions">8.7 Rasterizing Predictions</a></li>
+  <li><a href="#creating-spatial-interpolated-map" id="toc-creating-spatial-interpolated-map" class="nav-link" data-scroll-target="#creating-spatial-interpolated-map">8.8 Creating Spatial Interpolated Map</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -223,7 +261,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Statistical Modelling</h1>
+<h1 class="title">Explanatory Landslide Susceptibility Modelling</h1>
   <div class="quarto-categories">
     <div class="quarto-category">R</div>
     <div class="quarto-category">sf</div>
@@ -253,7 +291,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">April 15, 2024</p>
+      <p class="date-modified">April 16, 2024</p>
     </div>
   </div>
     
@@ -262,30 +300,77 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>To develop a landslide susceptibility methodology framework, we will explore and calibrate different statistical and machine learning models. This page focuses on statistical models first.</p>
+<section id="explanatory-landslide-susceptibility-modelling-using-statistical-modelling-techniques" class="level1">
+<h1>Explanatory Landslide Susceptibility Modelling Using Statistical Modelling Techniques</h1>
+<p>Landslide susceptibility modelling is emerging field of research that aims to identify the contributing factors of landslides and predict areas that are most susceptible. These studies serve as a valuable decision-support tool, helping us identify the areas at highest risk and implement preventive measures accordingly. In this research project, we aims to demonstrate the potential contribution of spatial non-stationarity in landslide susceptibility modelling. Particuarly, two statistical model frameworks are employed to model explanatory landslide susceptibility.</p>
+<ul>
+<li><p><strong>Logistic Regression</strong> (<code>stats</code> package)</p></li>
+<li><p><strong>Geographically Weighted Logistic Regression</strong> (<code>GWmodel</code> package)</p></li>
+</ul>
+<p>The modelling will start with the parametric tests and analyses associated with the fundamental concepts and theories of these frameworks. This is followed by model training, validation, and evaluation. Subsequently, measures of variable coefficients as well as target outcome estimates are extracted and interpolated to discuss the model results, culminating in the creation of the landslide susceptibility map.</p>
+</section>
 <section id="import-packages" class="level1">
 <h1>1.0 Import Packages</h1>
+<p>Before we start the analysis, we will need to import necessary R packages first. In particular, we will import three packages that will allow us to fit two statistical models we mentioned above.</p>
+<ul>
+<li><p>The package <strong><code>stats</code></strong> allows fast implementation of Random Forests, particularly suited for high dimensional data. Particularly, <code>glm</code> function can be used to fit generalized linear models, specified by giving a symbolic description of the linear predictor and a description of the error distribution.</p></li>
+<li><p>The package <strong><code>GWmodel</code></strong> facilitates fitting geographically weighted regression models when data are not described well by some global model, but where there are spatial regions where a suitably localised calibration provides a better description.</p></li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sp, sf, st, spdep, raster, spatstat, tmap, devtools,vtable,ggplot2,egg, corrplot, patchwork, ggstats, ggstatsplot, GWmodel, tidyverse, gtsummary,vtable, sjPlot, sjmisc, sjlabelled, tableHTML, olsrr, car, blorr,ISLR, klaR, rsample,kableExtra, performance)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sp, sf, st, spdep, raster, spatstat, tmap, devtools,vtable, ggplot2, egg, corrplot, ggstats, ggstatsplot, GWmodel, tidyverse, gtsummary, olsrr, car, blorr,ISLR, klaR, rsample,kableExtra, performance)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="import-data" class="level1">
-<h1>2.0 Import Data</h1>
+<section id="import-datasets" class="level1">
+<h1>2.0 Import Datasets</h1>
+<p>In this session, we will use two datasets.</p>
+<ul>
+<li><p>The first dataset, <strong><code>valtellina</code></strong>, is a geospatial dataset that delineates the boundary of our study area - Valtellina Valley. This data is presented in the ESRI shapefile format and is based on the Italy Geographic Coordinate System.</p></li>
+<li><p>The second dataset, <code>train_grids_v4</code> is a comma-separated values (csv) dataset that includes the entire inventory landslide and non-landslide samples collected from multiple data sources. We will use it to sample data for model fitting, training and testing.</p></li>
+</ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>valtellina <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="at">dsn =</span> <span class="st">"data/vector"</span>, <span class="at">layer =</span> <span class="st">"valtellina"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>train_grids_v4 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/aspatial/train_grid_v4.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>train_grid_v4.sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(train_grids_v4,</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>train_grid_v4.sf <span class="ot">&lt;-</span> <span class="fu">st_set_crs</span>(train_grid_v4.sf, <span class="dv">32632</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 </section>
-<section id="exploratory-spatial-data-analysis-esda" class="level1">
-<h1>3.0 Exploratory Spatial Data Analysis (ESDA)</h1>
-<p>To calculate the summary statistics of <code>landslide_train</code> data frame, we use <code>st()</code>.</p>
+<section id="data-wrangling" class="level1">
+<h1>3.0 Data Wrangling</h1>
+<section id="checking-data-class" class="level2">
+<h2 class="anchored" data-anchor-id="checking-data-class">3.1 Checking Data Class</h2>
+<p>First, we need to check the class of our datasets to ensure they are suitable for spatial analysis in R.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st</span>(train_grids_v4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(valtellina)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "sf"         "tbl_df"     "tbl"        "data.frame"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(train_grids_v4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "data.frame"</code></pre>
+</div>
+</div>
+<p>From the results, we find that <strong><code>valtellina</code></strong> is already an <strong><code>sf</code></strong> object, which is suitable for spatial analysis in R. However, we find that <strong><code>train_grids_v4</code></strong> is a data.frame.</p>
+</section>
+<section id="transforming-data-to-simple-feature-objects" class="level2">
+<h2 class="anchored" data-anchor-id="transforming-data-to-simple-feature-objects">3.2 Transforming Data to Simple Feature Objects</h2>
+<p>To facilitate spatial data manipulation in R, we will convert it to a simple features (<strong><code>sf</code></strong>) object. The <strong><code>st_as_sf</code></strong> function from the <strong><code>sf</code></strong> package is used for this conversion. The <strong><code>X</code></strong> and <strong><code>Y</code></strong> columns in <strong><code>train_grids_v4</code></strong> provide the XY-coordinates for each data observation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>train_grid_v4.sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(train_grids_v4,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To ensure accurate spatial analysis, it's crucial that our spatial data is in the correct coordinate reference system (CRS). Different CRSs can lead to different results. Therefore, we will set the CRS of <strong><code>train_grid_v4.sf</code></strong> to WGS 84 / UTM zone 32N (EPSG code 32632), which is suitable for accurate distance and area calculations.</p>
+<p>The code chunk below sets the CRS for <code>train_grid_v4.sf</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>train_grid_v4.sf <span class="ot">&lt;-</span> <span class="fu">st_set_crs</span>(train_grid_v4.sf, <span class="dv">32632</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>By setting the appropriate CRS, we ensure that our spatial data is in a projected system suitable for accurate distance and area calculations. This is a crucial step in preparing our data for further spatial analysis.</p>
+</section>
+</section>
+<section id="exploratory-data-analysis-esda" class="level1">
+<h1>4.0 Exploratory Data Analysis (ESDA)</h1>
+<section id="summary-statistics" class="level2">
+<h2 class="anchored" data-anchor-id="summary-statistics">4.1 Summary Statistics</h2>
+<p>First, we calculate the summary statistics of the <strong><code>train_grids_v4</code></strong> data frame using the <strong><code>st()</code></strong> function. This will provide us with a general understanding of the dataset's characteristics.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st</span>(train_grids_v4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
 <caption>Summary Statistics</caption>
@@ -598,54 +683,85 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </div>
 </div>
-<p>Next, we will create atrellis plot by using <code>ggarrange()</code> of <a href="https://cran.r-project.org/web/packages/ggpubr/"><strong>ggpubr</strong></a> package. In this way, we can see the distribution plots of different parameters at the same time.4.1 Correlation Matrix Using Corrplot</p>
-<p>Before building a logistic regression model, it is important to ensure that the indepdent variables used are <strong>not highly correlated</strong> to each other. If these highly correlated independent variables are used in building a regression model by mistake, the quality of the model will be compromised. This phenomenon is known as <strong>multicollinearity</strong> in statistics.</p>
-<p>Correlation matrix is commonly used to visualise the relationships between the independent variables. In this section, the <a href="https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html"><strong>corrplot</strong></a> package will be used to display the correlation matrix.</p>
-<section id="correlation-matrix-using-ggstats" class="level3">
-<h3 class="anchored" data-anchor-id="correlation-matrix-using-ggstats">3.1 Correlation Matrix Using ggstats</h3>
+</section>
+<section id="correlation-matrix" class="level2">
+<h2 class="anchored" data-anchor-id="correlation-matrix">4.2 Correlation Matrix</h2>
+<p>Before building a logistic regression model, it's important to ensure that the independent variables used are not highly correlated with each other. If highly correlated independent variables are used in building a regression model, the quality of the model will be compromised.</p>
+<p>Pearson's correlation is a commonly used correlation coefficient to calculate and visualize the relationships between the independent variables. It measures the linear relationship between the two variables and takes values between -1 and 1; -1 means a total negative linear correlation, 0 means no correlation, and 1 means a total positive correlation. Pearson's correlation can be calculated using the formula:</p>
+<p><span class="math display">\[
+r = \frac{\sum{(x_i - \bar{x})(y_i - \bar{y})}}{\sqrt{\sum{(x_i - \bar{x})^2(y_i - \bar{y})^2}}}
+\]</span></p>
+<p>We use <strong><code>ggcorrmat</code></strong> to create the correlation matrix. This function from the <strong><code>ggstatsplot</code></strong> package allows us to visualize the correlation matrix in a more aesthetically pleasing and informative manner.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="do">## producing the correlation matrix</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrmat</span>(</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train_grids_v4[, <span class="dv">6</span><span class="sc">:</span><span class="dv">29</span>],  </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">matrix.type =</span> <span class="st">"upper"</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"parametric"</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">tr =</span> <span class="fl">0.2</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">partial =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> 2L,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">sig.level =</span> <span class="fl">0.05</span>,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span>,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">bf.prior =</span> <span class="fl">0.707</span>,</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggcorrplot.args =</span> <span class="fu">list</span>(</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">tl.cex =</span> <span class="dv">10</span>,</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch.cex =</span> <span class="dv">5</span>,</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">lab_size =</span> <span class="dv">3</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span> <span class="do">## modification outside `{ggstatsplot}` using `{ggplot2}` functions</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">margin =</span> ggplot2<span class="sc">::</span><span class="fu">margin</span>(<span class="at">t =</span> <span class="fl">0.15</span>, <span class="at">r =</span> <span class="fl">0.15</span>, <span class="at">b =</span> <span class="fl">0.15</span>, <span class="at">l =</span> <span class="fl">0.15</span>, <span class="at">unit =</span> <span class="st">"cm"</span>)</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="960"></p>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="do">## producing the correlation matrix</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrmat</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train_grids_v4[, <span class="dv">6</span><span class="sc">:</span><span class="dv">29</span>],  </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">matrix.type =</span> <span class="st">"upper"</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"parametric"</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">tr =</span> <span class="fl">0.2</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">partial =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> 2L,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">sig.level =</span> <span class="fl">0.05</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">bf.prior =</span> <span class="fl">0.707</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggcorrplot.args =</span> <span class="fu">list</span>(</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">tl.cex =</span> <span class="dv">10</span>,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch.cex =</span> <span class="dv">5</span>,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">lab_size =</span> <span class="dv">3</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span> <span class="do">## modification outside `{ggstatsplot}` using `{ggplot2}` functions</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">margin =</span> ggplot2<span class="sc">::</span><span class="fu">margin</span>(<span class="at">t =</span> <span class="fl">0.15</span>, <span class="at">r =</span> <span class="fl">0.15</span>, <span class="at">b =</span> <span class="fl">0.15</span>, <span class="at">l =</span> <span class="fl">0.15</span>, <span class="at">unit =</span> <span class="st">"cm"</span>)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="images/Screenshot 2024-04-15 at 9.26.55 PM.png" class="img-fluid"></p>
+<p>The use of color intensity and symbols (X for non-significant correlations) makes it easy to identify strong, weak, or non-existent correlations quickly. The colors range from green (positive correlation) through white (no correlation) to orange (negative correlation). An "X" mark is placed on cells where the correlation is not statistically significant at p &lt; 0.05 after adjustment for multiple comparisons using Holm's method. This helps in distinguishing meaningful relationships from random associations.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Observation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The maximum correlation coefficient area is observed at 0.55 for pair between elevation and distance to settlement and at 0.49 for pair between elevation and distance to road as well as SPI and STI. Modern civilisation is built on lower elevations and accounts for the moderate coefficients. Other factors exhibit a range of low to moderate correlations. Overall, no factors among those selected for this study exhibit high positive correlation.</p>
 </div>
 </div>
 </section>
 </section>
-<section id="multiple-logistic-regression" class="level1">
-<h1>4.0 Multiple Logistic Regression</h1>
+<section id="logistic-regression" class="level1">
+<h1>5.0 Logistic Regression</h1>
+<p><strong>Logistic Regression (LR)</strong> is a multivariate statistical method that has proven to be reliable and is frequently used for evaluating landslide susceptibility. It is particularly useful in this context due to the binary nature of the response variable, which represents either the presence (value of 1) or absence (value of 0) of a landslide. Moreover, the predictor variables (landslide susceptibility factors) can be either discrete or continuous and are not required to satisfy the normal distribution. LR fits a sigmoid function by taking a linear regression between a binary dependent variable and continuous or categorial independent variables</p>
+<p>The LR model can be formulated in two part. The first equation is for the probability of a binary outcome given input features, formulated as follow:</p>
+<p><span class="math display">\[
+p(y = 1|x) = \frac{e^{\beta_0+\beta_1x_1+...+\beta_kx_k}}{1 + e^{\beta_0+\beta_1x_1+...+\beta_kx_k}}
+\]</span></p>
+<p>where <span class="math inline">\(p(y=1∣x)\)</span> is the probability of the outcome being 1 given the input features, e is the base of the natural logarithm. <span class="math inline">\(β_0​,β_1​,...,β_k​\)</span> are the coefficients of the logistic regression model. <span class="math inline">\(x_1​,...,x_k\)</span>​ are the input features.</p>
+<p>The second equation is the log-odds or logit transformation of the probability, simplifying the expression to a linear combination of features and coefficients, formulated as follows:</p>
+<p><span class="math display">\[
+\log\left(\frac{p}{1 - p}\right) = \beta_0 + \beta_1x_1 + ... + \beta_kx_k
+\]</span></p>
+<p>where <span class="math inline">\(\log\left(\frac{p}{1 - p}\right)\)</span> is the log-odds or logit of the probability.</p>
+<p>LR follows from the principle of maximum likelihood estimation, which maximizes the probability of getting the observed results, based on the fitted regression coefficients.</p>
+<section id="fitting-logistic-regression-model-1" class="level2">
+<h2 class="anchored" data-anchor-id="fitting-logistic-regression-model-1">5.1 Fitting Logistic Regression Model 1</h2>
 <p>The <code>glm</code> function fits generalized linear models, a class of models that includes logistic regression. The syntax of the <code>glm</code> function is similar to that of <code>lm</code>, except that we must pass the argument <code>family = binomial</code> in order to tell R to run a logistic regression rather than some other type of generalized linear model.</p>
-<section id="logistic-regression-model-1" class="level2">
-<h2 class="anchored" data-anchor-id="logistic-regression-model-1">4.1 Logistic Regression Model 1</h2>
-<p>Under general logistic regression, all variables are considered first.</p>
+<p>Under general logistic regression, all variables are considered first. We use the <strong><code>glm</code></strong> function to fit a basic LR model (LR 1) with all the variables.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>landslide.lr <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Elevation <span class="sc">+</span> Slope_Angle <span class="sc">+</span> Aspect_North <span class="sc">+</span> Aspect_NorthEast <span class="sc">+</span> Aspect_East<span class="sc">+</span>Aspect_SouthEast<span class="sc">+</span>Aspect_South <span class="sc">+</span> Aspect_SouthWest <span class="sc">+</span>Aspect_West <span class="sc">+</span> Profile_Curvature <span class="sc">+</span>Plan_Curvature <span class="sc">+</span> Lithology_Metamorphic<span class="sc">+</span>Lithology_Sedimentary <span class="sc">+</span> Lithology_Plutonic<span class="sc">+</span>Lithology_Unconsolidated <span class="sc">+</span> Proximity_Settlement<span class="sc">+</span>Proximity_Stream<span class="sc">+</span>Proximity_Road<span class="sc">+</span>Proximity_Fault<span class="sc">+</span>Landuse_Vegetation<span class="sc">+</span>Precipitation<span class="sc">+</span>TWI<span class="sc">+</span>SPI<span class="sc">+</span>STI, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> train_grids_v4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>landslide.lr <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Elevation <span class="sc">+</span> Slope_Angle <span class="sc">+</span> Aspect_North <span class="sc">+</span> Aspect_NorthEast <span class="sc">+</span> Aspect_East<span class="sc">+</span>Aspect_SouthEast<span class="sc">+</span>Aspect_South <span class="sc">+</span> Aspect_SouthWest <span class="sc">+</span>Aspect_West <span class="sc">+</span> Profile_Curvature <span class="sc">+</span>Plan_Curvature <span class="sc">+</span> Lithology_Metamorphic<span class="sc">+</span>Lithology_Sedimentary <span class="sc">+</span> Lithology_Plutonic<span class="sc">+</span>Lithology_Unconsolidated <span class="sc">+</span> Proximity_Settlement<span class="sc">+</span>Proximity_Stream<span class="sc">+</span>Proximity_Road<span class="sc">+</span>Proximity_Fault<span class="sc">+</span>Landuse_Vegetation<span class="sc">+</span>Precipitation<span class="sc">+</span>TWI<span class="sc">+</span>SPI<span class="sc">+</span>STI, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> train_grids_v4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<section id="printing-model-summary" class="level3">
+<h3 class="anchored" data-anchor-id="printing-model-summary">5.1.1 Printing Model Summary</h3>
+<p>We can print the summary of the model to understand the coefficients, standard errors, and significance levels of the variables. The <strong><code>summary</code></strong> function from the <strong><code>base</code></strong> package in R is used for this purpose.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sum_lr <span class="ot">&lt;-</span> <span class="fu">summary</span>(landslide.lr)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sum_lr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>sum_lr <span class="ot">&lt;-</span> <span class="fu">summary</span>(landslide.lr)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>sum_lr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -696,13 +812,33 @@ AIC: 22979
 Number of Fisher Scoring iterations: 7</code></pre>
 </div>
 </div>
+</section>
+<section id="calculating-percentage-of-deviance-explained" class="level3">
+<h3 class="anchored" data-anchor-id="calculating-percentage-of-deviance-explained">5.1.2 Calculating Percentage of Deviance Explained</h3>
+<p>In Generalized Linear Models (GLMs), deviance is a measure of goodness of fit. Specifically, deviance is a measure of the discrepancy between the data and the model's predictions. The null deviance shows how well the response variable is predicted by a model that includes only the intercept (no predictors). The model's deviance shows how well the response variable is predicted by the model.</p>
+<p>In mathematical terms, the percentage of deviance explained is calculated as:</p>
+<p><span class="math display">\[
+\text{Percentage of Deviance Explained} = \left(1 - \frac{D_{\text{model}}}{D_{\text{null}}} \right) \times 100
+\]</span></p>
+<p>Below is the code chunk used to calculate the percentage of deviance using the following steps</p>
+<ol type="1">
+<li><p>Calculate the total deviance, which is the null deviance.</p></li>
+<li><p>Subtract the model's deviance from the null deviance. This gives the amount of deviance explained by the model.</p></li>
+<li><p>Divide the explained deviance by the null deviance and multiply by 100 to get the percentage.</p></li>
+</ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="dv">100</span><span class="sc">*</span><span class="fu">with</span>(<span class="fu">summary</span>(landslide.lr), <span class="dv">1</span> <span class="sc">-</span> deviance<span class="sc">/</span>null.deviance)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>pd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="dv">100</span><span class="sc">*</span><span class="fu">with</span>(<span class="fu">summary</span>(landslide.lr), <span class="dv">1</span> <span class="sc">-</span> deviance<span class="sc">/</span>null.deviance)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>pd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 50.89114</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(landslide.lr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="computing-confidence-intervals" class="level3">
+<h3 class="anchored" data-anchor-id="computing-confidence-intervals">5.1.2 Computing Confidence Intervals</h3>
+<p>We calculate the confidence intervals for the coefficients of the variables in our model. The <strong><code>confint</code></strong> function from the <strong><code>stats</code></strong> package in R is used for this purpose.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(landslide.lr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Waiting for profiling to be done...</code></pre>
 </div>
@@ -735,9 +871,59 @@ SPI                      -1.375593e-01  2.613875e+00
 STI                      -2.021054e-03  9.886275e-04</code></pre>
 </div>
 </div>
+</section>
+<section id="validating-logistic-regression-model-1" class="level3">
+<h3 class="anchored" data-anchor-id="validating-logistic-regression-model-1">5.1.3 Validating Logistic Regression Model 1</h3>
+<p>In this step, we validate the logistic regression model that we built in the previous step. Validation is a crucial part of the modeling process because it helps us understand how well our model performs on unseen data.</p>
+<p>We use the <strong><code>blr_confusion_matrix</code></strong> function from the <strong><code>blr</code></strong> package in R to create a confusion matrix for our model. A confusion matrix is a table that is often used to describe the performance of a classification model on a set of data for which the true values are known.</p>
+<p>The <strong><code>cutoff</code></strong> argument in the <strong><code>blr_confusion_matrix</code></strong> function is used to decide the threshold for classifying a probability into a binary outcome. In this case, we set the cutoff to 0.5, which means that if the predicted probability is greater than or equal to 0.5, the outcome is classified as 1 (landslide), otherwise it is classified as 0 (no landslide).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>vif <span class="ot">&lt;-</span> <span class="fu">multicollinearity</span>(landslide.lr)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>vif</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">blr_confusion_matrix</span>(landslide.lr, <span class="at">cutoff =</span> <span class="fl">0.5</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>cm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics 
+
+          Reference
+Prediction     0     1
+         0  6548  1292
+         1  2235 40488
+
+                Accuracy : 0.9302 
+     No Information Rate : 0.1737 
+
+                   Kappa : 0.7462 
+
+McNemars's Test P-Value  : 0.0000 
+
+             Sensitivity : 0.9691 
+             Specificity : 0.7455 
+          Pos Pred Value : 0.9477 
+          Neg Pred Value : 0.8352 
+              Prevalence : 0.8263 
+          Detection Rate : 0.8007 
+    Detection Prevalence : 0.8449 
+       Balanced Accuracy : 0.8573 
+               Precision : 0.9477 
+                  Recall : 0.9691 
+
+        'Positive' Class : 1</code></pre>
+</div>
+</div>
+<p>The output <strong><code>cm</code></strong> is the confusion matrix for our logistic regression model. It shows the number of true positives, true negatives, false positives, and false negatives. This information can be used to calculate various performance metrics such as accuracy, precision, recall, and F1 score.</p>
+</section>
+</section>
+<section id="curse-of-multicollinearity" class="level2">
+<h2 class="anchored" data-anchor-id="curse-of-multicollinearity">5.2 Curse of Multicollinearity</h2>
+<p>Regression models are sensitive to multicollinearity. Multicollinearity arises when two or more explanatory variables in a regression model display moderate or high correlation among each other. The presence of multicollinearity makes it difficult to assess the individual importance and significance of a predictor. Subsequently, variance inflation factor (VIF) and tolerance (TOL) values are calculated to further evaluate landslide variables. VIF is a statistical measure used in regression analysis to observe the increase in variance of the regression coefficient estimates due to multicollinearity. Mathematically, VIF can be calculated using the formula:</p>
+<p><span class="math display">\[
+VIF = \frac{1}{1 - R_j^2} = \frac{1}{TOL}
+\]</span></p>
+<section id="calculate-variance-inflation-factor-vif" class="level3">
+<h3 class="anchored" data-anchor-id="calculate-variance-inflation-factor-vif">5.2.1 Calculate Variance Inflation Factor (VIF)</h3>
+<p>We use the <strong><code>multicollinearity</code></strong> function from the <strong><code>performance</code></strong> package to calculate the VIF.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>vif <span class="ot">&lt;-</span> <span class="fu">multicollinearity</span>(landslide.lr)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>vif</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Check for Multicollinearity
 
@@ -779,39 +965,76 @@ Moderate Correlation
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(vif)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(vif)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Variable `Component` is not in your data frame :/</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>There are currently no established criteria for identifying the extent of variance inflation factors that result in poorly estimated coefficients. A frequently used benchmark for VIF in numerous regression studies is VIF ≥ 5. Values ≥ 5 indicate significant multicollinearity and may necessitate further investigation or actions.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Observation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Results of multicollinearity test between explanatory landslide factors are presented in Table 2. Three lithological categories – metamorphic, sedimentary and unconsolidated shows high VIF values of 7.85, 5.98 and 9.42 respectively, indicating moderate multicollinearity.</p>
+</div>
+</div>
+</section>
+<section id="remove-variable-with-high-multicollinearity" class="level3">
+<h3 class="anchored" data-anchor-id="remove-variable-with-high-multicollinearity"><strong>5.2.2 Remove Variable with High Multicollinearity</strong></h3>
+<p>To avoid potential issues in subsequent modelling results, the variable with the highest VIF value, lithology (unconsolidated) is removed from the dataset.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>train_grids_v4 <span class="ot">&lt;-</span> <span class="fu">subset</span>(train_grids_v4, <span class="at">select =</span> <span class="sc">-</span>Lithology_Unconsolidated)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>train_grids_v4 <span class="ot">&lt;-</span> <span class="fu">subset</span>(train_grids_v4, <span class="at">select =</span> <span class="sc">-</span>Lithology_Unconsolidated)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>We then fit the logistic regression model again without the <strong><code>Lithology_Unconsolidated</code></strong> variable.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>landslide.lr <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Elevation <span class="sc">+</span> Slope_Angle <span class="sc">+</span> Aspect_North <span class="sc">+</span> Aspect_NorthEast <span class="sc">+</span> Aspect_East<span class="sc">+</span>Aspect_SouthEast<span class="sc">+</span>Aspect_South <span class="sc">+</span> Aspect_SouthWest <span class="sc">+</span>Aspect_West <span class="sc">+</span> Profile_Curvature <span class="sc">+</span>Plan_Curvature <span class="sc">+</span> Lithology_Metamorphic<span class="sc">+</span>Lithology_Sedimentary <span class="sc">+</span> Lithology_Plutonic <span class="sc">+</span> Proximity_Settlement<span class="sc">+</span>Proximity_Stream<span class="sc">+</span>Proximity_Road<span class="sc">+</span>Proximity_Fault<span class="sc">+</span>Landuse_Vegetation<span class="sc">+</span>Precipitation<span class="sc">+</span>TWI<span class="sc">+</span>SPI<span class="sc">+</span>STI, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> train_grids_v4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>landslide.lr <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Elevation <span class="sc">+</span> Slope_Angle <span class="sc">+</span> Aspect_North <span class="sc">+</span> Aspect_NorthEast <span class="sc">+</span> Aspect_East<span class="sc">+</span>Aspect_SouthEast<span class="sc">+</span>Aspect_South <span class="sc">+</span> Aspect_SouthWest <span class="sc">+</span>Aspect_West <span class="sc">+</span> Profile_Curvature <span class="sc">+</span>Plan_Curvature <span class="sc">+</span> Lithology_Metamorphic<span class="sc">+</span>Lithology_Sedimentary <span class="sc">+</span> Lithology_Plutonic <span class="sc">+</span> Proximity_Settlement<span class="sc">+</span>Proximity_Stream<span class="sc">+</span>Proximity_Road<span class="sc">+</span>Proximity_Fault<span class="sc">+</span>Landuse_Vegetation<span class="sc">+</span>Precipitation<span class="sc">+</span>TWI<span class="sc">+</span>SPI<span class="sc">+</span>STI, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> train_grids_v4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>We can plot the VIF values again to check if the multicollinearity problem has been resolved.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">multicollinearity</span>(landslide.lr))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">multicollinearity</span>(landslide.lr))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Variable `Component` is not in your data frame :/</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<section id="stepwise-selection" class="level3">
-<h3 class="anchored" data-anchor-id="stepwise-selection">4.1.1 Stepwise Selection</h3>
-<p>For the initial/ first cut model, all the independent variables are put into the model. Our goal is to include a limited number of independent variables (5-15) which are all significant, without sacrificing too much on the model performance. The rationale behind including not too many variables is that the model would be overfitted and would become unstable when tested on the validation sample. The variable reduction is done using forward or backward or stepwise variable selection procedures. We will use <code>blr_step_aic_both()</code> to shortlist predictors for our model.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Observation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>All the VIF values after the removal are less than 2.27 and TOL values are all above 0.44, indicating that there is no more collinearity problem observed among factors.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="stepwise-selection" class="level2">
+<h2 class="anchored" data-anchor-id="stepwise-selection">5.3 Stepwise Selection</h2>
+<p>In the initial model, all the independent variables are included. However, including too many variables in a model can lead to overfitting. Overfitting is a modeling error that occurs when a function is too closely aligned to a limited set of data points. An overfitted model may result in an algorithm that is excessively complex, such as one involving a function that has too many parameters relative to the number of observations. A model that has been overfitted will generally have poor predictive performance, as it can exaggerate minor fluctuations in the data.</p>
+<p>The goal of this step is to create a more parsimonious model, which means we aim to include a limited number of independent variables (between 5 and 15) that are all statistically significant, without sacrificing too much on the model's performance.</p>
+<p>To achieve this, we employ a stepwise variable selection procedure. Stepwise selection is a method of fitting regression models in which the choice of predictive variables is carried out by an automatic procedure. In each step, a variable is considered for addition to or subtraction from the set of explanatory variables based on some prespecified criterion.</p>
+<p>We use the <strong><code>blr_step_aic_both()</code></strong> function from the <strong><code>blr</code></strong> package in R for this purpose. This function performs both forward and backward stepwise variable selection based on the Akaike Information Criterion (AIC). The AIC is a measure of the relative quality of a statistical model for a given set of data. It provides a means for model selection by comparing different models and choosing the one that minimizes the information loss.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>stepwise_1 <span class="ot">&lt;-</span> <span class="fu">blr_step_aic_both</span>(landslide.lr)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(stepwise_1, <span class="st">"data/rds/stepwise1.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>stepwise_1 <span class="ot">&lt;-</span> <span class="fu">blr_step_aic_both</span>(landslide.lr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>We then load the results of the stepwise selection process to see which variables were selected.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>stepwise1 <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/stepwise1.rds"</span>)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>stepwise1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>stepwise1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
                              Stepwise Summary                             
@@ -845,18 +1068,18 @@ SPI                      addition    23213.794    23381.582    23175.794
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Stepwise Selection Result
+Observation
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>17 explanatory variables have been selected in this stepwise selection process.</p>
+<p>17 explanatory variables have been selected in this stepwise selection process. This is a significant reduction from the initial model, which should help to mitigate the risk of overfitting.</p>
 </div>
 </div>
-<p>Plot the Akaike Information Criterion curve as it is the main threshold.</p>
+<p>We can also plot the AIC values for the different models considered during the stepwise selection process. This helps us visualize how the AIC changes as different variables are added or removed from the model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(stepwise1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(stepwise1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -869,65 +1092,32 @@ Observation
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>In our first stepwise selection, <code>Slope_Angle</code> has the highest AIC value followed by <code>Profile_Curvature</code>.</p>
+<p>In our first stepwise selection, <strong><code>Slope_Angle</code></strong> has the highest AIC value followed by <strong><code>Profile_Curvature</code></strong>. This suggests that these variables contribute the most information to the model, and removing them would result in the greatest loss of information.</p>
 </div>
 </div>
 </section>
-<section id="validating-logistic-regression-model-1" class="level3">
-<h3 class="anchored" data-anchor-id="validating-logistic-regression-model-1">4.1.2 Validating Logistic Regression Model 1</h3>
+<section id="fitting-logistic-regression-model-2" class="level2">
+<h2 class="anchored" data-anchor-id="fitting-logistic-regression-model-2">5.4 Fitting Logistic Regression Model 2</h2>
+<p>In this step, we recalibrate the first model we fitted <code>landslide.lr</code> by updating the logistic regression with the selected variables from stepwise selection.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">blr_confusion_matrix</span>(landslide.lr, <span class="at">cutoff =</span> <span class="fl">0.5</span>)</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>cm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Confusion Matrix and Statistics 
-
-          Reference
-Prediction     0     1
-         0  6427  1256
-         1  2356 40524
-
-                Accuracy : 0.9286 
-     No Information Rate : 0.1737 
-
-                   Kappa : 0.7382 
-
-McNemars's Test P-Value  : 0.0000 
-
-             Sensitivity : 0.9699 
-             Specificity : 0.7318 
-          Pos Pred Value : 0.9451 
-          Neg Pred Value : 0.8365 
-              Prevalence : 0.8263 
-          Detection Rate : 0.8015 
-    Detection Prevalence : 0.8481 
-       Balanced Accuracy : 0.8508 
-               Precision : 0.9451 
-                  Recall : 0.9699 
-
-        'Positive' Class : 1</code></pre>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>landslide.lr2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Slope_Angle <span class="sc">+</span> Profile_Curvature <span class="sc">+</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>                       Plan_Curvature <span class="sc">+</span> Landuse_Vegetation <span class="sc">+</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>                       Lithology_Plutonic <span class="sc">+</span> Precipitation <span class="sc">+</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>                       Proximity_Fault <span class="sc">+</span> TWI <span class="sc">+</span> Lithology_Sedimentary <span class="sc">+</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>                       Lithology_Metamorphic <span class="sc">+</span>  Proximity_Stream <span class="sc">+</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>                       Aspect_SouthEast <span class="sc">+</span> Proximity_Road <span class="sc">+</span> Aspect_South <span class="sc">+</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>                       Aspect_NorthEast <span class="sc">+</span> Aspect_East <span class="sc">+</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>                       Proximity_Settlement <span class="sc">+</span> SPI , <span class="at">family =</span> <span class="st">"binomial"</span>,</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> train_grids_v4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-</section>
-</section>
-<section id="logistic-regression-model-2" class="level2">
-<h2 class="anchored" data-anchor-id="logistic-regression-model-2">4.2 Logistic Regression Model 2</h2>
-<p>Here, we recalibrate the model by updating the logistic regression with the selected variables.</p>
+<section id="printing-model-summary-1" class="level3">
+<h3 class="anchored" data-anchor-id="printing-model-summary-1">5.4.1 Printing Model Summary</h3>
+<p>We can print the summary of the LR Model 2 to understand the coefficients, standard errors, and significance levels of the variables.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>landslide.lr2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Slope_Angle <span class="sc">+</span> Profile_Curvature <span class="sc">+</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>                       Plan_Curvature <span class="sc">+</span> Landuse_Vegetation <span class="sc">+</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>                       Lithology_Plutonic <span class="sc">+</span> Precipitation <span class="sc">+</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>                       Proximity_Fault <span class="sc">+</span> TWI <span class="sc">+</span> Lithology_Sedimentary <span class="sc">+</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>                       Lithology_Metamorphic <span class="sc">+</span>  Proximity_Stream <span class="sc">+</span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>                       Aspect_SouthEast <span class="sc">+</span> Proximity_Road <span class="sc">+</span> Aspect_South <span class="sc">+</span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>                       Aspect_NorthEast <span class="sc">+</span> Aspect_East <span class="sc">+</span></span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>                       Proximity_Settlement <span class="sc">+</span> SPI , <span class="at">family =</span> <span class="st">"binomial"</span>,</span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> train_grids_v4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>sum_lr2 <span class="ot">&lt;-</span> <span class="fu">summary</span>(landslide.lr2)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>sum_lr2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>sum_lr2 <span class="ot">&lt;-</span> <span class="fu">summary</span>(landslide.lr2)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>sum_lr2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -971,13 +1161,23 @@ AIC: 23214
 Number of Fisher Scoring iterations: 7</code></pre>
 </div>
 </div>
+</section>
+<section id="calculating-percentage-of-deviance-explained-1" class="level3">
+<h3 class="anchored" data-anchor-id="calculating-percentage-of-deviance-explained-1">5.4.2 Calculating Percentage of Deviance Explained</h3>
+<p>Next, we calculate the percentage of deviance to understand how well LR Model 2 fits the data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>pd2 <span class="ot">&lt;-</span> <span class="dv">100</span><span class="sc">*</span><span class="fu">with</span>(<span class="fu">summary</span>(landslide.lr2), <span class="dv">1</span> <span class="sc">-</span> deviance<span class="sc">/</span>null.deviance)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>pd2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>pd2 <span class="ot">&lt;-</span> <span class="dv">100</span><span class="sc">*</span><span class="fu">with</span>(<span class="fu">summary</span>(landslide.lr2), <span class="dv">1</span> <span class="sc">-</span> deviance<span class="sc">/</span>null.deviance)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>pd2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 50.36347</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(landslide.lr2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="computing-confidence-intervals-1" class="level3">
+<h3 class="anchored" data-anchor-id="computing-confidence-intervals-1">5.4.3 Computing Confidence Intervals</h3>
+<p>We calculate the confidence intervals for the coefficients of the variables in LR Model 2.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(landslide.lr2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Waiting for profiling to be done...</code></pre>
 </div>
@@ -1014,15 +1214,17 @@ Observation
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The model is still overfitting and AIC of 23157 is very high.</p>
+<p>LR Model 2 is still overfitting and AIC of 23157 is very high.</p>
 </div>
 </div>
+</section>
 <section id="validating-logistic-regression-model-2" class="level3">
-<h3 class="anchored" data-anchor-id="validating-logistic-regression-model-2">4.2.1 Validating Logistic Regression Model 2</h3>
+<h3 class="anchored" data-anchor-id="validating-logistic-regression-model-2">5.4.4 Validating Logistic Regression Model 2</h3>
+<p>Agian, we use the <strong><code>blr_confusion_matrix</code></strong> function from the <strong><code>blr</code></strong> package in R to create a confusion matrix for LR Model 2.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>cm2 <span class="ot">&lt;-</span> <span class="fu">blr_confusion_matrix</span>(landslide.lr2, <span class="at">cutoff =</span> <span class="fl">0.5</span>)</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>cm2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>cm2 <span class="ot">&lt;-</span> <span class="fu">blr_confusion_matrix</span>(landslide.lr2, <span class="at">cutoff =</span> <span class="fl">0.5</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>cm2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Confusion Matrix and Statistics 
 
@@ -1053,9 +1255,18 @@ McNemars's Test P-Value  : 0.0000
 </div>
 </div>
 </section>
-<section id="comparing-lr-models-1-2" class="level3">
-<h3 class="anchored" data-anchor-id="comparing-lr-models-1-2">4.2.2 Comparing LR Models 1 &amp; 2</h3>
-<p>The two models thus far yield similar results with small changes in accuracy, sensitivity and specificity despite a reduced number of variables from the first to the second model.</p>
+</section>
+<section id="comparing-lr-model-1-2" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-lr-model-1-2">5.5 Comparing LR Model 1 &amp; 2</h2>
+<p>The two models thus far yield similar results with small changes in accuracy, sensitivity and specificity despite a reduced number of variables from the first to the second model. We create a comparison table using the <strong><code>data.frame</code></strong> function from the <strong><code>base</code></strong> package in R to compare the performance metrics of the two models.</p>
+<p>The metrics we've chosen to include in this comparison table are:</p>
+<ul>
+<li><p><strong>Accuracy</strong>: This measures the proportion of total predictions that are correct.</p></li>
+<li><p><strong>AIC (Akaike Information Criterion)</strong>: This is a measure of the relative quality of a statistical model for a given set of data. Lower values indicate better-fitting models.</p></li>
+<li><p><strong>Sensitivity</strong>: This is the true positive rate, indicating the model's ability to correctly predict positive outcomes.</p></li>
+<li><p><strong>Specificity</strong>: This is the true negative rate, reflecting the model's ability to correctly predict negative outcomes.</p></li>
+<li><p><strong>Percentage Deviance Explained</strong>: This is a measure of the proportion of the total variability in the response variable that is accounted for by the predictors in the model.</p></li>
+</ul>
 <div class="cell">
 <div class="cell-output-display">
 <table data-quarto-postprocess="true" class="table table-sm table-striped small">
@@ -1090,7 +1301,7 @@ McNemars's Test P-Value  : 0.0000
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Accuracy</td>
-<td style="text-align: right;">0.9286</td>
+<td style="text-align: right;">0.9302</td>
 <td style="text-align: right;">0.9287</td>
 </tr>
 <tr class="even">
@@ -1100,12 +1311,12 @@ McNemars's Test P-Value  : 0.0000
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Sensitivity</td>
-<td style="text-align: right;">0.9699</td>
+<td style="text-align: right;">0.9691</td>
 <td style="text-align: right;">0.9700</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Specificity</td>
-<td style="text-align: right;">0.7318</td>
+<td style="text-align: right;">0.7455</td>
 <td style="text-align: right;">0.7322</td>
 </tr>
 <tr class="odd">
@@ -1119,9 +1330,10 @@ McNemars's Test P-Value  : 0.0000
 
 </div>
 </div>
+<p>This comparison table provides a side-by-side comparison of the two models, making it easier to see how the performance metrics have changed from the first model to the second model.</p>
 </section>
-<section id="weight-of-evidence-information-value" class="level3">
-<h3 class="anchored" data-anchor-id="weight-of-evidence-information-value">4.2.3 Weight of Evidence &amp; Information Value</h3>
+<section id="weight-of-evidence-information-value" class="level2">
+<h2 class="anchored" data-anchor-id="weight-of-evidence-information-value">5.6 Weight of Evidence &amp; Information Value</h2>
 <p>Weight of Evidence (WoE) is a variable transformation technique meant for independent variables according to Information Theory. WoE measures <strong>how good</strong> each grouped attribute or bin of a feature can predict the target variable.</p>
 <p>WoE is formulated as:</p>
 <p><span class="math display">\[
@@ -1134,15 +1346,16 @@ W~i^- = ln \frac{P\{\overline{E}~i/I\}}{P\{\overline{E}~-i/\overline{I}\}}
 W~i = W~i^+ + W~i^-
 \]</span></p>
 <p>Information value (IV) explains the predictive power of the entirety of the feature.</p>
-<p><insert formula="" later=""></insert></p>
-<p>Here is the IV for all the predictors.</p>
+<p><span class="math display">\[
+IV = \sum_{i=1}^{n} (W_i \times (\%I - \%II))
+\]</span></p>
+<p>To calculate the IV of all independent variables in our dataset, we use the <strong><code>create_infotables()</code></strong> function from the <strong><code>Information</code></strong> package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"Information"</span>)</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>IV <span class="ot">&lt;-</span> <span class="fu">create_infotables</span>(<span class="at">data=</span>train_grids_v4[, <span class="dv">5</span><span class="sc">:</span><span class="dv">28</span>],</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">valid=</span>train_grids_v4[, <span class="dv">5</span><span class="sc">:</span><span class="dv">28</span>],</span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y=</span><span class="st">"Landslide"</span>)</span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(IV<span class="sc">$</span>Summary[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">row.names=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"Information"</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>IV <span class="ot">&lt;-</span> <span class="fu">create_infotables</span>(<span class="at">data=</span>train_grids_v4[, <span class="dv">5</span><span class="sc">:</span><span class="dv">28</span>],</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">valid=</span>train_grids_v4[, <span class="dv">5</span><span class="sc">:</span><span class="dv">28</span>],</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y=</span><span class="st">"Landslide"</span>)</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(IV<span class="sc">$</span>Summary[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">row.names=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table data-quarto-postprocess="true" class="table table-sm table-striped small">
 <thead>
@@ -1260,85 +1473,71 @@ Observation
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><code>Slope_Angle</code> indeed has the most predictive power compared to other variables.</p>
+<p>Our analysis reveals that the <strong><code>Slope_Angle</code></strong> variable has the highest predictive power among all variables. This suggests that <strong><code>Slope_Angle</code></strong> may be overly dominant in predicting landslides, as indicated by its unusually high IV value. Further investigation is needed to understand why <strong><code>Slope_Angle</code></strong> has such a significant predictive power.</p>
 </div>
 </div>
-<p><code>Slope_Angle</code> has to be further investigated to understand why it has the greatest predictive power.</p>
 </section>
-<section id="slope-distribution" class="level3">
-<h3 class="anchored" data-anchor-id="slope-distribution">4.2.4 Slope Distribution</h3>
-<p>Our data points are located in various places with varying slope angles. Since our initial IV analysis flags out its influence over our model results, the slope distribution can be first viewed with a histogram.</p>
-<p>Distribution of Landslide Samples</p>
+<section id="stratified-slope-sampling" class="level2">
+<h2 class="anchored" data-anchor-id="stratified-slope-sampling">5.7 Stratified Slope Sampling</h2>
+<p>Our data points are located in various places with varying slope angles. Since our initial IV analysis flags out the over-dominance of <code>Slope_Angle</code> over our model results, we first visualize the distribution of slope angles using a histogram. This will help us detect any unbalanced or irregular distribution patterns that could bias our model.</p>
+<section id="plotting-distribution-of-slope-angles-in-landslide-and-non-landslide-samples" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-distribution-of-slope-angles-in-landslide-and-non-landslide-samples">5.7.1 Plotting Distribution of Slope Angles in Landslide and Non-Landslide Samples</h3>
+<p>We start by plotting the distribution of <strong><code>Slope_Angle</code></strong> in landslide samples.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>ls_data <span class="ot">&lt;-</span> train_grids_v4[train_grids_v4<span class="sc">$</span>Landslide<span class="sc">==</span><span class="dv">1</span>,]</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>ls_data, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">100</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>) <span class="sc">+</span></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Distribution of slope values in landslide samples"</span>) <span class="sc">+</span> </span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">20</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>Distribution of Non-Landslide Samples</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>non_ls_data <span class="ot">&lt;-</span> train_grids_v4[train_grids_v4<span class="sc">$</span>Landslide<span class="sc">==</span><span class="dv">0</span>,]</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>non_ls_data, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">100</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>) <span class="sc">+</span></span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Distribution of slope values in non-landslide samples"</span>) <span class="sc">+</span> </span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">20</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<section id="quasi-separation-present" class="level4 callout-insight">
-<h4 class="anchored" data-anchor-id="quasi-separation-present">Quasi-separation Present</h4>
-<p>The majority of landslide samples have slope angles larger than 20°. In similar contrast, the majority of non-landslide samples have slope angles less than 20°.</p>
-<p>As such, the model currently predicts any instances with a slope angle <strong>greater than 20°</strong> to be a landslide.</p>
-</section>
-</section>
-</section>
-<section id="logistic-regression-model-3" class="level2">
-<h2 class="anchored" data-anchor-id="logistic-regression-model-3">4.3 Logistic Regression Model 3</h2>
-<section id="stratified-slope-sampling" class="level3">
-<h3 class="anchored" data-anchor-id="stratified-slope-sampling">4.3.1 Stratified Slope Sampling</h3>
-<p>To address the data bias with the evidence of quasi-separation, we use a 15° cut-off based on the first quantile result and slope (%) reference from the Barcelona Field Studies Centre.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>slope_angle <span class="ot">&lt;-</span> train_grids_v4<span class="sc">$</span>Slope_Angle</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(slope_angle, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.25</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      0%      25%      50%      75%     100% 
- 0.00000 18.41368 30.34639 38.54599 82.91669 </code></pre>
-</div>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="https://geographyfieldwork.com/SlopeSteepnessIndex.htm"><img src="images/bfc_slope_descriptors.png" class="img-fluid figure-img"></a></p>
-<figcaption class="figure-caption">Standard Slope Descriptors (Source: Barcelona Field Studies Centre)</figcaption>
-</figure>
-</div>
-<p>Distribution of Landslide Samples</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>ls_data_20 <span class="ot">&lt;-</span> train_grids_v4[train_grids_v4<span class="sc">$</span>Landslide<span class="sc">==</span><span class="dv">1</span> <span class="sc">&amp;</span> train_grids_v4<span class="sc">$</span>Slope_Angle <span class="sc">&lt;=</span> <span class="dv">20</span>,]</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>ls_data_20, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">40</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>) <span class="sc">+</span></span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Distribution of slope values in landslide samples (15° slope cut-off)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>Distribution of Non-Landslide Samples</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>non_ls_data_20 <span class="ot">&lt;-</span> train_grids_v4[train_grids_v4<span class="sc">$</span>Landslide<span class="sc">==</span><span class="dv">0</span> <span class="sc">&amp;</span> train_grids_v4<span class="sc">$</span>Slope_Angle <span class="sc">&lt;=</span> <span class="dv">20</span>,]</span>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>ls_data <span class="ot">&lt;-</span> train_grids_v4[train_grids_v4<span class="sc">$</span>Landslide<span class="sc">==</span><span class="dv">1</span>,]</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>non_ls_data_20, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">40</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>) <span class="sc">+</span></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Distribution of slope values in non-landslide samples (20° slope cut-off)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>ls_data, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">100</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>) <span class="sc">+</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Distribution of slope values in landslide samples"</span>) <span class="sc">+</span> </span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">20</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Next, we plot the distribution of <strong><code>Slope_Angle</code></strong> in non-landslide samples.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>non_ls_data <span class="ot">&lt;-</span> train_grids_v4[train_grids_v4<span class="sc">$</span>Landslide<span class="sc">==</span><span class="dv">0</span>,]</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>non_ls_data, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">100</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>) <span class="sc">+</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Distribution of slope values in non-landslide samples"</span>) <span class="sc">+</span> </span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">20</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<section id="observation-7" class="level4 callout-insight">
+<h4 class="anchored" data-anchor-id="observation-7">Observation</h4>
+<p>The majority of landslide samples have slope angles larger than 20°. In contrast, the majority of non-landslide samples have slope angles less than 20°. As such, the current model predicts any instances with a slope angle greater than 20° to be a landslide. This observation suggests that the <strong><code>Slope_Angle</code></strong> variable might be a strong predictor of landslides.</p>
+</section>
+</section>
+<section id="implementing-stratified-slope-sampling" class="level3">
+<h3 class="anchored" data-anchor-id="implementing-stratified-slope-sampling">5.7.2 Implementing Stratified Slope Sampling</h3>
+<p>To address the data bias with the evidence of quasi-separation, we use a 20° cut-off based on the observation above. Quasi-separation is a situation in logistic regression where the outcome variable separates a predictor variable completely, leading to overfitting. By implementing stratified slope sampling, we aim to create a more balanced dataset that can lead to a more robust model.</p>
+<p>Below is the code chunk for implementing stratified slope sampling. Here, we create two new datasets: <strong><code>ls_data_20</code></strong> and <strong><code>non_ls_data_20</code></strong>. These datasets contain landslide and non-landslide samples, respectively, with a slope angle of 20° or less.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>ls_data_20 <span class="ot">&lt;-</span> train_grids_v4[train_grids_v4<span class="sc">$</span>Landslide<span class="sc">==</span><span class="dv">1</span> <span class="sc">&amp;</span> train_grids_v4<span class="sc">$</span>Slope_Angle <span class="sc">&lt;=</span> <span class="dv">20</span>,]</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>non_ls_data_20 <span class="ot">&lt;-</span> train_grids_v4[train_grids_v4<span class="sc">$</span>Landslide<span class="sc">==</span><span class="dv">0</span> <span class="sc">&amp;</span> train_grids_v4<span class="sc">$</span>Slope_Angle <span class="sc">&lt;=</span> <span class="dv">20</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="plotting-distribution-of-slope-angles-in-slope-stratified-landslide-and-non-landslide-samples" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-distribution-of-slope-angles-in-slope-stratified-landslide-and-non-landslide-samples">5.7.3 Plotting Distribution of Slope Angles in Slope-Stratified Landslide and Non-Landslide Samples</h3>
+<p>We then plot the new distribution of slope in landslide samples.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>ls_data_20, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">40</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>) <span class="sc">+</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Distribution of slope values in landslide samples (15° slope cut-off)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We also plot the new distribution of slope in non-landslide samples.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>non_ls_data_20, <span class="fu">aes</span>(<span class="at">x=</span> <span class="st">`</span><span class="at">Slope_Angle</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">40</span>, <span class="at">color=</span><span class="st">"black"</span>, <span class="at">fill=</span><span class="st">"#e9531e"</span>) <span class="sc">+</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Distribution of slope values in non-landslide samples (20° slope cut-off)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -1351,19 +1550,23 @@ Observation
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Although the distribution for this stratified non-landslide sample is left-skewed, the data skewness has been reduced significantly.</p>
+<p>Although the distribution for this stratified non-landslide sample is left-skewed, the data skewness has been reduced significantly. This indicates that our stratified sampling approach has helped to balance the distribution of the <strong><code>Slope_Angle</code></strong> feature in our dataset, which should lead to a more robust and reliable model.</p>
 </div>
-</div>
-<p>We then perform the logistic regression model with the stratified sample.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>landslide.lr3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Elevation <span class="sc">+</span> Slope_Angle <span class="sc">+</span> Aspect_North <span class="sc">+</span> Aspect_NorthEast <span class="sc">+</span> Aspect_East<span class="sc">+</span>Aspect_SouthEast<span class="sc">+</span>Aspect_South <span class="sc">+</span> Aspect_SouthWest <span class="sc">+</span>Aspect_West <span class="sc">+</span> Profile_Curvature <span class="sc">+</span>Plan_Curvature <span class="sc">+</span> Lithology_Metamorphic<span class="sc">+</span>Lithology_Sedimentary <span class="sc">+</span> Lithology_Plutonic <span class="sc">+</span> Proximity_Settlement<span class="sc">+</span>Proximity_Stream<span class="sc">+</span>Proximity_Road<span class="sc">+</span>Proximity_Fault<span class="sc">+</span>Landuse_Vegetation<span class="sc">+</span>Precipitation<span class="sc">+</span>TWI<span class="sc">+</span>SPI<span class="sc">+</span>STI, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> data_20)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="validating-logistic-regression-model-3" class="level3">
-<h3 class="anchored" data-anchor-id="validating-logistic-regression-model-3">4.3.2 Validating Logistic Regression Model 3</h3>
+</section>
+<section id="fitting-logistic-regression-model-3" class="level2">
+<h2 class="anchored" data-anchor-id="fitting-logistic-regression-model-3">5.8 Fitting Logistic Regression Model 3</h2>
+<p>In this section, we fit LR Model 3 using the stratified sample created in the previous section. The goal is to see if the stratified sampling approach improves the model's performance.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>sum_lr3 <span class="ot">&lt;-</span> <span class="fu">summary</span>(landslide.lr3)</span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>sum_lr3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>landslide.lr3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Elevation <span class="sc">+</span> Slope_Angle <span class="sc">+</span> Aspect_North <span class="sc">+</span> Aspect_NorthEast <span class="sc">+</span> Aspect_East<span class="sc">+</span>Aspect_SouthEast<span class="sc">+</span>Aspect_South <span class="sc">+</span> Aspect_SouthWest <span class="sc">+</span>Aspect_West <span class="sc">+</span> Profile_Curvature <span class="sc">+</span>Plan_Curvature <span class="sc">+</span> Lithology_Metamorphic<span class="sc">+</span>Lithology_Sedimentary <span class="sc">+</span> Lithology_Plutonic <span class="sc">+</span> Proximity_Settlement<span class="sc">+</span>Proximity_Stream<span class="sc">+</span>Proximity_Road<span class="sc">+</span>Proximity_Fault<span class="sc">+</span>Landuse_Vegetation<span class="sc">+</span>Precipitation<span class="sc">+</span>TWI<span class="sc">+</span>SPI<span class="sc">+</span>STI, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> data_20)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="printing-model-summary-2" class="level3">
+<h3 class="anchored" data-anchor-id="printing-model-summary-2">5.8.1 Printing Model Summary</h3>
+<p>We then print the summary statistics of Logistic Regression Model 3 to understand the model's performance and the significance of the explanatory variables.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>sum_lr3 <span class="ot">&lt;-</span> <span class="fu">summary</span>(landslide.lr3)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>sum_lr3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -1413,9 +1616,13 @@ AIC: 11636
 Number of Fisher Scoring iterations: 5</code></pre>
 </div>
 </div>
+</section>
+<section id="validating-logistic-regression-model-3" class="level3">
+<h3 class="anchored" data-anchor-id="validating-logistic-regression-model-3">5.8.2 Validating Logistic Regression Model 3</h3>
+<p>Next, we validate Logistic Regression Model 3 by creating a confusion matrix. This allows us to see the model's accuracy, sensitivity, and specificity.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>cm3 <span class="ot">&lt;-</span> <span class="fu">blr_confusion_matrix</span>(landslide.lr3, <span class="at">cutoff =</span> <span class="fl">0.5</span>)</span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>cm3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>cm3 <span class="ot">&lt;-</span> <span class="fu">blr_confusion_matrix</span>(landslide.lr3, <span class="at">cutoff =</span> <span class="fl">0.5</span>)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>cm3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Confusion Matrix and Statistics 
 
@@ -1445,8 +1652,12 @@ McNemars's Test P-Value  : 0.0000
         'Positive' Class : 1</code></pre>
 </div>
 </div>
+</section>
+<section id="stepwise-selection-1" class="level3">
+<h3 class="anchored" data-anchor-id="stepwise-selection-1">5.8.3 Stepwise Selection</h3>
+<p>We then perform stepwise selection on Logistic Regression Model 3 to filter out only the statistically significant variables.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>stepwise_3 <span class="ot">&lt;-</span> <span class="fu">blr_step_aic_both</span>(landslide.lr3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>stepwise_3 <span class="ot">&lt;-</span> <span class="fu">blr_step_aic_both</span>(landslide.lr3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Stepwise Selection Method 
 -------------------------
@@ -1502,6 +1713,11 @@ Variables Entered/Removed:
 No more variables to be added or removed.</code></pre>
 </div>
 </div>
+</section>
+</section>
+<section id="comparing-lr-model-1-2-3" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-lr-model-1-2-3">5.9 Comparing LR Model 1 &amp; 2 &amp; 3</h2>
+<p>In this section, we compare the three models - LR Model 1, 2, and 3. This comparison helps us understand the trade-offs between the models and decide which one to use for further analysis and calibration to GWLR.</p>
 <div class="cell">
 <div class="cell-output-display">
 <table data-quarto-postprocess="true" class="table table-sm table-striped small">
@@ -1541,7 +1757,7 @@ No more variables to be added or removed.</code></pre>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Accuracy</td>
-<td style="text-align: right;">0.9286</td>
+<td style="text-align: right;">0.9302</td>
 <td style="text-align: right;">0.9287</td>
 <td style="text-align: right;">0.8151</td>
 </tr>
@@ -1553,13 +1769,13 @@ No more variables to be added or removed.</code></pre>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Sensitivity</td>
-<td style="text-align: right;">0.9699</td>
+<td style="text-align: right;">0.9691</td>
 <td style="text-align: right;">0.9700</td>
 <td style="text-align: right;">0.7679</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Specificity</td>
-<td style="text-align: right;">0.7318</td>
+<td style="text-align: right;">0.7455</td>
 <td style="text-align: right;">0.7322</td>
 <td style="text-align: right;">0.8510</td>
 </tr>
@@ -1585,58 +1801,81 @@ Observation
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>LR 3 has the best AIC at the expense of having the lowest accuracy and sensitivity rates so far. As such, the overall performance was compromised after conducting stratified sampling.</p>
+<p>LR Model 3 has the best Akaike Information Criterion (AIC) value, indicating that it might be the most efficient model among the three. However, it comes at the expense of having the lowest accuracy and sensitivity rates so far. As such, the overall performance was compromised after conducting stratified sampling. This suggests that while stratified sampling helped to balance the dataset, it may have introduced some bias that affected the model's predictive power. Further investigation and model tuning might be needed to improve the model's performance.</p>
 </div>
 </div>
 </section>
-<section id="spatial-weights" class="level3">
-<h3 class="anchored" data-anchor-id="spatial-weights">4.3.3 Spatial Weights</h3>
-<p>Variables are more often than not influenced by geographic factors and to name a few, topography, lithology, and slope gradient.</p>
 </section>
-</section>
-<section id="geographically-weighted-logistic-regression-model-1" class="level2">
-<h2 class="anchored" data-anchor-id="geographically-weighted-logistic-regression-model-1">4.4 Geographically Weighted Logistic Regression Model 1</h2>
-<p>Imposing a Geographically Weighted Logistic Regression (GWLR) Model aims to improve the model performance and more importantly, detect any spatial relationship between explanatory variables and the target variable.</p>
-<p>Our above LR model will be calibrated into GWLR by incorporating spatial weight-matrix, weighting function and bandwidth parameters.</p>
-<section id="data-sampling" class="level3">
-<h3 class="anchored" data-anchor-id="data-sampling">4.4.1 Data Sampling</h3>
-<p>There is a limit to the number of observations the GWModel can take. Hence only 20% of the landslide data is taken into account.</p>
+<section id="geographically-weighted-logistic-regression" class="level1">
+<h1>6.0 Geographically Weighted Logistic Regression</h1>
+<p>Geographically Weighted Regression (GWR) is a local regression model that has been widely adopted in spatial research [40]. This model is particularly suited for spatial analysis as it extends traditional and global regression frameworks such as Ordinary Least Squares (OLS) and LR by integrating local parameters and spatial weights [41]. In contrast to the spatially constant regression parameter estimations by global regression models, GWR allows these estimates to vary based on location and GWLR can be formulated as:</p>
+<p><span class="math display">\[
+P(u_i,v_i) = \frac{e^{\beta_0(u_i,v_j) + \beta_1(u_j,v_j)x_{i1} + ... + \beta_k(u_j,v_j)x_{ik}}}{1 + e^{\beta_0(u_j,v_j) + \beta_1(u_j,v_j)x_{i1} + ... + \beta_k(u_j,v_j)x_{ik}}}
+\]</span></p>
+<p>where <span class="math inline">\(P(u_i,v_i)\)</span> denotes the coordinates of the ith sample in space. <span class="math inline">\(\beta_k(u_j,v_j)\)</span> is a realization of the continuous function <span class="math inline">\(\beta_k(u,v)\)</span> at point i and j, i.e., the coefficient estimates of independent variables are continuously changing at different sample points.</p>
+<p>As a result, GWLR equation do not assume the coefficients to be random, and factors in the spatial non-stationarity and variability between variables. In GWLR, the assigned weights to observations vary according to the proximity to location, i. Observations nearer to i are assigned more weight compared to those which are more distant. Spatialweighting function quantifies spatial dependencies between variables in which a weight matrix <span class="math inline">\(W(u_i,v_i)\)</span>in a <span class="math inline">\(n×n\)</span> dimension encodes this. There are three key elements in building this weight matrix.</p>
+<ol type="1">
+<li><p><strong>Distance Metrix</strong> : calculates Euclidean or Manhattan's distances between locations.</p></li>
+<li><p><strong>Kernel Function</strong> : defines how weights decay with distance where common kernels like Gaussian and exponential assign higher weights to closer neighbours. Other kernel functions include box-car square and tri-cube. In LR, the kernel assigns the same unit weight to each observation leading to uniform estimates across space. In GWLR, the kernel function assigns different weights based on distance and captures spatially varying relationships.</p></li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/Screenshot 2024-04-15 at 11.43.33 PM-01.png" class="img-fluid figure-img" width="321"></p>
+</figure>
+</div>
+<ol start="3" type="1">
+<li><strong>Bandwidth</strong> : controls a location's neighbourhood influence by a fixed distance, or an adaptive distance determined by a fixed number of neighbours which results in larger bandwidths for areas with sparse data and smaller in areas with dense data. A pre-specified bandwidth can be provided by the user, or an optimal bandwidth can be computed utilizing statistical methodologies such as cross-validation (CV), the Akaike Information Criterion (AIC), and the corrected Akaike Information Criterion (AICc).</li>
+</ol>
+<section id="data-preparation-for-gwlr-model" class="level2">
+<h2 class="anchored" data-anchor-id="data-preparation-for-gwlr-model">6.1 Data Preparation for GWLR Model</h2>
+<p>In this section, we're preparing the data for fitting a Geographically Weighted Logistic Regression (GWLR) model.</p>
+<section id="data-downsampling" class="level3">
+<h3 class="anchored" data-anchor-id="data-downsampling">6.1.1 Data Downsampling</h3>
+<p>The <strong><code>GWModel</code></strong> package has a limit on the number of observations it can handle. Therefore, we downsample our data to include only 20% of the initial data. We then split the data into training and testing sets. The <strong><code>initial_split</code></strong> function is used to ensure that the proportion of landslide data in both the training and testing sets is the same.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>ls_data_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(data_20, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>))</span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>ls_data_sf <span class="ot">&lt;-</span> <span class="fu">st_set_crs</span>(ls_data_sf, <span class="dv">32632</span>) </span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1243</span>)</span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>ls_split <span class="ot">&lt;-</span> ls_data_sf <span class="sc">%&gt;%</span></span>
-<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">initial_split</span>(<span class="at">prop =</span> .<span class="dv">2</span>, </span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">strata =</span> Landslide)</span>
-<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>training_data_sf <span class="ot">&lt;-</span> <span class="fu">training</span>(ls_split)</span>
-<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>testing_data_sf  <span class="ot">&lt;-</span> <span class="fu">testing</span>(ls_split)</span>
-<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>training_data_sp <span class="ot">&lt;-</span> <span class="fu">as_Spatial</span>(training_data_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>ls_data_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(data_20, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>))</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>ls_data_sf <span class="ot">&lt;-</span> <span class="fu">st_set_crs</span>(ls_data_sf, <span class="dv">32632</span>) </span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1243</span>)</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>ls_split <span class="ot">&lt;-</span> ls_data_sf <span class="sc">%&gt;%</span></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">initial_split</span>(<span class="at">prop =</span> .<span class="dv">2</span>, </span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">strata =</span> Landslide)</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>training_data_sf <span class="ot">&lt;-</span> <span class="fu">training</span>(ls_split)</span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>testing_data_sf  <span class="ot">&lt;-</span> <span class="fu">testing</span>(ls_split)</span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>training_data_sp <span class="ot">&lt;-</span> <span class="fu">as_Spatial</span>(training_data_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="calculating-distance-matrix" class="level3">
-<h3 class="anchored" data-anchor-id="calculating-distance-matrix">4.4.2 Calculating Distance Matrix</h3>
+<h3 class="anchored" data-anchor-id="calculating-distance-matrix">6.1.2 Calculating Distance Matrix</h3>
+<p>Next, we calculate a distance matrix. This matrix contains the distances between all pairs of data points and is required for fitting the GWLR model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>distMAT <span class="ot">&lt;-</span> <span class="fu">gw.dist</span>(<span class="at">dp.locat=</span></span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">coordinates</span>(training_data_sp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>distMAT <span class="ot">&lt;-</span> <span class="fu">gw.dist</span>(<span class="at">dp.locat=</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">coordinates</span>(training_data_sp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="computing-adaptive-bandwidth" class="level3">
-<h3 class="anchored" data-anchor-id="computing-adaptive-bandwidth">4.4.3 Computing Adaptive Bandwidth</h3>
+<h3 class="anchored" data-anchor-id="computing-adaptive-bandwidth">6.1.3 Computing Adaptive Bandwidth</h3>
+<p>We then compute the adaptive bandwidth for our GWLR model. The bandwidth is a crucial parameter in GWLR models as it determines the extent of the geographical area that influences the prediction at each location. Bandwidth can be either fixed or adaptive. data as we see in the figure. In adaptive weighting scheme, the weight kernels have larger bandwidths where the data are sparse and have smaller bandwidths where the data are plentiful.​</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/Screenshot 2024-04-15 at 11.42.19 PM.png" class="img-fluid figure-img" width="328"></p>
+</figure>
+</div>
+<p>With fixed method, there is greater likelihood that some local calibrations will be based on only a few data points and so the resulting distribution of local esitmates will exhibit greater variation. We can reduce such estimation bias with adaptive approach.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>bw.adaptive <span class="ot">&lt;-</span> <span class="fu">bw.ggwr</span>(<span class="at">formula =</span> </span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>                       Landslide <span class="sc">~</span> Slope_Angle, </span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">family =</span> <span class="st">"binomial"</span>, </span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> training_data_sp, </span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">approach=</span><span class="st">"CV"</span>, </span>
-<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>                       <span class="at">kernel=</span><span class="st">"gaussian"</span>, </span>
-<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">adaptive=</span> <span class="cn">TRUE</span>, </span>
-<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>                       <span class="at">longlat=</span><span class="cn">FALSE</span>, </span>
-<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>                       <span class="at">p=</span><span class="dv">2</span>,</span>
-<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>                       <span class="at">theta=</span><span class="dv">0</span>,</span>
-<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>                       <span class="at">dMat=</span>distMAT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>bw.adaptive <span class="ot">&lt;-</span> <span class="fu">bw.ggwr</span>(<span class="at">formula =</span> </span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>                       Landslide <span class="sc">~</span> Slope_Angle, </span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">family =</span> <span class="st">"binomial"</span>, </span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> training_data_sp, </span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">approach=</span><span class="st">"CV"</span>, </span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>                       <span class="at">kernel=</span><span class="st">"gaussian"</span>, </span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">adaptive=</span> <span class="cn">TRUE</span>, </span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>                       <span class="at">longlat=</span><span class="cn">FALSE</span>, </span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>                       <span class="at">p=</span><span class="dv">2</span>,</span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>                       <span class="at">theta=</span><span class="dv">0</span>,</span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>                       <span class="at">dMat=</span>distMAT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1648,32 +1887,36 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The above step is computationally intensive. The resulting adaptive bandwidth value is 20.</p>
+<p>The computation of the adaptive bandwidth is a computationally intensive step. The resulting adaptive bandwidth value is 76. This means that the model considers the 76 closest data points when making a prediction at each location. This value was chosen to balance the trade-off between model accuracy and computational efficiency.</p>
 </div>
 </div>
-<p>The input variables for the geographically weighted logistic regression model would be the selected independent variables for the formula, the training data in SpatialPointDataFrame object, the adaptive bandwidth value 20, where kernel is set to Gaussian and family is set as binomial due to the binary nature of the data.</p>
+</section>
+</section>
+<section id="fitting-gwlr-model" class="level2">
+<h2 class="anchored" data-anchor-id="fitting-gwlr-model">6.2 Fitting GWLR Model</h2>
+<p>In this section, we fit a Geographically Weighted Logistic Regression (GWLR) model. The <strong><code>bw</code></strong> parameter is set to 76, which is the adaptive bandwidth value we computed earlier. The <strong><code>family</code></strong> parameter is set to "binomial" due to the binary nature of the <strong><code>Landslide</code></strong> variable. The <strong><code>kernel</code></strong> parameter is set to "gaussian", which means that the weights decrease smoothly from the center of the kernel. The <strong><code>adaptive</code></strong> parameter is set to <strong><code>TRUE</code></strong>, which means that the bandwidth adapts to the density of the data points.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>gwlr <span class="ot">&lt;-</span> <span class="fu">ggwr.basic</span>(Landslide <span class="sc">~</span> Aspect_North <span class="sc">+</span> </span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>                     Aspect_SouthEast <span class="sc">+</span> Profile_Curvature <span class="sc">+</span> </span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>                     Plan_Curvature <span class="sc">+</span> Slope_Angle <span class="sc">+</span> </span>
-<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>                     Lithology_Sedimentary <span class="sc">+</span> Lithology_Plutonic <span class="sc">+</span></span>
-<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>                     Lithology_Unconsolidated <span class="sc">+</span> Proximity_Stream <span class="sc">+</span></span>
-<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>                     Landuse_Vegetation <span class="sc">+</span> Precipitation, </span>
-<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> training_data_sp, </span>
-<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">bw =</span> <span class="dv">20</span>, </span>
-<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">family =</span> <span class="st">"binomial"</span>, </span>
-<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">kernel =</span> <span class="st">"gaussian"</span>, </span>
-<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">adaptive =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">cv =</span> T, </span>
-<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">tol =</span> <span class="fl">1e-05</span>, </span>
-<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>                   <span class="at">maxiter =</span> <span class="dv">20</span>, </span>
-<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>                   <span class="at">p =</span> <span class="dv">2</span>, </span>
-<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>                   <span class="at">theta =</span> <span class="dv">0</span>, </span>
-<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a>                   <span class="at">longlat =</span> <span class="cn">FALSE</span>, </span>
-<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dMat =</span> distMAT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>gwlr <span class="ot">&lt;-</span> <span class="fu">ggwr.basic</span>(Landslide <span class="sc">~</span> Aspect_North <span class="sc">+</span> </span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>                     Aspect_SouthEast <span class="sc">+</span> Profile_Curvature <span class="sc">+</span> </span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>                     Plan_Curvature <span class="sc">+</span> Slope_Angle <span class="sc">+</span> </span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>                     Lithology_Sedimentary <span class="sc">+</span> Lithology_Plutonic <span class="sc">+</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>                     Lithology_Unconsolidated <span class="sc">+</span> Proximity_Stream <span class="sc">+</span></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>                     Landuse_Vegetation <span class="sc">+</span> Precipitation, </span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> training_data_sp, </span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">bw =</span> <span class="dv">76</span>, </span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">family =</span> <span class="st">"binomial"</span>, </span>
+<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">kernel =</span> <span class="st">"gaussian"</span>, </span>
+<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">adaptive =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">cv =</span> T, </span>
+<span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">tol =</span> <span class="fl">1e-05</span>, </span>
+<span id="cb59-14"><a href="#cb59-14" aria-hidden="true" tabindex="-1"></a>                   <span class="at">maxiter =</span> <span class="dv">20</span>, </span>
+<span id="cb59-15"><a href="#cb59-15" aria-hidden="true" tabindex="-1"></a>                   <span class="at">p =</span> <span class="dv">2</span>, </span>
+<span id="cb59-16"><a href="#cb59-16" aria-hidden="true" tabindex="-1"></a>                   <span class="at">theta =</span> <span class="dv">0</span>, </span>
+<span id="cb59-17"><a href="#cb59-17" aria-hidden="true" tabindex="-1"></a>                   <span class="at">longlat =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb59-18"><a href="#cb59-18" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dMat =</span> distMAT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>gwlr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>gwlr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ***********************************************************************
    *                       Package   GWmodel                             *
@@ -1775,49 +2018,180 @@ Observation
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ul>
-<li><p>Adjusted R-squared and AIC perform better with a 200 point improvement on average with GWR</p></li>
-<li><p>Significant improvements from using global LR to local GWR</p></li>
-</ul>
+<p>Upon performing global LR Model and GWLR Model, it was observed that the GWLR model produced a significantly better adjusted R-squared value. This indicates that the GWLR model explains the variability of the response data around its mean better than the generalized LR model.</p>
+<p>At the same time, there was an observable improvement in the <strong>AIC</strong> when using the GWLR model. A lower AIC suggests a better model fit, so this is a positive outcome.</p>
+<p>In global LR model, only singular estimate coefficients were generated for each explanatory variable. This means that each predictor has a fixed effect that does not vary across different geographical locations.</p>
+<p>On the other hand, the local GWLR model generated a range of coefficient estimates for each explanatory variable, including the minimum, maximum, and median values. This suggests that the effect of the predictors in the GWLR model varies across different geographical locations, which can provide more nuanced insights into the data.</p>
 </div>
 </div>
-</section>
-<section id="correlation-matrix-using-ggstats-1" class="level3">
-<h3 class="anchored" data-anchor-id="correlation-matrix-using-ggstats-1">4.4.5 Correlation Matrix Using ggstats</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>training_data_cal <span class="ot">&lt;-</span> training_data_sf <span class="sc">%&gt;%</span> </span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>()</span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>training_data_cal <span class="ot">&lt;-</span> training_data_cal[, <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">13</span>, <span class="dv">14</span>, <span class="dv">23</span>, <span class="dv">17</span>, <span class="dv">21</span>, <span class="dv">15</span>, <span class="dv">24</span>)]</span>
-<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrmat</span>(</span>
-<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> training_data_cal,  </span>
-<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">matrix.type =</span> <span class="st">"upper"</span>,</span>
-<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"parametric"</span>,</span>
-<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">tr =</span> <span class="fl">0.2</span>,</span>
-<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">partial =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> 2L,</span>
-<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">sig.level =</span> <span class="fl">0.05</span>,</span>
-<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span>,</span>
-<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">bf.prior =</span> <span class="fl">0.707</span>,</span>
-<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggcorrplot.args =</span> <span class="fu">list</span>(</span>
-<span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a>     <span class="at">tl.cex =</span> <span class="dv">10</span>,</span>
-<span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch.cex =</span> <span class="dv">5</span>,</span>
-<span id="cb58-20"><a href="#cb58-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">lab_size =</span> <span class="dv">3</span></span>
-<span id="cb58-21"><a href="#cb58-21" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span> <span class="do">## modification outside `{ggstatsplot}` using `{ggplot2}` functions</span></span>
-<span id="cb58-22"><a href="#cb58-22" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
-<span id="cb58-23"><a href="#cb58-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(</span>
-<span id="cb58-24"><a href="#cb58-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">margin =</span> ggplot2<span class="sc">::</span><span class="fu">margin</span>(<span class="at">t =</span> <span class="fl">0.15</span>, <span class="at">r =</span> <span class="fl">0.15</span>, <span class="at">b =</span> <span class="fl">0.15</span>, <span class="at">l =</span> <span class="fl">0.15</span>, <span class="at">unit =</span> <span class="st">"cm"</span>)</span>
-<span id="cb58-25"><a href="#cb58-25" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb58-26"><a href="#cb58-26" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid" width="960"></p>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>gwlr_result <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(gwlr<span class="sc">$</span>SDF) <span class="sc">%&gt;%</span> <span class="fu">st_set_crs</span>(<span class="dv">32632</span>)</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>gwlr_result <span class="ot">&lt;-</span> <span class="fu">subset</span>(gwlr_result, <span class="at">select =</span> <span class="fu">c</span>(yhat, geometry))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-
-
 </section>
+</section>
+<section id="kriging" class="level1">
+<h1>7.0 Kriging</h1>
+<p>Kriging is a geostatistical interpolation technique that generates estimates of the uncertainty surrounding each interpolated value. It is particularly useful when there is moderate spatial autocorrelation, as it helps in preserving spatial variability.</p>
+<p>The general steps involved in Kriging are as follows:</p>
+<ol type="1">
+<li><p><strong>Fitting a Variogram</strong>: The first step in Kriging is to fit a variogram to develop the spatial covariance structure of sampled points. A variogram is a function that describes the degree of spatial dependence of a spatial random field or stochastic process.</p></li>
+<li><p><strong>Interpolating Values</strong>: Once the variogram is fitted, it is used to interpolate values for unsampled points from derived weights of the covariance structure. This is done using the spatial covariance structure to optimally estimate the values at unsampled locations.</p></li>
+</ol>
+<section id="creating-raster-layer" class="level2">
+<h2 class="anchored" data-anchor-id="creating-raster-layer">8.1 Creating Raster Layer</h2>
+<p>The <strong><code>terra::rast()</code></strong> function is used to create a raster layer from the <strong><code>valtellina</code></strong> object with 700 rows and 1066 columns.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>grid <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rast</span>(valtellina, </span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nrows =</span> <span class="dv">700</span>, </span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">ncols =</span> <span class="dv">1066</span>)</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>grid</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class       : SpatRaster 
+dimensions  : 700, 1066, 1  (nrow, ncol, nlyr)
+resolution  : 99.94376, 99.91744  (x, y)
+extent      : 518970, 625510, 5095447, 5165389  (xmin, xmax, ymin, ymax)
+coord. ref. : WGS 84 / UTM zone 32N (EPSG:32632) </code></pre>
+</div>
+</div>
+</section>
+<section id="extracting-cell-coordinates" class="level2">
+<h2 class="anchored" data-anchor-id="extracting-cell-coordinates">8.2 Extracting Cell Coordinates</h2>
+<p>The <strong><code>terra::xyFromCell()</code></strong> function is used to extract the x and y coordinates of each cell in the raster layer.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>xy <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">xyFromCell</span>(grid, </span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>                        <span class="dv">1</span><span class="sc">:</span><span class="fu">ncell</span>(grid))</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(xy)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            x       y
+[1,] 519019.9 5165339
+[2,] 519119.9 5165339
+[3,] 519219.8 5165339
+[4,] 519319.8 5165339
+[5,] 519419.7 5165339
+[6,] 519519.7 5165339</code></pre>
+</div>
+</div>
+</section>
+<section id="creating-spatal-data-frame" class="level2">
+<h2 class="anchored" data-anchor-id="creating-spatal-data-frame">8.3 Creating Spatal Data Frame</h2>
+<p>The <strong><code>st_as_sf()</code></strong> function from the <strong><code>sf</code></strong> package is used to convert the data frame of coordinates into a spatial data frame. The <strong><code>st_filter()</code></strong> function is then used to keep only the points that fall within the <strong><code>valtellina</code></strong> region.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>coop <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(<span class="fu">as.data.frame</span>(xy), </span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"y"</span>),</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">crs =</span> <span class="fu">st_crs</span>(valtellina))</span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>coop <span class="ot">&lt;-</span> <span class="fu">st_filter</span>(coop, valtellina)</span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(coop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 6 features and 0 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: 594477.5 ymin: 5165139 xmax: 594877.2 ymax: 5165339
+Projected CRS: WGS 84 / UTM zone 32N
+                  geometry
+1 POINT (594777.3 5165339)
+2 POINT (594877.2 5165339)
+3 POINT (594677.4 5165239)
+4 POINT (594777.3 5165239)
+5 POINT (594877.2 5165239)
+6 POINT (594477.5 5165139)</code></pre>
+</div>
+</div>
+</section>
+<section id="variogram" class="level2">
+<h2 class="anchored" data-anchor-id="variogram">8.4 Variogram</h2>
+<p>A variogram is a tool used in geostatistics to quantify the spatial autocorrelation of a variable. It provides a visual depiction of the covariance exhibited between each pair of points in the sampled data. For each pair of points in the sampled data, the “semivariance” is plotted against the distance between the pairs.</p>
+<p>The <strong><code>variogram</code></strong> function from the <strong><code>gstat</code></strong> package in R is used to calculate the empirical variogram of the data. The <strong><code>fit.variogram</code></strong> function is then used to fit a theoretical variogram model to this empirical variogram. The <strong><code>vgm</code></strong> function is used to specify the theoretical variogram model to fit.</p>
+<p>The <strong><code>psill</code></strong> parameter is the maximum semivariance value, also known as the sill. The <strong><code>model</code></strong> parameter specifies the type of variogram model to use, in this case, a spherical model. The <strong><code>range</code></strong> parameter is the distance at which the semivariance reaches the specified sill. The <strong><code>nugget</code></strong> parameter represents the variance at zero distance, accounting for measurement errors or spatial sources of variation at distances smaller than the sampling interval.</p>
+<p>Spherical variogram models are commonly used in geostatistical applications as they often have a similar shape to empirical variograms.</p>
+<p>Here is the code chunk that accomplishes this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> <span class="fu">variogram</span>(yhat <span class="sc">~</span> <span class="dv">1</span>, </span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> gwlr_result)</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(v)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-51-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>fv <span class="ot">&lt;-</span> <span class="fu">fit.variogram</span>(<span class="at">object =</span> v,</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">model =</span> <span class="fu">vgm</span>(</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">psill =</span> <span class="fl">0.5</span>, </span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">model =</span> <span class="st">"Sph"</span>,</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">range =</span> <span class="dv">5000</span>, </span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">nugget =</span> <span class="fl">0.1</span>))</span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>fv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  model      psill    range
+1   Nug 0.07203166    0.000
+2   Sph 0.05253883 8902.934</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(v, fv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-53-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="creating-krige-object" class="level2">
+<h2 class="anchored" data-anchor-id="creating-krige-object">8.5 Creating Krige Object</h2>
+<p>In this code chunk, we create a <strong><code>gstat</code></strong> object named <strong><code>k</code></strong> using the <strong><code>gstat</code></strong> function. This object represents a geostatistical model that we’ll use for Kriging. The formula <strong><code>Predicted ~ 1</code></strong> specifies that we’re modeling the <strong><code>Predicted</code></strong> variable as a function of a constant (i.e., we’re fitting a mean model). The <strong><code>data</code></strong> argument is set to <strong><code>testing_data_sf</code></strong>. The <strong><code>model</code></strong> argument is set to <strong><code>fv</code></strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">gstat</span>(<span class="at">formula =</span> yhat <span class="sc">~</span> <span class="dv">1</span>, </span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> gwlr_result, </span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">model =</span> fv)</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>k</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="prediction-with-krige-object" class="level2">
+<h2 class="anchored" data-anchor-id="prediction-with-krige-object">8.6 Prediction with Krige Object</h2>
+<p>In this code chunk, we use the <strong><code>predict</code></strong> function to make predictions from the Kriging model <strong><code>k</code></strong> for the locations specified in <strong><code>coop</code></strong>. The predictions are stored in <strong><code>resp</code></strong>. We then extract the x and y coordinates and the predicted values from <strong><code>resp</code></strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">predict</span>(k, coop)</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>resp<span class="sc">$</span>x <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(resp)[,<span class="dv">1</span>]</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>resp<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(resp)[,<span class="dv">2</span>]</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>resp<span class="sc">$</span>pred <span class="ot">&lt;-</span> resp<span class="sc">$</span>var1.pred</span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>resp<span class="sc">$</span>pred <span class="ot">&lt;-</span> resp<span class="sc">$</span>pred</span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>resp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="rasterizing-predictions" class="level2">
+<h2 class="anchored" data-anchor-id="rasterizing-predictions">8.7 Rasterizing Predictions</h2>
+<p>In this code chunk, we rasterize the predictions <strong><code>resp</code></strong> onto the raster grid <strong><code>grid</code></strong> using the <strong><code>terra::rasterize</code></strong> function. The rasterized predictions are stored in <strong><code>kpred</code></strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>kpred <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rasterize</span>(resp, grid, </span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">field =</span> <span class="st">"pred"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="creating-spatial-interpolated-map" class="level2">
+<h2 class="anchored" data-anchor-id="creating-spatial-interpolated-map">8.8 Creating Spatial Interpolated Map</h2>
+<p>Now that we have the data ready, we use appropriate <strong><code>tmap</code></strong> functions to create a map.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_options</span>(<span class="at">check.and.fix =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>tmap mode set to plotting</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(kpred) <span class="sc">+</span> </span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="at">alpha =</span> <span class="dv">1</span>, </span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">palette =</span> <span class="st">"-RdYlGn"</span>,</span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">title =</span> <span class="st">"Probability of Landslides"</span>) <span class="sc">+</span></span>
+<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"Landslide Susceptibility Map (GWLR)"</span>,</span>
+<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>,</span>
+<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.size =</span> <span class="fl">1.2</span>,</span>
+<span id="cb78-8"><a href="#cb78-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.height =</span> <span class="fl">0.45</span>, </span>
+<span id="cb78-9"><a href="#cb78-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.width =</span> <span class="fl">0.35</span>,</span>
+<span id="cb78-10"><a href="#cb78-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">frame =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb78-11"><a href="#cb78-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_compass</span>(<span class="at">type=</span><span class="st">"8star"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb78-12"><a href="#cb78-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_scale_bar</span>() <span class="sc">+</span></span>
+<span id="cb78-13"><a href="#cb78-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_grid</span>(<span class="at">alpha =</span><span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="explanatorymodelling_files/figure-html/unnamed-chunk-59-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+
+
 </section>
 </section>
 

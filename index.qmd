@@ -8,25 +8,17 @@ title: "Is There a Space in Landslide Susceptibility Modelling: A Case Study of 
 #### Introduction {style="color: #603494;"}
 :::
 
-Landslides refer to the geomorphic phenomenon of slope failure and mass movement in mountainous
-regions due to eroding and depositing sediment. In the span of the last five decades, the frequency of
-landslide events has increased tenfold \[1\]. Landslides are complex geomorphic phenomena and are
-driven by tectonic, climatic and/or human activities \[2\]. Landslides pose a frequent threat to critical
-infrastructure and urban communities worldwide, causing increasingly costly damage and massive displacement that hampers urban development \[3-6\].
+Landslides refer to the geomorphic phenomenon of slope failure and mass movement in mountainous regions due to eroding and depositing sediment. In the span of the last five decades, the frequency of landslide events has increased tenfold \[1\]. Landslides are complex geomorphic phenomena and are driven by tectonic, climatic and/or human activities \[2\]. Landslides pose a frequent threat to critical infrastructure and urban communities worldwide, causing increasingly costly damage and massive displacement that hampers urban development \[3-6\].
 
 Extensive engineering prevention works such as concrete surfacing, terracing \[7\] and slope modification \[8\] are typical, successful landslide risk mitigations for more gradually sloped areas. However, implementing these works on steeper terrains incurs greater costs due to the complexity of these modifications. Slope geometry alterations, complex drainage systems installations, and reinforcing internal structures for a single high-risk site easily cost millions \[8\]. With the implementation of landslide susceptibility maps and assessments, tiering areas according to their instability levels could supplement in urban planning decisions and the prioritization of the highest-risk areas which kickstart the formulation of preventive measures and site suitability assessments for new developments \[9\].
 
-In this study, global and local versions of statistical and machine learning techniques explore the
-explanatory factors influencing landslide susceptibility and the prediction of susceptibility areas within
-our study area. Two statistical models -- Logistic Regression (LR) and Geographically Weighted Logistic Regression (GWLR) models and two machine learning models -- Random Forest (RF) and Geographically Weighted Random Forest (GWRF) are fitted and developed in this study. Landslide occurrences are closely related to the characteristics of the environment and the explanatory variables of landslides are unlikely to have an equal and constant contribution to their occurrences \[10\] over the entire study area. When working with spatial datasets, conventional modelling approaches such as LR and RF attempt to treat observations as independent values and usually produce parameter estimates and predictions which do not consider spatial aspects such as spatial dependency and spatial heterogeneity. Using models that are not calibrated to model underlying spatial structures is likely to
-produce results with less ground-realistic inferences \[11\] and overlook local variations or structures. This study aims to draw a comparative case study between these global models and their spatial
-and local derivate models, analysing how global models can be calibrated into local derivates to account for spatial relationship as well as to improve the model outcomes.
+In this study, global and local versions of statistical and machine learning techniques explore the explanatory factors influencing landslide susceptibility and the prediction of susceptibility areas within our study area. Two statistical models -- Logistic Regression (LR) and Geographically Weighted Logistic Regression (GWLR) models and two machine learning models -- Random Forest (RF) and Geographically Weighted Random Forest (GWRF) are fitted and developed in this study. Landslide occurrences are closely related to the characteristics of the environment and the explanatory variables of landslides are unlikely to have an equal and constant contribution to their occurrences \[10\] over the entire study area. When working with spatial datasets, conventional modelling approaches such as LR and RF attempt to treat observations as independent values and usually produce parameter estimates and predictions which do not consider spatial aspects such as spatial dependency and spatial heterogeneity. Using models that are not calibrated to model underlying spatial structures is likely to produce results with less ground-realistic inferences \[11\] and overlook local variations or structures. This study aims to draw a comparative case study between these global models and their spatial and local derivate models, analysing how global models can be calibrated into local derivates to account for spatial relationship as well as to improve the model outcomes.
 
 ::: {style="color: #603494;"}
 #### References {style="color: #603494;"}
 :::
 
-1.  Cendrero, A., Forte, L.M., Remondo, J., Cuesta‐Albertos, J.A.: Anthropocene Geomorphic Change. climate or human activities? Earth\'s Future. 8, (2020)
+1.  Cendrero, A., Forte, L.M., Remondo, J., Cuesta‐Albertos, J.A.: Anthropocene Geomorphic Change. climate or human activities? Earth's Future. 8, (2020)
 
 2.  Froude, M.J., Petley, D.N.: Global fatal landslide occurrence from 2004 to 2016. Natural Hazards and Earth System Sciences. 18, 2161--2181 (2018)
 
