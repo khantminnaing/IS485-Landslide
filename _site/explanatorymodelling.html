@@ -133,7 +133,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Methodology</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./project.html" rel="" target="">
+    <a class="nav-link" href="./data.html" rel="" target="">
  <span class="menu-text">Data Preview</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -356,7 +356,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>train_grid_v4.sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(train_grids_v4,</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>To ensure accurate spatial analysis, it's crucial that our spatial data is in the correct coordinate reference system (CRS). Different CRSs can lead to different results. Therefore, we will set the CRS of <strong><code>train_grid_v4.sf</code></strong> to WGS 84 / UTM zone 32N (EPSG code 32632), which is suitable for accurate distance and area calculations.</p>
+<p>To ensure accurate spatial analysis, it’s crucial that our spatial data is in the correct coordinate reference system (CRS). Different CRSs can lead to different results. Therefore, we will set the CRS of <strong><code>train_grid_v4.sf</code></strong> to WGS 84 / UTM zone 32N (EPSG code 32632), which is suitable for accurate distance and area calculations.</p>
 <p>The code chunk below sets the CRS for <code>train_grid_v4.sf</code></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>train_grid_v4.sf <span class="ot">&lt;-</span> <span class="fu">st_set_crs</span>(train_grid_v4.sf, <span class="dv">32632</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -368,7 +368,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>4.0 Exploratory Data Analysis (ESDA)</h1>
 <section id="summary-statistics" class="level2">
 <h2 class="anchored" data-anchor-id="summary-statistics">4.1 Summary Statistics</h2>
-<p>First, we calculate the summary statistics of the <strong><code>train_grids_v4</code></strong> data frame using the <strong><code>st()</code></strong> function. This will provide us with a general understanding of the dataset's characteristics.</p>
+<p>First, we calculate the summary statistics of the <strong><code>train_grids_v4</code></strong> data frame using the <strong><code>st()</code></strong> function. This will provide us with a general understanding of the dataset’s characteristics.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st</span>(train_grids_v4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -686,8 +686,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="correlation-matrix" class="level2">
 <h2 class="anchored" data-anchor-id="correlation-matrix">4.2 Correlation Matrix</h2>
-<p>Before building a logistic regression model, it's important to ensure that the independent variables used are not highly correlated with each other. If highly correlated independent variables are used in building a regression model, the quality of the model will be compromised.</p>
-<p>Pearson's correlation is a commonly used correlation coefficient to calculate and visualize the relationships between the independent variables. It measures the linear relationship between the two variables and takes values between -1 and 1; -1 means a total negative linear correlation, 0 means no correlation, and 1 means a total positive correlation. Pearson's correlation can be calculated using the formula:</p>
+<p>Before building a logistic regression model, it’s important to ensure that the independent variables used are not highly correlated with each other. If highly correlated independent variables are used in building a regression model, the quality of the model will be compromised.</p>
+<p>Pearson’s correlation is a commonly used correlation coefficient to calculate and visualize the relationships between the independent variables. It measures the linear relationship between the two variables and takes values between -1 and 1; -1 means a total negative linear correlation, 0 means no correlation, and 1 means a total positive correlation. Pearson’s correlation can be calculated using the formula:</p>
 <p><span class="math display">\[
 r = \frac{\sum{(x_i - \bar{x})(y_i - \bar{y})}}{\sqrt{\sum{(x_i - \bar{x})^2(y_i - \bar{y})^2}}}
 \]</span></p>
@@ -717,7 +717,7 @@ r = \frac{\sum{(x_i - \bar{x})(y_i - \bar{y})}}{\sqrt{\sum{(x_i - \bar{x})^2(y_i
 <span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><img src="images/Screenshot 2024-04-15 at 9.26.55 PM.png" class="img-fluid"></p>
-<p>The use of color intensity and symbols (X for non-significant correlations) makes it easy to identify strong, weak, or non-existent correlations quickly. The colors range from green (positive correlation) through white (no correlation) to orange (negative correlation). An "X" mark is placed on cells where the correlation is not statistically significant at p &lt; 0.05 after adjustment for multiple comparisons using Holm's method. This helps in distinguishing meaningful relationships from random associations.</p>
+<p>The use of color intensity and symbols (X for non-significant correlations) makes it easy to identify strong, weak, or non-existent correlations quickly. The colors range from green (positive correlation) through white (no correlation) to orange (negative correlation). An “X” mark is placed on cells where the correlation is not statistically significant at p &lt; 0.05 after adjustment for multiple comparisons using Holm’s method. This helps in distinguishing meaningful relationships from random associations.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -815,7 +815,7 @@ Number of Fisher Scoring iterations: 7</code></pre>
 </section>
 <section id="calculating-percentage-of-deviance-explained" class="level3">
 <h3 class="anchored" data-anchor-id="calculating-percentage-of-deviance-explained">5.1.2 Calculating Percentage of Deviance Explained</h3>
-<p>In Generalized Linear Models (GLMs), deviance is a measure of goodness of fit. Specifically, deviance is a measure of the discrepancy between the data and the model's predictions. The null deviance shows how well the response variable is predicted by a model that includes only the intercept (no predictors). The model's deviance shows how well the response variable is predicted by the model.</p>
+<p>In Generalized Linear Models (GLMs), deviance is a measure of goodness of fit. Specifically, deviance is a measure of the discrepancy between the data and the model’s predictions. The null deviance shows how well the response variable is predicted by a model that includes only the intercept (no predictors). The model’s deviance shows how well the response variable is predicted by the model.</p>
 <p>In mathematical terms, the percentage of deviance explained is calculated as:</p>
 <p><span class="math display">\[
 \text{Percentage of Deviance Explained} = \left(1 - \frac{D_{\text{model}}}{D_{\text{null}}} \right) \times 100
@@ -823,7 +823,7 @@ Number of Fisher Scoring iterations: 7</code></pre>
 <p>Below is the code chunk used to calculate the percentage of deviance using the following steps</p>
 <ol type="1">
 <li><p>Calculate the total deviance, which is the null deviance.</p></li>
-<li><p>Subtract the model's deviance from the null deviance. This gives the amount of deviance explained by the model.</p></li>
+<li><p>Subtract the model’s deviance from the null deviance. This gives the amount of deviance explained by the model.</p></li>
 <li><p>Divide the explained deviance by the null deviance and multiply by 100 to get the percentage.</p></li>
 </ol>
 <div class="cell">
@@ -1026,7 +1026,7 @@ Observation
 <section id="stepwise-selection" class="level2">
 <h2 class="anchored" data-anchor-id="stepwise-selection">5.3 Stepwise Selection</h2>
 <p>In the initial model, all the independent variables are included. However, including too many variables in a model can lead to overfitting. Overfitting is a modeling error that occurs when a function is too closely aligned to a limited set of data points. An overfitted model may result in an algorithm that is excessively complex, such as one involving a function that has too many parameters relative to the number of observations. A model that has been overfitted will generally have poor predictive performance, as it can exaggerate minor fluctuations in the data.</p>
-<p>The goal of this step is to create a more parsimonious model, which means we aim to include a limited number of independent variables (between 5 and 15) that are all statistically significant, without sacrificing too much on the model's performance.</p>
+<p>The goal of this step is to create a more parsimonious model, which means we aim to include a limited number of independent variables (between 5 and 15) that are all statistically significant, without sacrificing too much on the model’s performance.</p>
 <p>To achieve this, we employ a stepwise variable selection procedure. Stepwise selection is a method of fitting regression models in which the choice of predictive variables is carried out by an automatic procedure. In each step, a variable is considered for addition to or subtraction from the set of explanatory variables based on some prespecified criterion.</p>
 <p>We use the <strong><code>blr_step_aic_both()</code></strong> function from the <strong><code>blr</code></strong> package in R for this purpose. This function performs both forward and backward stepwise variable selection based on the Akaike Information Criterion (AIC). The AIC is a measure of the relative quality of a statistical model for a given set of data. It provides a means for model selection by comparing different models and choosing the one that minimizes the information loss.</p>
 <div class="cell">
@@ -1259,12 +1259,12 @@ McNemars's Test P-Value  : 0.0000
 <section id="comparing-lr-model-1-2" class="level2">
 <h2 class="anchored" data-anchor-id="comparing-lr-model-1-2">5.5 Comparing LR Model 1 &amp; 2</h2>
 <p>The two models thus far yield similar results with small changes in accuracy, sensitivity and specificity despite a reduced number of variables from the first to the second model. We create a comparison table using the <strong><code>data.frame</code></strong> function from the <strong><code>base</code></strong> package in R to compare the performance metrics of the two models.</p>
-<p>The metrics we've chosen to include in this comparison table are:</p>
+<p>The metrics we’ve chosen to include in this comparison table are:</p>
 <ul>
 <li><p><strong>Accuracy</strong>: This measures the proportion of total predictions that are correct.</p></li>
 <li><p><strong>AIC (Akaike Information Criterion)</strong>: This is a measure of the relative quality of a statistical model for a given set of data. Lower values indicate better-fitting models.</p></li>
-<li><p><strong>Sensitivity</strong>: This is the true positive rate, indicating the model's ability to correctly predict positive outcomes.</p></li>
-<li><p><strong>Specificity</strong>: This is the true negative rate, reflecting the model's ability to correctly predict negative outcomes.</p></li>
+<li><p><strong>Sensitivity</strong>: This is the true positive rate, indicating the model’s ability to correctly predict positive outcomes.</p></li>
+<li><p><strong>Specificity</strong>: This is the true negative rate, reflecting the model’s ability to correctly predict negative outcomes.</p></li>
 <li><p><strong>Percentage Deviance Explained</strong>: This is a measure of the proportion of the total variability in the response variable that is accounted for by the predictors in the model.</p></li>
 </ul>
 <div class="cell">
@@ -1557,13 +1557,13 @@ Observation
 </section>
 <section id="fitting-logistic-regression-model-3" class="level2">
 <h2 class="anchored" data-anchor-id="fitting-logistic-regression-model-3">5.8 Fitting Logistic Regression Model 3</h2>
-<p>In this section, we fit LR Model 3 using the stratified sample created in the previous section. The goal is to see if the stratified sampling approach improves the model's performance.</p>
+<p>In this section, we fit LR Model 3 using the stratified sample created in the previous section. The goal is to see if the stratified sampling approach improves the model’s performance.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>landslide.lr3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Landslide <span class="sc">~</span> Elevation <span class="sc">+</span> Slope_Angle <span class="sc">+</span> Aspect_North <span class="sc">+</span> Aspect_NorthEast <span class="sc">+</span> Aspect_East<span class="sc">+</span>Aspect_SouthEast<span class="sc">+</span>Aspect_South <span class="sc">+</span> Aspect_SouthWest <span class="sc">+</span>Aspect_West <span class="sc">+</span> Profile_Curvature <span class="sc">+</span>Plan_Curvature <span class="sc">+</span> Lithology_Metamorphic<span class="sc">+</span>Lithology_Sedimentary <span class="sc">+</span> Lithology_Plutonic <span class="sc">+</span> Proximity_Settlement<span class="sc">+</span>Proximity_Stream<span class="sc">+</span>Proximity_Road<span class="sc">+</span>Proximity_Fault<span class="sc">+</span>Landuse_Vegetation<span class="sc">+</span>Precipitation<span class="sc">+</span>TWI<span class="sc">+</span>SPI<span class="sc">+</span>STI, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> data_20)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="printing-model-summary-2" class="level3">
 <h3 class="anchored" data-anchor-id="printing-model-summary-2">5.8.1 Printing Model Summary</h3>
-<p>We then print the summary statistics of Logistic Regression Model 3 to understand the model's performance and the significance of the explanatory variables.</p>
+<p>We then print the summary statistics of Logistic Regression Model 3 to understand the model’s performance and the significance of the explanatory variables.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>sum_lr3 <span class="ot">&lt;-</span> <span class="fu">summary</span>(landslide.lr3)</span>
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>sum_lr3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1619,7 +1619,7 @@ Number of Fisher Scoring iterations: 5</code></pre>
 </section>
 <section id="validating-logistic-regression-model-3" class="level3">
 <h3 class="anchored" data-anchor-id="validating-logistic-regression-model-3">5.8.2 Validating Logistic Regression Model 3</h3>
-<p>Next, we validate Logistic Regression Model 3 by creating a confusion matrix. This allows us to see the model's accuracy, sensitivity, and specificity.</p>
+<p>Next, we validate Logistic Regression Model 3 by creating a confusion matrix. This allows us to see the model’s accuracy, sensitivity, and specificity.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>cm3 <span class="ot">&lt;-</span> <span class="fu">blr_confusion_matrix</span>(landslide.lr3, <span class="at">cutoff =</span> <span class="fl">0.5</span>)</span>
 <span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>cm3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1801,7 +1801,7 @@ Observation
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>LR Model 3 has the best Akaike Information Criterion (AIC) value, indicating that it might be the most efficient model among the three. However, it comes at the expense of having the lowest accuracy and sensitivity rates so far. As such, the overall performance was compromised after conducting stratified sampling. This suggests that while stratified sampling helped to balance the dataset, it may have introduced some bias that affected the model's predictive power. Further investigation and model tuning might be needed to improve the model's performance.</p>
+<p>LR Model 3 has the best Akaike Information Criterion (AIC) value, indicating that it might be the most efficient model among the three. However, it comes at the expense of having the lowest accuracy and sensitivity rates so far. As such, the overall performance was compromised after conducting stratified sampling. This suggests that while stratified sampling helped to balance the dataset, it may have introduced some bias that affected the model’s predictive power. Further investigation and model tuning might be needed to improve the model’s performance.</p>
 </div>
 </div>
 </section>
@@ -1815,7 +1815,7 @@ P(u_i,v_i) = \frac{e^{\beta_0(u_i,v_j) + \beta_1(u_j,v_j)x_{i1} + ... + \beta_k(
 <p>where <span class="math inline">\(P(u_i,v_i)\)</span> denotes the coordinates of the ith sample in space. <span class="math inline">\(\beta_k(u_j,v_j)\)</span> is a realization of the continuous function <span class="math inline">\(\beta_k(u,v)\)</span> at point i and j, i.e., the coefficient estimates of independent variables are continuously changing at different sample points.</p>
 <p>As a result, GWLR equation do not assume the coefficients to be random, and factors in the spatial non-stationarity and variability between variables. In GWLR, the assigned weights to observations vary according to the proximity to location, i. Observations nearer to i are assigned more weight compared to those which are more distant. Spatialweighting function quantifies spatial dependencies between variables in which a weight matrix <span class="math inline">\(W(u_i,v_i)\)</span>in a <span class="math inline">\(n×n\)</span> dimension encodes this. There are three key elements in building this weight matrix.</p>
 <ol type="1">
-<li><p><strong>Distance Metrix</strong> : calculates Euclidean or Manhattan's distances between locations.</p></li>
+<li><p><strong>Distance Metrix</strong> : calculates Euclidean or Manhattan’s distances between locations.</p></li>
 <li><p><strong>Kernel Function</strong> : defines how weights decay with distance where common kernels like Gaussian and exponential assign higher weights to closer neighbours. Other kernel functions include box-car square and tri-cube. In LR, the kernel assigns the same unit weight to each observation leading to uniform estimates across space. In GWLR, the kernel function assigns different weights based on distance and captures spatially varying relationships.</p></li>
 </ol>
 <div class="quarto-figure quarto-figure-center">
@@ -1824,11 +1824,11 @@ P(u_i,v_i) = \frac{e^{\beta_0(u_i,v_j) + \beta_1(u_j,v_j)x_{i1} + ... + \beta_k(
 </figure>
 </div>
 <ol start="3" type="1">
-<li><strong>Bandwidth</strong> : controls a location's neighbourhood influence by a fixed distance, or an adaptive distance determined by a fixed number of neighbours which results in larger bandwidths for areas with sparse data and smaller in areas with dense data. A pre-specified bandwidth can be provided by the user, or an optimal bandwidth can be computed utilizing statistical methodologies such as cross-validation (CV), the Akaike Information Criterion (AIC), and the corrected Akaike Information Criterion (AICc).</li>
+<li><strong>Bandwidth</strong> : controls a location’s neighbourhood influence by a fixed distance, or an adaptive distance determined by a fixed number of neighbours which results in larger bandwidths for areas with sparse data and smaller in areas with dense data. A pre-specified bandwidth can be provided by the user, or an optimal bandwidth can be computed utilizing statistical methodologies such as cross-validation (CV), the Akaike Information Criterion (AIC), and the corrected Akaike Information Criterion (AICc).</li>
 </ol>
 <section id="data-preparation-for-gwlr-model" class="level2">
 <h2 class="anchored" data-anchor-id="data-preparation-for-gwlr-model">6.1 Data Preparation for GWLR Model</h2>
-<p>In this section, we're preparing the data for fitting a Geographically Weighted Logistic Regression (GWLR) model.</p>
+<p>In this section, we’re preparing the data for fitting a Geographically Weighted Logistic Regression (GWLR) model.</p>
 <section id="data-downsampling" class="level3">
 <h3 class="anchored" data-anchor-id="data-downsampling">6.1.1 Data Downsampling</h3>
 <p>The <strong><code>GWModel</code></strong> package has a limit on the number of observations it can handle. Therefore, we downsample our data to include only 20% of the initial data. We then split the data into training and testing sets. The <strong><code>initial_split</code></strong> function is used to ensure that the proportion of landslide data in both the training and testing sets is the same.</p>
@@ -1894,7 +1894,7 @@ Note
 </section>
 <section id="fitting-gwlr-model" class="level2">
 <h2 class="anchored" data-anchor-id="fitting-gwlr-model">6.2 Fitting GWLR Model</h2>
-<p>In this section, we fit a Geographically Weighted Logistic Regression (GWLR) model. The <strong><code>bw</code></strong> parameter is set to 76, which is the adaptive bandwidth value we computed earlier. The <strong><code>family</code></strong> parameter is set to "binomial" due to the binary nature of the <strong><code>Landslide</code></strong> variable. The <strong><code>kernel</code></strong> parameter is set to "gaussian", which means that the weights decrease smoothly from the center of the kernel. The <strong><code>adaptive</code></strong> parameter is set to <strong><code>TRUE</code></strong>, which means that the bandwidth adapts to the density of the data points.</p>
+<p>In this section, we fit a Geographically Weighted Logistic Regression (GWLR) model. The <strong><code>bw</code></strong> parameter is set to 76, which is the adaptive bandwidth value we computed earlier. The <strong><code>family</code></strong> parameter is set to “binomial” due to the binary nature of the <strong><code>Landslide</code></strong> variable. The <strong><code>kernel</code></strong> parameter is set to “gaussian”, which means that the weights decrease smoothly from the center of the kernel. The <strong><code>adaptive</code></strong> parameter is set to <strong><code>TRUE</code></strong>, which means that the bandwidth adapts to the density of the data points.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>gwlr <span class="ot">&lt;-</span> <span class="fu">ggwr.basic</span>(Landslide <span class="sc">~</span> Aspect_North <span class="sc">+</span> </span>
 <span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>                     Aspect_SouthEast <span class="sc">+</span> Profile_Curvature <span class="sc">+</span> </span>

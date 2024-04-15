@@ -73,7 +73,7 @@ train_grid_v4.sf <- st_as_sf(train_grids_v4,
                             coords = c("X", "Y"))
 ```
 
-To ensure accurate spatial analysis, it\'s crucial that our spatial data is in the correct coordinate reference system (CRS). Different CRSs can lead to different results. Therefore, we will set the CRS of **`train_grid_v4.sf`** to WGS 84 / UTM zone 32N (EPSG code 32632), which is suitable for accurate distance and area calculations.
+To ensure accurate spatial analysis, it's crucial that our spatial data is in the correct coordinate reference system (CRS). Different CRSs can lead to different results. Therefore, we will set the CRS of **`train_grid_v4.sf`** to WGS 84 / UTM zone 32N (EPSG code 32632), which is suitable for accurate distance and area calculations.
 
 The code chunk below sets the CRS for `train_grid_v4.sf`
 
@@ -85,9 +85,9 @@ By setting the appropriate CRS, we ensure that our spatial data is in a projecte
 
 # 4.0 Exploratory Data Analysis (ESDA)
 
-## 4.1 Summary Statistics 
+## 4.1 Summary Statistics
 
-First, we calculate the summary statistics of the **`train_grids_v4`** data frame using the **`st()`** function. This will provide us with a general understanding of the dataset\'s characteristics.
+First, we calculate the summary statistics of the **`train_grids_v4`** data frame using the **`st()`** function. This will provide us with a general understanding of the dataset's characteristics.
 
 ```{r}
 st(train_grids_v4)
@@ -95,9 +95,9 @@ st(train_grids_v4)
 
 ## 4.2 Correlation Matrix
 
-Before building a logistic regression model, it\'s important to ensure that the independent variables used are not highly correlated with each other. If highly correlated independent variables are used in building a regression model, the quality of the model will be compromised.
+Before building a logistic regression model, it's important to ensure that the independent variables used are not highly correlated with each other. If highly correlated independent variables are used in building a regression model, the quality of the model will be compromised.
 
-Pearson\'s correlation is a commonly used correlation coefficient to calculate and visualize the relationships between the independent variables. It measures the linear relationship between the two variables and takes values between -1 and 1; -1 means a total negative linear correlation, 0 means no correlation, and 1 means a total positive correlation. Pearson\'s correlation can be calculated using the formula:
+Pearson's correlation is a commonly used correlation coefficient to calculate and visualize the relationships between the independent variables. It measures the linear relationship between the two variables and takes values between -1 and 1; -1 means a total negative linear correlation, 0 means no correlation, and 1 means a total positive correlation. Pearson's correlation can be calculated using the formula:
 
 $$
 r = \frac{\sum{(x_i - \bar{x})(y_i - \bar{y})}}{\sqrt{\sum{(x_i - \bar{x})^2(y_i - \bar{y})^2}}}
@@ -133,9 +133,9 @@ ggcorrmat(
   )
 ```
 
-![](images/Screenshot 2024-04-15 at 9.26.55 PM.png)
+![](images/Screenshot%202024-04-15%20at%209.26.55%20PM.png)
 
-The use of color intensity and symbols (X for non-significant correlations) makes it easy to identify strong, weak, or non-existent correlations quickly. The colors range from green (positive correlation) through white (no correlation) to orange (negative correlation). An \"X\" mark is placed on cells where the correlation is not statistically significant at p \< 0.05 after adjustment for multiple comparisons using Holm\'s method. This helps in distinguishing meaningful relationships from random associations.
+The use of color intensity and symbols (X for non-significant correlations) makes it easy to identify strong, weak, or non-existent correlations quickly. The colors range from green (positive correlation) through white (no correlation) to orange (negative correlation). An "X" mark is placed on cells where the correlation is not statistically significant at p \< 0.05 after adjustment for multiple comparisons using Holm's method. This helps in distinguishing meaningful relationships from random associations.
 
 ::: callout-note
 #### Observation
@@ -188,7 +188,7 @@ sum_lr
 
 ### 5.1.2 Calculating Percentage of Deviance Explained
 
-In Generalized Linear Models (GLMs), deviance is a measure of goodness of fit. Specifically, deviance is a measure of the discrepancy between the data and the model\'s predictions. The null deviance shows how well the response variable is predicted by a model that includes only the intercept (no predictors). The model\'s deviance shows how well the response variable is predicted by the model.
+In Generalized Linear Models (GLMs), deviance is a measure of goodness of fit. Specifically, deviance is a measure of the discrepancy between the data and the model's predictions. The null deviance shows how well the response variable is predicted by a model that includes only the intercept (no predictors). The model's deviance shows how well the response variable is predicted by the model.
 
 In mathematical terms, the percentage of deviance explained is calculated as:
 
@@ -200,7 +200,7 @@ Below is the code chunk used to calculate the percentage of deviance using the f
 
 1.  Calculate the total deviance, which is the null deviance.
 
-2.  Subtract the model\'s deviance from the null deviance. This gives the amount of deviance explained by the model.
+2.  Subtract the model's deviance from the null deviance. This gives the amount of deviance explained by the model.
 
 3.  Divide the explained deviance by the null deviance and multiply by 100 to get the percentage.
 
@@ -253,10 +253,7 @@ vif
 plot(vif)
 ```
 
-There are currently no established criteria for identifying the extent of variance inflation factors that
-result in poorly estimated coefficients. A frequently used benchmark for VIF in numerous regression
-studies is VIF ≥ 5. Values ≥ 5 indicate significant multicollinearity and may necessitate further
-investigation or actions.
+There are currently no established criteria for identifying the extent of variance inflation factors that result in poorly estimated coefficients. A frequently used benchmark for VIF in numerous regression studies is VIF ≥ 5. Values ≥ 5 indicate significant multicollinearity and may necessitate further investigation or actions.
 
 ::: callout-note
 #### Observation
@@ -294,7 +291,7 @@ All the VIF values after the removal are less than 2.27 and TOL values are all a
 
 In the initial model, all the independent variables are included. However, including too many variables in a model can lead to overfitting. Overfitting is a modeling error that occurs when a function is too closely aligned to a limited set of data points. An overfitted model may result in an algorithm that is excessively complex, such as one involving a function that has too many parameters relative to the number of observations. A model that has been overfitted will generally have poor predictive performance, as it can exaggerate minor fluctuations in the data.
 
-The goal of this step is to create a more parsimonious model, which means we aim to include a limited number of independent variables (between 5 and 15) that are all statistically significant, without sacrificing too much on the model\'s performance.
+The goal of this step is to create a more parsimonious model, which means we aim to include a limited number of independent variables (between 5 and 15) that are all statistically significant, without sacrificing too much on the model's performance.
 
 To achieve this, we employ a stepwise variable selection procedure. Stepwise selection is a method of fitting regression models in which the choice of predictive variables is carried out by an automatic procedure. In each step, a variable is considered for addition to or subtraction from the set of explanatory variables based on some prespecified criterion.
 
@@ -398,15 +395,15 @@ cm2
 
 The two models thus far yield similar results with small changes in accuracy, sensitivity and specificity despite a reduced number of variables from the first to the second model. We create a comparison table using the **`data.frame`** function from the **`base`** package in R to compare the performance metrics of the two models.
 
-The metrics we\'ve chosen to include in this comparison table are:
+The metrics we've chosen to include in this comparison table are:
 
 -   **Accuracy**: This measures the proportion of total predictions that are correct.
 
 -   **AIC (Akaike Information Criterion)**: This is a measure of the relative quality of a statistical model for a given set of data. Lower values indicate better-fitting models.
 
--   **Sensitivity**: This is the true positive rate, indicating the model\'s ability to correctly predict positive outcomes.
+-   **Sensitivity**: This is the true positive rate, indicating the model's ability to correctly predict positive outcomes.
 
--   **Specificity**: This is the true negative rate, reflecting the model\'s ability to correctly predict negative outcomes.
+-   **Specificity**: This is the true negative rate, reflecting the model's ability to correctly predict negative outcomes.
 
 -   **Percentage Deviance Explained**: This is a measure of the proportion of the total variability in the response variable that is accounted for by the predictors in the model.
 
@@ -557,7 +554,7 @@ data_20 <- read_rds("data/rds/sample_Q6.rds")
 
 ## 5.8 Fitting Logistic Regression Model 3
 
-In this section, we fit LR Model 3 using the stratified sample created in the previous section. The goal is to see if the stratified sampling approach improves the model\'s performance.
+In this section, we fit LR Model 3 using the stratified sample created in the previous section. The goal is to see if the stratified sampling approach improves the model's performance.
 
 ```{r}
 landslide.lr3 <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect_NorthEast + Aspect_East+Aspect_SouthEast+Aspect_South + Aspect_SouthWest +Aspect_West + Profile_Curvature +Plan_Curvature + Lithology_Metamorphic+Lithology_Sedimentary + Lithology_Plutonic + Proximity_Settlement+Proximity_Stream+Proximity_Road+Proximity_Fault+Landuse_Vegetation+Precipitation+TWI+SPI+STI, family = "binomial", data = data_20)
@@ -565,7 +562,7 @@ landslide.lr3 <- glm(Landslide ~ Elevation + Slope_Angle + Aspect_North + Aspect
 
 ### 5.8.1 Printing Model Summary
 
-We then print the summary statistics of Logistic Regression Model 3 to understand the model\'s performance and the significance of the explanatory variables.
+We then print the summary statistics of Logistic Regression Model 3 to understand the model's performance and the significance of the explanatory variables.
 
 ```{r}
 sum_lr3 <- summary(landslide.lr3)
@@ -574,7 +571,7 @@ sum_lr3
 
 ### 5.8.2 Validating Logistic Regression Model 3
 
-Next, we validate Logistic Regression Model 3 by creating a confusion matrix. This allows us to see the model\'s accuracy, sensitivity, and specificity.
+Next, we validate Logistic Regression Model 3 by creating a confusion matrix. This allows us to see the model's accuracy, sensitivity, and specificity.
 
 ```{r}
 cm3 <- blr_confusion_matrix(landslide.lr3, cutoff = 0.5)
@@ -625,13 +622,12 @@ kable(m_comparison,
 ::: callout-note
 ### Observation
 
-LR Model 3 has the best Akaike Information Criterion (AIC) value, indicating that it might be the most efficient model among the three. However, it comes at the expense of having the lowest accuracy and sensitivity rates so far. As such, the overall performance was compromised after conducting stratified sampling. This suggests that while stratified sampling helped to balance the dataset, it may have introduced some bias that affected the model\'s predictive power. Further investigation and model tuning might be needed to improve the model\'s performance.
+LR Model 3 has the best Akaike Information Criterion (AIC) value, indicating that it might be the most efficient model among the three. However, it comes at the expense of having the lowest accuracy and sensitivity rates so far. As such, the overall performance was compromised after conducting stratified sampling. This suggests that while stratified sampling helped to balance the dataset, it may have introduced some bias that affected the model's predictive power. Further investigation and model tuning might be needed to improve the model's performance.
 :::
 
-# 6.0 Geographically Weighted Logistic Regression 
+# 6.0 Geographically Weighted Logistic Regression
 
-Geographically Weighted Regression (GWR) is a local regression model that has been widely adopted in spatial research \[40\]. This model is particularly suited for spatial analysis as it extends traditional and global regression frameworks such as Ordinary Least Squares (OLS) and LR by integrating local parameters and spatial weights \[41\]. In contrast to the spatially constant regression parameter estimations by global regression models, GWR allows these estimates to vary based on location and GWLR can be
-formulated as:
+Geographically Weighted Regression (GWR) is a local regression model that has been widely adopted in spatial research \[40\]. This model is particularly suited for spatial analysis as it extends traditional and global regression frameworks such as Ordinary Least Squares (OLS) and LR by integrating local parameters and spatial weights \[41\]. In contrast to the spatially constant regression parameter estimations by global regression models, GWR allows these estimates to vary based on location and GWLR can be formulated as:
 
 $$
 P(u_i,v_i) = \frac{e^{\beta_0(u_i,v_j) + \beta_1(u_j,v_j)x_{i1} + ... + \beta_k(u_j,v_j)x_{ik}}}{1 + e^{\beta_0(u_j,v_j) + \beta_1(u_j,v_j)x_{i1} + ... + \beta_k(u_j,v_j)x_{ik}}}
@@ -641,20 +637,17 @@ where $P(u_i,v_i)$ denotes the coordinates of the ith sample in space. $\beta_k(
 
 As a result, GWLR equation do not assume the coefficients to be random, and factors in the spatial non-stationarity and variability between variables. In GWLR, the assigned weights to observations vary according to the proximity to location, i. Observations nearer to i are assigned more weight compared to those which are more distant. Spatialweighting function quantifies spatial dependencies between variables in which a weight matrix $W(u_i,v_i)$in a $n×n$ dimension encodes this. There are three key elements in building this weight matrix.
 
-1.  **Distance Metrix** : calculates Euclidean or Manhattan\'s distances between locations.
+1.  **Distance Metrix** : calculates Euclidean or Manhattan's distances between locations.
 
-2.  **Kernel Function** : defines how weights decay with distance where common kernels like Gaussian
-    and exponential assign higher weights to closer neighbours. Other kernel functions include box-car square and tri-cube. In LR, the kernel assigns the same unit weight to each observation leading to uniform estimates across space. In GWLR, the kernel function assigns different weights based on distance
-    and captures spatially varying relationships.
+2.  **Kernel Function** : defines how weights decay with distance where common kernels like Gaussian and exponential assign higher weights to closer neighbours. Other kernel functions include box-car square and tri-cube. In LR, the kernel assigns the same unit weight to each observation leading to uniform estimates across space. In GWLR, the kernel function assigns different weights based on distance and captures spatially varying relationships.
 
-![](images/Screenshot 2024-04-15 at 11.43.33 PM-01.png){fig-align="center" width="321"}
+![](images/Screenshot%202024-04-15%20at%2011.43.33%20PM-01.png){fig-align="center" width="321"}
 
-3.  **Bandwidth** : controls a location\'s neighbourhood influence by a fixed distance, or an adaptive distance determined by a fixed number of neighbours which results in larger bandwidths for areas with sparse data and smaller in areas with dense data. A pre-specified bandwidth can be provided by the user, or an optimal bandwidth can be computed utilizing statistical methodologies such as cross-validation (CV), the Akaike Information Criterion
-(AIC), and the corrected Akaike Information Criterion (AICc).
+3.  **Bandwidth** : controls a location's neighbourhood influence by a fixed distance, or an adaptive distance determined by a fixed number of neighbours which results in larger bandwidths for areas with sparse data and smaller in areas with dense data. A pre-specified bandwidth can be provided by the user, or an optimal bandwidth can be computed utilizing statistical methodologies such as cross-validation (CV), the Akaike Information Criterion (AIC), and the corrected Akaike Information Criterion (AICc).
 
 ## 6.1 Data Preparation for GWLR Model
 
-In this section, we\'re preparing the data for fitting a Geographically Weighted Logistic Regression (GWLR) model.
+In this section, we're preparing the data for fitting a Geographically Weighted Logistic Regression (GWLR) model.
 
 ### 6.1.1 Data Downsampling
 
@@ -688,7 +681,7 @@ distMAT <- gw.dist(dp.locat=
 
 We then compute the adaptive bandwidth for our GWLR model. The bandwidth is a crucial parameter in GWLR models as it determines the extent of the geographical area that influences the prediction at each location. Bandwidth can be either fixed or adaptive. data as we see in the figure. In adaptive weighting scheme, the weight kernels have larger bandwidths where the data are sparse and have smaller bandwidths where the data are plentiful.​
 
-![](images/Screenshot 2024-04-15 at 11.42.19 PM.png){fig-align="center" width="328"}
+![](images/Screenshot%202024-04-15%20at%2011.42.19%20PM.png){fig-align="center" width="328"}
 
 With fixed method, there is greater likelihood that some local calibrations will be based on only a few data points and so the resulting distribution of local esitmates will exhibit greater variation. We can reduce such estimation bias with adaptive approach.
 
@@ -715,7 +708,7 @@ The computation of the adaptive bandwidth is a computationally intensive step. T
 
 ## 6.2 Fitting GWLR Model
 
-In this section, we fit a Geographically Weighted Logistic Regression (GWLR) model. The **`bw`** parameter is set to 76, which is the adaptive bandwidth value we computed earlier. The **`family`** parameter is set to \"binomial\" due to the binary nature of the **`Landslide`** variable. The **`kernel`** parameter is set to \"gaussian\", which means that the weights decrease smoothly from the center of the kernel. The **`adaptive`** parameter is set to **`TRUE`**, which means that the bandwidth adapts to the density of the data points.
+In this section, we fit a Geographically Weighted Logistic Regression (GWLR) model. The **`bw`** parameter is set to 76, which is the adaptive bandwidth value we computed earlier. The **`family`** parameter is set to "binomial" due to the binary nature of the **`Landslide`** variable. The **`kernel`** parameter is set to "gaussian", which means that the weights decrease smoothly from the center of the kernel. The **`adaptive`** parameter is set to **`TRUE`**, which means that the bandwidth adapts to the density of the data points.
 
 ```{r}
 #| eval: false
