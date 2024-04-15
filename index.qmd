@@ -26,24 +26,24 @@ and local derivate models, analysing how global models can be calibrated into lo
 #### References {style="color: #603494;"}
 :::
 
--   Cendrero, A., Forte, L.M., Remondo, J., Cuesta‐Albertos, J.A.: Anthropocene Geomorphic Change. climate or human activities? Earth\'s Future. 8, (2020)
+1.  Cendrero, A., Forte, L.M., Remondo, J., Cuesta‐Albertos, J.A.: Anthropocene Geomorphic Change. climate or human activities? Earth\'s Future. 8, (2020)
 
--   Froude, M.J., Petley, D.N.: Global fatal landslide occurrence from 2004 to 2016. Natural Hazards and Earth System Sciences. 18, 2161--2181 (2018)
+2.  Froude, M.J., Petley, D.N.: Global fatal landslide occurrence from 2004 to 2016. Natural Hazards and Earth System Sciences. 18, 2161--2181 (2018)
 
--   Aleotti, P., Chowdhury, R.: Landslide hazard assessment: Summary review and new perspectives. Bulletin of Engineering Geology and the Environment. 58, 21--44 (1999)
+3.  Aleotti, P., Chowdhury, R.: Landslide hazard assessment: Summary review and new perspectives. Bulletin of Engineering Geology and the Environment. 58, 21--44 (1999)
 
--   Budimir, M.E., Atkinson, P.M., Lewis, H.G.: A systematic review of landslide probability mapping using logistic regression. Landslides. 12, 419--436 (2015)
+4.  Budimir, M.E., Atkinson, P.M., Lewis, H.G.: A systematic review of landslide probability mapping using logistic regression. Landslides. 12, 419--436 (2015)
 
--   Wang, H., Zhang, L., Yin, K., Luo, H., Li, J.: Landslide identification using machine learning. Geoscience Frontiers. 12, 351--364 (2021)
+5.  Wang, H., Zhang, L., Yin, K., Luo, H., Li, J.: Landslide identification using machine learning. Geoscience Frontiers. 12, 351--364 (2021)
 
--   Zulkafli, S.A., Abd Majid, N., Rainis, R.: Spatial analysis on the variances of landslide factors using geographically weighted logistic regression in Penang Island, Malaysia. Sustainability. 15, 852 (2023)
+6.  Zulkafli, S.A., Abd Majid, N., Rainis, R.: Spatial analysis on the variances of landslide factors using geographically weighted logistic regression in Penang Island, Malaysia. Sustainability. 15, 852 (2023)
 
--   Shrestha, A.B., Ezee, G.C., Adhikary, R.P., Rai, S.K.: Resource Manual on Flash Flood Risk Management; module 3 - structural measures. (2012)
+7.  Shrestha, A.B., Ezee, G.C., Adhikary, R.P., Rai, S.K.: Resource Manual on Flash Flood Risk Management; module 3 - structural measures. (2012)
 
--   Popescu, M.E., Sasahara, K.: Engineering measures for landslide disaster mitigation. Landslides -- Disaster Risk Reduction. 609--631 (2009)
+8.  Popescu, M.E., Sasahara, K.: Engineering measures for landslide disaster mitigation. Landslides -- Disaster Risk Reduction. 609--631 (2009)
 
--   Regmi, N.R., Giardino, J.R., McDonald, E.V., Vitek, J.D.: A comparison of logistic regressionbased models of susceptibility to landslides in western Colorado, USA. Landslides. 11, 247--262 (2013)
+9.  Regmi, N.R., Giardino, J.R., McDonald, E.V., Vitek, J.D.: A comparison of logistic regressionbased models of susceptibility to landslides in western Colorado, USA. Landslides. 11, 247--262 (2013)
 
--   Achu, A.L., Aju, C.D., Di Napoli, M., Prakash, P., Gopinath, G., Shaji, E., Chandra, V.: Machinelearning based landslide susceptibility modelling with emphasis on uncertainty analysis. Geoscience Frontiers. 14, 101657 (2023)
+10. Achu, A.L., Aju, C.D., Di Napoli, M., Prakash, P., Gopinath, G., Shaji, E., Chandra, V.: Machinelearning based landslide susceptibility modelling with emphasis on uncertainty analysis. Geoscience Frontiers. 14, 101657 (2023)
 
--   Liu, X., Kounadi, O., Zurita-Milla, R.: Incorporating Spatial Autocorrelation in Machine Learning Models Using Spatial Lag and Eigenvector Spatial Filtering Features. ISPRS Int. J. Geo-Inf. 11, (2022)
+11. Liu, X., Kounadi, O., Zurita-Milla, R.: Incorporating Spatial Autocorrelation in Machine Learning Models Using Spatial Lag and Eigenvector Spatial Filtering Features. ISPRS Int. J. Geo-Inf. 11, (2022)

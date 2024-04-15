@@ -10,13 +10,21 @@ This project is submitted to the **Singapore Management University** in partial 
 #### **Co-Authors** {style="color: #603494;"}
 :::
 
-**Khant Min Naing**\
-mnkhant.2020\@scis.smu.edu.sg\
+**Khant Min Naing**
+
+Khant is a final year student at SMU, double-majoring in Smart City Management & Technology (SMT) and Public Policy & Public Management (PPPM). His research interests are centered around urban science, geospatial technology, and public policy. He has a particular interest in the challenges and opportunities presented by Southeast Asian urbanism. Khant is keen on leveraging data science and analytics to understand the dynamics of cities, communities, and natural environments in Southeast Asian cities.
+
+**Contact\
+**mnkhant.2020\@scis.smu.edu.sg\
 Singapore Management University
 
 [![](images/LinkedIn_logo.png){fig-align="left" width="25"}](https://www.linkedin.com/in/khantminnaing/)
 
-**Ann Mei Yi Victoria Grace**\
+**Victoria Grace Ann**
+
+Victoria is a penultimate-year student specializing in Smart City Management and Technology at SMU. She is deeply interested in the intersection of healthcare, public policy, and geographical information systems. These areas provide her with a comprehensive perspective on the social issues she is passionate about. Victoria is driven to become a social enabler, leveraging data-driven insights to make a meaningful impact.
+
+**Contact**\
 victoriaann.2021\@scis.smu.edu.sg\
 Singapore Management University
 
