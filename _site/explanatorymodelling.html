@@ -244,14 +244,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#kriging" id="toc-kriging" class="nav-link" data-scroll-target="#kriging">7.0 Kriging</a>
   <ul class="collapse">
-  <li><a href="#creating-raster-layer" id="toc-creating-raster-layer" class="nav-link" data-scroll-target="#creating-raster-layer">8.1 Creating Raster Layer</a></li>
-  <li><a href="#extracting-cell-coordinates" id="toc-extracting-cell-coordinates" class="nav-link" data-scroll-target="#extracting-cell-coordinates">8.2 Extracting Cell Coordinates</a></li>
-  <li><a href="#creating-spatal-data-frame" id="toc-creating-spatal-data-frame" class="nav-link" data-scroll-target="#creating-spatal-data-frame">8.3 Creating Spatal Data Frame</a></li>
-  <li><a href="#variogram" id="toc-variogram" class="nav-link" data-scroll-target="#variogram">8.4 Variogram</a></li>
-  <li><a href="#creating-krige-object" id="toc-creating-krige-object" class="nav-link" data-scroll-target="#creating-krige-object">8.5 Creating Krige Object</a></li>
-  <li><a href="#prediction-with-krige-object" id="toc-prediction-with-krige-object" class="nav-link" data-scroll-target="#prediction-with-krige-object">8.6 Prediction with Krige Object</a></li>
-  <li><a href="#rasterizing-predictions" id="toc-rasterizing-predictions" class="nav-link" data-scroll-target="#rasterizing-predictions">8.7 Rasterizing Predictions</a></li>
-  <li><a href="#creating-spatial-interpolated-map" id="toc-creating-spatial-interpolated-map" class="nav-link" data-scroll-target="#creating-spatial-interpolated-map">8.8 Creating Spatial Interpolated Map</a></li>
+  <li><a href="#creating-raster-layer" id="toc-creating-raster-layer" class="nav-link" data-scroll-target="#creating-raster-layer">7.1 Creating Raster Layer</a></li>
+  <li><a href="#extracting-cell-coordinates" id="toc-extracting-cell-coordinates" class="nav-link" data-scroll-target="#extracting-cell-coordinates">7.2 Extracting Cell Coordinates</a></li>
+  <li><a href="#creating-spatal-data-frame" id="toc-creating-spatal-data-frame" class="nav-link" data-scroll-target="#creating-spatal-data-frame">7.3 Creating Spatal Data Frame</a></li>
+  <li><a href="#variogram" id="toc-variogram" class="nav-link" data-scroll-target="#variogram">7.4 Variogram</a></li>
+  <li><a href="#creating-krige-object" id="toc-creating-krige-object" class="nav-link" data-scroll-target="#creating-krige-object">7.5 Creating Krige Object</a></li>
+  <li><a href="#prediction-with-krige-object" id="toc-prediction-with-krige-object" class="nav-link" data-scroll-target="#prediction-with-krige-object">7.6 Prediction with Krige Object</a></li>
+  <li><a href="#rasterizing-predictions" id="toc-rasterizing-predictions" class="nav-link" data-scroll-target="#rasterizing-predictions">7.7 Rasterizing Predictions</a></li>
+  <li><a href="#creating-spatial-interpolated-map" id="toc-creating-spatial-interpolated-map" class="nav-link" data-scroll-target="#creating-spatial-interpolated-map">7.8 Creating Spatial Interpolated Map</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -2039,7 +2039,7 @@ Observation
 <li><p><strong>Interpolating Values</strong>: Once the variogram is fitted, it is used to interpolate values for unsampled points from derived weights of the covariance structure. This is done using the spatial covariance structure to optimally estimate the values at unsampled locations.</p></li>
 </ol>
 <section id="creating-raster-layer" class="level2">
-<h2 class="anchored" data-anchor-id="creating-raster-layer">8.1 Creating Raster Layer</h2>
+<h2 class="anchored" data-anchor-id="creating-raster-layer">7.1 Creating Raster Layer</h2>
 <p>The <strong><code>terra::rast()</code></strong> function is used to create a raster layer from the <strong><code>valtellina</code></strong> object with 700 rows and 1066 columns.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>grid <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rast</span>(valtellina, </span>
@@ -2056,7 +2056,7 @@ coord. ref. : WGS 84 / UTM zone 32N (EPSG:32632) </code></pre>
 </div>
 </section>
 <section id="extracting-cell-coordinates" class="level2">
-<h2 class="anchored" data-anchor-id="extracting-cell-coordinates">8.2 Extracting Cell Coordinates</h2>
+<h2 class="anchored" data-anchor-id="extracting-cell-coordinates">7.2 Extracting Cell Coordinates</h2>
 <p>The <strong><code>terra::xyFromCell()</code></strong> function is used to extract the x and y coordinates of each cell in the raster layer.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>xy <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">xyFromCell</span>(grid, </span>
@@ -2074,7 +2074,7 @@ coord. ref. : WGS 84 / UTM zone 32N (EPSG:32632) </code></pre>
 </div>
 </section>
 <section id="creating-spatal-data-frame" class="level2">
-<h2 class="anchored" data-anchor-id="creating-spatal-data-frame">8.3 Creating Spatal Data Frame</h2>
+<h2 class="anchored" data-anchor-id="creating-spatal-data-frame">7.3 Creating Spatal Data Frame</h2>
 <p>The <strong><code>st_as_sf()</code></strong> function from the <strong><code>sf</code></strong> package is used to convert the data frame of coordinates into a spatial data frame. The <strong><code>st_filter()</code></strong> function is then used to keep only the points that fall within the <strong><code>valtellina</code></strong> region.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>coop <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(<span class="fu">as.data.frame</span>(xy), </span>
@@ -2099,7 +2099,7 @@ Projected CRS: WGS 84 / UTM zone 32N
 </div>
 </section>
 <section id="variogram" class="level2">
-<h2 class="anchored" data-anchor-id="variogram">8.4 Variogram</h2>
+<h2 class="anchored" data-anchor-id="variogram">7.4 Variogram</h2>
 <p>A variogram is a tool used in geostatistics to quantify the spatial autocorrelation of a variable. It provides a visual depiction of the covariance exhibited between each pair of points in the sampled data. For each pair of points in the sampled data, the “semivariance” is plotted against the distance between the pairs.</p>
 <p>The <strong><code>variogram</code></strong> function from the <strong><code>gstat</code></strong> package in R is used to calculate the empirical variogram of the data. The <strong><code>fit.variogram</code></strong> function is then used to fit a theoretical variogram model to this empirical variogram. The <strong><code>vgm</code></strong> function is used to specify the theoretical variogram model to fit.</p>
 <p>The <strong><code>psill</code></strong> parameter is the maximum semivariance value, also known as the sill. The <strong><code>model</code></strong> parameter specifies the type of variogram model to use, in this case, a spherical model. The <strong><code>range</code></strong> parameter is the distance at which the semivariance reaches the specified sill. The <strong><code>nugget</code></strong> parameter represents the variance at zero distance, accounting for measurement errors or spatial sources of variation at distances smaller than the sampling interval.</p>
@@ -2135,7 +2135,7 @@ Projected CRS: WGS 84 / UTM zone 32N
 </div>
 </section>
 <section id="creating-krige-object" class="level2">
-<h2 class="anchored" data-anchor-id="creating-krige-object">8.5 Creating Krige Object</h2>
+<h2 class="anchored" data-anchor-id="creating-krige-object">7.5 Creating Krige Object</h2>
 <p>In this code chunk, we create a <strong><code>gstat</code></strong> object named <strong><code>k</code></strong> using the <strong><code>gstat</code></strong> function. This object represents a geostatistical model that we’ll use for Kriging. The formula <strong><code>Predicted ~ 1</code></strong> specifies that we’re modeling the <strong><code>Predicted</code></strong> variable as a function of a constant (i.e., we’re fitting a mean model). The <strong><code>data</code></strong> argument is set to <strong><code>testing_data_sf</code></strong>. The <strong><code>model</code></strong> argument is set to <strong><code>fv</code></strong>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">gstat</span>(<span class="at">formula =</span> yhat <span class="sc">~</span> <span class="dv">1</span>, </span>
@@ -2145,7 +2145,7 @@ Projected CRS: WGS 84 / UTM zone 32N
 </div>
 </section>
 <section id="prediction-with-krige-object" class="level2">
-<h2 class="anchored" data-anchor-id="prediction-with-krige-object">8.6 Prediction with Krige Object</h2>
+<h2 class="anchored" data-anchor-id="prediction-with-krige-object">7.6 Prediction with Krige Object</h2>
 <p>In this code chunk, we use the <strong><code>predict</code></strong> function to make predictions from the Kriging model <strong><code>k</code></strong> for the locations specified in <strong><code>coop</code></strong>. The predictions are stored in <strong><code>resp</code></strong>. We then extract the x and y coordinates and the predicted values from <strong><code>resp</code></strong>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">predict</span>(k, coop)</span>
@@ -2157,7 +2157,7 @@ Projected CRS: WGS 84 / UTM zone 32N
 </div>
 </section>
 <section id="rasterizing-predictions" class="level2">
-<h2 class="anchored" data-anchor-id="rasterizing-predictions">8.7 Rasterizing Predictions</h2>
+<h2 class="anchored" data-anchor-id="rasterizing-predictions">7.7 Rasterizing Predictions</h2>
 <p>In this code chunk, we rasterize the predictions <strong><code>resp</code></strong> onto the raster grid <strong><code>grid</code></strong> using the <strong><code>terra::rasterize</code></strong> function. The rasterized predictions are stored in <strong><code>kpred</code></strong>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>kpred <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rasterize</span>(resp, grid, </span>
@@ -2165,7 +2165,7 @@ Projected CRS: WGS 84 / UTM zone 32N
 </div>
 </section>
 <section id="creating-spatial-interpolated-map" class="level2">
-<h2 class="anchored" data-anchor-id="creating-spatial-interpolated-map">8.8 Creating Spatial Interpolated Map</h2>
+<h2 class="anchored" data-anchor-id="creating-spatial-interpolated-map">7.8 Creating Spatial Interpolated Map</h2>
 <p>Now that we have the data ready, we use appropriate <strong><code>tmap</code></strong> functions to create a map.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_options</span>(<span class="at">check.and.fix =</span> <span class="cn">TRUE</span>)</span>

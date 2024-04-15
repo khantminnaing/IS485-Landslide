@@ -774,7 +774,7 @@ pacman::p_load(sf, terra, gstat, automap,
                tmap, viridis, tidyverse)
 ```
 
-## 8.1 Creating Raster Layer
+## 7.1 Creating Raster Layer
 
 The **`terra::rast()`** function is used to create a raster layer from the **`valtellina`** object with 700 rows and 1066 columns.
 
@@ -785,7 +785,7 @@ grid <- terra::rast(valtellina,
 grid
 ```
 
-## 8.2 Extracting Cell Coordinates
+## 7.2 Extracting Cell Coordinates
 
 The **`terra::xyFromCell()`** function is used to extract the x and y coordinates of each cell in the raster layer.
 
@@ -795,7 +795,7 @@ xy <- terra::xyFromCell(grid,
 head(xy)
 ```
 
-## 8.3 Creating Spatal Data Frame
+## 7.3 Creating Spatal Data Frame
 
 The **`st_as_sf()`** function from the **`sf`** package is used to convert the data frame of coordinates into a spatial data frame. The **`st_filter()`** function is then used to keep only the points that fall within the **`valtellina`** region.
 
@@ -807,7 +807,7 @@ coop <- st_filter(coop, valtellina)
 head(coop)
 ```
 
-## 8.4 Variogram
+## 7.4 Variogram
 
 A variogram is a tool used in geostatistics to quantify the spatial autocorrelation of a variable. It provides a visual depiction of the covariance exhibited between each pair of points in the sampled data. For each pair of points in the sampled data, the "semivariance" is plotted against the distance between the pairs.
 
@@ -839,7 +839,7 @@ fv
 plot(v, fv)
 ```
 
-## 8.5 Creating Krige Object
+## 7.5 Creating Krige Object
 
 In this code chunk, we create a **`gstat`** object named **`k`** using the **`gstat`** function. This object represents a geostatistical model that we'll use for Kriging. The formula **`Predicted ~ 1`** specifies that we're modeling the **`Predicted`** variable as a function of a constant (i.e., we're fitting a mean model). The **`data`** argument is set to **`testing_data_sf`**. The **`model`** argument is set to **`fv`**.
 
@@ -851,7 +851,7 @@ k <- gstat(formula = yhat ~ 1,
 k
 ```
 
-## 8.6 Prediction with Krige Object
+## 7.6 Prediction with Krige Object
 
 In this code chunk, we use the **`predict`** function to make predictions from the Kriging model **`k`** for the locations specified in **`coop`**. The predictions are stored in **`resp`**. We then extract the x and y coordinates and the predicted values from **`resp`**.
 
@@ -865,7 +865,7 @@ resp$pred <- resp$pred
 resp
 ```
 
-## 8.7 Rasterizing Predictions
+## 7.7 Rasterizing Predictions
 
 In this code chunk, we rasterize the predictions **`resp`** onto the raster grid **`grid`** using the **`terra::rasterize`** function. The rasterized predictions are stored in **`kpred`**.
 
@@ -886,7 +886,7 @@ writeRaster(kpred, "data/raster/kpred_gwlr.tif", filetype="GTIFF")
 kpred <- raster("data/raster/kpred_gwlr.tif")
 ```
 
-## 8.8 Creating Spatial Interpolated Map
+## 7.8 Creating Spatial Interpolated Map
 
 Now that we have the data ready, we use appropriate **`tmap`** functions to create a map.
 

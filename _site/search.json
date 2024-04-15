@@ -255,57 +255,57 @@
     "objectID": "explanatorymodelling.html#creating-raster-layer",
     "href": "explanatorymodelling.html#creating-raster-layer",
     "title": "Explanatory Landslide Susceptibility Modelling",
-    "section": "8.1 Creating Raster Layer",
-    "text": "8.1 Creating Raster Layer\nThe terra::rast() function is used to create a raster layer from the valtellina object with 700 rows and 1066 columns.\n\ngrid &lt;- terra::rast(valtellina, \n                    nrows = 700, \n                    ncols = 1066)\ngrid\n\nclass       : SpatRaster \ndimensions  : 700, 1066, 1  (nrow, ncol, nlyr)\nresolution  : 99.94376, 99.91744  (x, y)\nextent      : 518970, 625510, 5095447, 5165389  (xmin, xmax, ymin, ymax)\ncoord. ref. : WGS 84 / UTM zone 32N (EPSG:32632)"
+    "section": "7.1 Creating Raster Layer",
+    "text": "7.1 Creating Raster Layer\nThe terra::rast() function is used to create a raster layer from the valtellina object with 700 rows and 1066 columns.\n\ngrid &lt;- terra::rast(valtellina, \n                    nrows = 700, \n                    ncols = 1066)\ngrid\n\nclass       : SpatRaster \ndimensions  : 700, 1066, 1  (nrow, ncol, nlyr)\nresolution  : 99.94376, 99.91744  (x, y)\nextent      : 518970, 625510, 5095447, 5165389  (xmin, xmax, ymin, ymax)\ncoord. ref. : WGS 84 / UTM zone 32N (EPSG:32632)"
   },
   {
     "objectID": "explanatorymodelling.html#extracting-cell-coordinates",
     "href": "explanatorymodelling.html#extracting-cell-coordinates",
     "title": "Explanatory Landslide Susceptibility Modelling",
-    "section": "8.2 Extracting Cell Coordinates",
-    "text": "8.2 Extracting Cell Coordinates\nThe terra::xyFromCell() function is used to extract the x and y coordinates of each cell in the raster layer.\n\nxy &lt;- terra::xyFromCell(grid, \n                        1:ncell(grid))\nhead(xy)\n\n            x       y\n[1,] 519019.9 5165339\n[2,] 519119.9 5165339\n[3,] 519219.8 5165339\n[4,] 519319.8 5165339\n[5,] 519419.7 5165339\n[6,] 519519.7 5165339"
+    "section": "7.2 Extracting Cell Coordinates",
+    "text": "7.2 Extracting Cell Coordinates\nThe terra::xyFromCell() function is used to extract the x and y coordinates of each cell in the raster layer.\n\nxy &lt;- terra::xyFromCell(grid, \n                        1:ncell(grid))\nhead(xy)\n\n            x       y\n[1,] 519019.9 5165339\n[2,] 519119.9 5165339\n[3,] 519219.8 5165339\n[4,] 519319.8 5165339\n[5,] 519419.7 5165339\n[6,] 519519.7 5165339"
   },
   {
     "objectID": "explanatorymodelling.html#creating-spatal-data-frame",
     "href": "explanatorymodelling.html#creating-spatal-data-frame",
     "title": "Explanatory Landslide Susceptibility Modelling",
-    "section": "8.3 Creating Spatal Data Frame",
-    "text": "8.3 Creating Spatal Data Frame\nThe st_as_sf() function from the sf package is used to convert the data frame of coordinates into a spatial data frame. The st_filter() function is then used to keep only the points that fall within the valtellina region.\n\ncoop &lt;- st_as_sf(as.data.frame(xy), \n                 coords = c(\"x\", \"y\"),\n                 crs = st_crs(valtellina))\ncoop &lt;- st_filter(coop, valtellina)\nhead(coop)\n\nSimple feature collection with 6 features and 0 fields\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: 594477.5 ymin: 5165139 xmax: 594877.2 ymax: 5165339\nProjected CRS: WGS 84 / UTM zone 32N\n                  geometry\n1 POINT (594777.3 5165339)\n2 POINT (594877.2 5165339)\n3 POINT (594677.4 5165239)\n4 POINT (594777.3 5165239)\n5 POINT (594877.2 5165239)\n6 POINT (594477.5 5165139)"
+    "section": "7.3 Creating Spatal Data Frame",
+    "text": "7.3 Creating Spatal Data Frame\nThe st_as_sf() function from the sf package is used to convert the data frame of coordinates into a spatial data frame. The st_filter() function is then used to keep only the points that fall within the valtellina region.\n\ncoop &lt;- st_as_sf(as.data.frame(xy), \n                 coords = c(\"x\", \"y\"),\n                 crs = st_crs(valtellina))\ncoop &lt;- st_filter(coop, valtellina)\nhead(coop)\n\nSimple feature collection with 6 features and 0 fields\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: 594477.5 ymin: 5165139 xmax: 594877.2 ymax: 5165339\nProjected CRS: WGS 84 / UTM zone 32N\n                  geometry\n1 POINT (594777.3 5165339)\n2 POINT (594877.2 5165339)\n3 POINT (594677.4 5165239)\n4 POINT (594777.3 5165239)\n5 POINT (594877.2 5165239)\n6 POINT (594477.5 5165139)"
   },
   {
     "objectID": "explanatorymodelling.html#variogram",
     "href": "explanatorymodelling.html#variogram",
     "title": "Explanatory Landslide Susceptibility Modelling",
-    "section": "8.4 Variogram",
-    "text": "8.4 Variogram\nA variogram is a tool used in geostatistics to quantify the spatial autocorrelation of a variable. It provides a visual depiction of the covariance exhibited between each pair of points in the sampled data. For each pair of points in the sampled data, the “semivariance” is plotted against the distance between the pairs.\nThe variogram function from the gstat package in R is used to calculate the empirical variogram of the data. The fit.variogram function is then used to fit a theoretical variogram model to this empirical variogram. The vgm function is used to specify the theoretical variogram model to fit.\nThe psill parameter is the maximum semivariance value, also known as the sill. The model parameter specifies the type of variogram model to use, in this case, a spherical model. The range parameter is the distance at which the semivariance reaches the specified sill. The nugget parameter represents the variance at zero distance, accounting for measurement errors or spatial sources of variation at distances smaller than the sampling interval.\nSpherical variogram models are commonly used in geostatistical applications as they often have a similar shape to empirical variograms.\nHere is the code chunk that accomplishes this:\n\nv &lt;- variogram(yhat ~ 1, \n               data = gwlr_result)\nplot(v)\n\n\n\n\n\nfv &lt;- fit.variogram(object = v,\n                    model = vgm(\n                      psill = 0.5, \n                      model = \"Sph\",\n                      range = 5000, \n                      nugget = 0.1))\nfv\n\n  model      psill    range\n1   Nug 0.07203166    0.000\n2   Sph 0.05253883 8902.934\n\n\n\nplot(v, fv)"
+    "section": "7.4 Variogram",
+    "text": "7.4 Variogram\nA variogram is a tool used in geostatistics to quantify the spatial autocorrelation of a variable. It provides a visual depiction of the covariance exhibited between each pair of points in the sampled data. For each pair of points in the sampled data, the “semivariance” is plotted against the distance between the pairs.\nThe variogram function from the gstat package in R is used to calculate the empirical variogram of the data. The fit.variogram function is then used to fit a theoretical variogram model to this empirical variogram. The vgm function is used to specify the theoretical variogram model to fit.\nThe psill parameter is the maximum semivariance value, also known as the sill. The model parameter specifies the type of variogram model to use, in this case, a spherical model. The range parameter is the distance at which the semivariance reaches the specified sill. The nugget parameter represents the variance at zero distance, accounting for measurement errors or spatial sources of variation at distances smaller than the sampling interval.\nSpherical variogram models are commonly used in geostatistical applications as they often have a similar shape to empirical variograms.\nHere is the code chunk that accomplishes this:\n\nv &lt;- variogram(yhat ~ 1, \n               data = gwlr_result)\nplot(v)\n\n\n\n\n\nfv &lt;- fit.variogram(object = v,\n                    model = vgm(\n                      psill = 0.5, \n                      model = \"Sph\",\n                      range = 5000, \n                      nugget = 0.1))\nfv\n\n  model      psill    range\n1   Nug 0.07203166    0.000\n2   Sph 0.05253883 8902.934\n\n\n\nplot(v, fv)"
   },
   {
     "objectID": "explanatorymodelling.html#creating-krige-object",
     "href": "explanatorymodelling.html#creating-krige-object",
     "title": "Explanatory Landslide Susceptibility Modelling",
-    "section": "8.5 Creating Krige Object",
-    "text": "8.5 Creating Krige Object\nIn this code chunk, we create a gstat object named k using the gstat function. This object represents a geostatistical model that we’ll use for Kriging. The formula Predicted ~ 1 specifies that we’re modeling the Predicted variable as a function of a constant (i.e., we’re fitting a mean model). The data argument is set to testing_data_sf. The model argument is set to fv.\n\nk &lt;- gstat(formula = yhat ~ 1, \n           data = gwlr_result, \n           model = fv)\nk"
+    "section": "7.5 Creating Krige Object",
+    "text": "7.5 Creating Krige Object\nIn this code chunk, we create a gstat object named k using the gstat function. This object represents a geostatistical model that we’ll use for Kriging. The formula Predicted ~ 1 specifies that we’re modeling the Predicted variable as a function of a constant (i.e., we’re fitting a mean model). The data argument is set to testing_data_sf. The model argument is set to fv.\n\nk &lt;- gstat(formula = yhat ~ 1, \n           data = gwlr_result, \n           model = fv)\nk"
   },
   {
     "objectID": "explanatorymodelling.html#prediction-with-krige-object",
     "href": "explanatorymodelling.html#prediction-with-krige-object",
     "title": "Explanatory Landslide Susceptibility Modelling",
-    "section": "8.6 Prediction with Krige Object",
-    "text": "8.6 Prediction with Krige Object\nIn this code chunk, we use the predict function to make predictions from the Kriging model k for the locations specified in coop. The predictions are stored in resp. We then extract the x and y coordinates and the predicted values from resp.\n\nresp &lt;- predict(k, coop)\nresp$x &lt;- st_coordinates(resp)[,1]\nresp$y &lt;- st_coordinates(resp)[,2]\nresp$pred &lt;- resp$var1.pred\nresp$pred &lt;- resp$pred\nresp"
+    "section": "7.6 Prediction with Krige Object",
+    "text": "7.6 Prediction with Krige Object\nIn this code chunk, we use the predict function to make predictions from the Kriging model k for the locations specified in coop. The predictions are stored in resp. We then extract the x and y coordinates and the predicted values from resp.\n\nresp &lt;- predict(k, coop)\nresp$x &lt;- st_coordinates(resp)[,1]\nresp$y &lt;- st_coordinates(resp)[,2]\nresp$pred &lt;- resp$var1.pred\nresp$pred &lt;- resp$pred\nresp"
   },
   {
     "objectID": "explanatorymodelling.html#rasterizing-predictions",
     "href": "explanatorymodelling.html#rasterizing-predictions",
     "title": "Explanatory Landslide Susceptibility Modelling",
-    "section": "8.7 Rasterizing Predictions",
-    "text": "8.7 Rasterizing Predictions\nIn this code chunk, we rasterize the predictions resp onto the raster grid grid using the terra::rasterize function. The rasterized predictions are stored in kpred.\n\nkpred &lt;- terra::rasterize(resp, grid, \n                         field = \"pred\")"
+    "section": "7.7 Rasterizing Predictions",
+    "text": "7.7 Rasterizing Predictions\nIn this code chunk, we rasterize the predictions resp onto the raster grid grid using the terra::rasterize function. The rasterized predictions are stored in kpred.\n\nkpred &lt;- terra::rasterize(resp, grid, \n                         field = \"pred\")"
   },
   {
     "objectID": "explanatorymodelling.html#creating-spatial-interpolated-map",
     "href": "explanatorymodelling.html#creating-spatial-interpolated-map",
     "title": "Explanatory Landslide Susceptibility Modelling",
-    "section": "8.8 Creating Spatial Interpolated Map",
-    "text": "8.8 Creating Spatial Interpolated Map\nNow that we have the data ready, we use appropriate tmap functions to create a map.\n\ntmap_options(check.and.fix = TRUE)\ntmap_mode(\"plot\")\n\ntmap mode set to plotting\n\ntm_shape(kpred) + \n  tm_raster(alpha = 1, \n            palette = \"-RdYlGn\",\n            title = \"Probability of Landslides\") +\n  tm_layout(main.title = \"Landslide Susceptibility Map (GWLR)\",\n            main.title.position = \"center\",\n            main.title.size = 1.2,\n            legend.height = 0.45, \n            legend.width = 0.35,\n            frame = TRUE) +\n  tm_compass(type=\"8star\", size = 2) +\n  tm_scale_bar() +\n  tm_grid(alpha =0.2)"
+    "section": "7.8 Creating Spatial Interpolated Map",
+    "text": "7.8 Creating Spatial Interpolated Map\nNow that we have the data ready, we use appropriate tmap functions to create a map.\n\ntmap_options(check.and.fix = TRUE)\ntmap_mode(\"plot\")\n\ntmap mode set to plotting\n\ntm_shape(kpred) + \n  tm_raster(alpha = 1, \n            palette = \"-RdYlGn\",\n            title = \"Probability of Landslides\") +\n  tm_layout(main.title = \"Landslide Susceptibility Map (GWLR)\",\n            main.title.position = \"center\",\n            main.title.size = 1.2,\n            legend.height = 0.45, \n            legend.width = 0.35,\n            frame = TRUE) +\n  tm_compass(type=\"8star\", size = 2) +\n  tm_scale_bar() +\n  tm_grid(alpha =0.2)"
   },
   {
     "objectID": "predictivemodelling.html",
