@@ -16,14 +16,14 @@ website:
         href: methodology.qmd
       - text: EDA
         href: project.qmd
-      - text: "Model Fitting and Results"
+      - text: "Landslide Susceptibility Models"
         menu:
         - href: explanatorymodelling.qmd
-          text: "Statistical Modelling"
+          text: "Explanatory Modelling"
         - href: predictivemodelling.qmd
-          text: "Machine Learning Modelling"
-      - text: Research Paper
-        href: research.qmd
+          text: "Predictive Modelling"
+      - text: Research Poster
+        href: poster.qmd
 
   page-footer:
     background: primary

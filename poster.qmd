@@ -1,0 +1,15 @@
+---
+title: "Research Poster"
+author:
+  - name: Khant Min Naing
+  - name: Ann Mei Yi Victoria Grace
+date: 01-07-2024 
+date-modified: "last-modified"
+output:
+  distill::distill_article:
+    code_folding: false
+    toc: true
+    self_contained: false
+---
+
+![](images/18_SMT__Spatialigent_Final_Poster.png)
