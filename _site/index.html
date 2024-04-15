@@ -95,23 +95,23 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">EDA</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-model-fitting-and-results" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
- <span class="menu-text">Model Fitting and Results</span>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-landslide-susceptibility-models" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Landslide Susceptibility Models</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-model-fitting-and-results">    
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-landslide-susceptibility-models">    
         <li>
-    <a class="dropdown-item" href="./gwsmodelling_new.html" rel="" target="">
- <span class="dropdown-text">Statistical Modelling</span></a>
+    <a class="dropdown-item" href="./explanatorymodelling.html" rel="" target="">
+ <span class="dropdown-text">Explanatory Modelling</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./predictivemodelling.html" rel="" target="">
- <span class="dropdown-text">Machine Learning Modelling</span></a>
+ <span class="dropdown-text">Predictive Modelling</span></a>
   </li>  
     </ul>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="./research.html" rel="" target="">
- <span class="menu-text">Research Paper</span></a>
+    <a class="nav-link" href="./poster.html" rel="" target="">
+ <span class="menu-text">Research Poster</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
@@ -158,13 +158,28 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 <p><img src="images/landslides (4).png" class="img-fluid"></p>
-<section id="abstract" class="level4" style="color: #603494;">
-<h4 style="color: #603494;" class="anchored" data-anchor-id="abstract"><strong>Abstract</strong></h4>
+<section id="introduction" class="level4" style="color: #603494;">
+<h4 style="color: #603494;" class="anchored" data-anchor-id="introduction">Introduction</h4>
 </section>
-<p>Landslides are a major natural hazard that can have a devastating impact on cities and communities all around the world. Over the past five decades, disasters caused by landslides have become ten times more frequent (Cendrero et al., 2020). Worldwide, landslides cause billions of dollars in infrastructural damage and thousands of deaths every year. On average, about 3,500 people per year are killed due to landslide events all around the world (Froude &amp; Petley, 2018). In addition to casualties, landslides also impose long-term economic and social impacts, including property damage, disruption of access to essential services and supplies, and eventually displacement of people. Moreover, the aftermath of landslides often requires significant resources and time for recovery and reconstruction efforts, further straining already limited resources in affected areas.</p>
-<p>With increased urbanisation and magnitude of landslides, landslide susceptibility modelling is an emerging research area of both importance and urgency. This gives rise from the eternal disaster threats of landslides across the world.</p>
-<p>Several approaches have been explored for landslide susceptibility zoning in the scientific literature. However, there are still many challenges in terms of developing accurate and reliable models. A pertinent challenge is the lack of comprehensive and high-quality landslide inventories which hinders the accurate assessment of the factors contributing to landslide susceptibility. Additionally, the complex nature of landslides makes it difficult to establish a universally applicable model.</p>
-<p>Thus, this project aims to research and develop <strong>a reproducible methodology framework</strong> for building and calibrating landslide susceptibility zoning models in order to advance the current scientific knowledge base and research efforts.</p>
+<p>Landslides refer to the geomorphic phenomenon of slope failure and mass movement in mountainous regions due to eroding and depositing sediment. In the span of the last five decades, the frequency of landslide events has increased tenfold [1]. Landslides are complex geomorphic phenomena and are driven by tectonic, climatic and/or human activities [2]. Landslides pose a frequent threat to critical infrastructure and urban communities worldwide, causing increasingly costly damage and massive displacement that hampers urban development [3-6].</p>
+<p>Extensive engineering prevention works such as concrete surfacing, terracing [7] and slope modification [8] are typical, successful landslide risk mitigations for more gradually sloped areas. However, implementing these works on steeper terrains incurs greater costs due to the complexity of these modifications. Slope geometry alterations, complex drainage systems installations, and reinforcing internal structures for a single high-risk site easily cost millions [8]. With the implementation of landslide susceptibility maps and assessments, tiering areas according to their instability levels could supplement in urban planning decisions and the prioritization of the highest-risk areas which kickstart the formulation of preventive measures and site suitability assessments for new developments [9].</p>
+<p>In this study, global and local versions of statistical and machine learning techniques explore the explanatory factors influencing landslide susceptibility and the prediction of susceptibility areas within our study area. Two statistical models – Logistic Regression (LR) and Geographically Weighted Logistic Regression (GWLR) models and two machine learning models – Random Forest (RF) and Geographically Weighted Random Forest (GWRF) are fitted and developed in this study. Landslide occurrences are closely related to the characteristics of the environment and the explanatory variables of landslides are unlikely to have an equal and constant contribution to their occurrences [10] over the entire study area. When working with spatial datasets, conventional modelling approaches such as LR and RF attempt to treat observations as independent values and usually produce parameter estimates and predictions which do not consider spatial aspects such as spatial dependency and spatial heterogeneity. Using models that are not calibrated to model underlying spatial structures is likely to produce results with less ground-realistic inferences [11] and overlook local variations or structures. This study aims to draw a comparative case study between these global models and their spatial and local derivate models, analysing how global models can be calibrated into local derivates to account for spatial relationship as well as to improve the model outcomes.</p>
+<section id="references" class="level4" style="color: #603494;">
+<h4 style="color: #603494;" class="anchored" data-anchor-id="references">References</h4>
+</section>
+<ul>
+<li><p>Cendrero, A., Forte, L.M., Remondo, J., Cuesta‐Albertos, J.A.: Anthropocene Geomorphic Change. climate or human activities? Earth's Future. 8, (2020)</p></li>
+<li><p>Froude, M.J., Petley, D.N.: Global fatal landslide occurrence from 2004 to 2016. Natural Hazards and Earth System Sciences. 18, 2161–2181 (2018)</p></li>
+<li><p>Aleotti, P., Chowdhury, R.: Landslide hazard assessment: Summary review and new perspectives. Bulletin of Engineering Geology and the Environment. 58, 21–44 (1999)</p></li>
+<li><p>Budimir, M.E., Atkinson, P.M., Lewis, H.G.: A systematic review of landslide probability mapping using logistic regression. Landslides. 12, 419–436 (2015)</p></li>
+<li><p>Wang, H., Zhang, L., Yin, K., Luo, H., Li, J.: Landslide identification using machine learning. Geoscience Frontiers. 12, 351–364 (2021)</p></li>
+<li><p>Zulkafli, S.A., Abd Majid, N., Rainis, R.: Spatial analysis on the variances of landslide factors using geographically weighted logistic regression in Penang Island, Malaysia. Sustainability. 15, 852 (2023)</p></li>
+<li><p>Shrestha, A.B., Ezee, G.C., Adhikary, R.P., Rai, S.K.: Resource Manual on Flash Flood Risk Management; module 3 - structural measures. (2012)</p></li>
+<li><p>Popescu, M.E., Sasahara, K.: Engineering measures for landslide disaster mitigation. Landslides – Disaster Risk Reduction. 609–631 (2009)</p></li>
+<li><p>Regmi, N.R., Giardino, J.R., McDonald, E.V., Vitek, J.D.: A comparison of logistic regressionbased models of susceptibility to landslides in western Colorado, USA. Landslides. 11, 247–262 (2013)</p></li>
+<li><p>Achu, A.L., Aju, C.D., Di Napoli, M., Prakash, P., Gopinath, G., Shaji, E., Chandra, V.: Machinelearning based landslide susceptibility modelling with emphasis on uncertainty analysis. Geoscience Frontiers. 14, 101657 (2023)</p></li>
+<li><p>Liu, X., Kounadi, O., Zurita-Milla, R.: Incorporating Spatial Autocorrelation in Machine Learning Models Using Spatial Lag and Eigenvector Spatial Filtering Features. ISPRS Int. J. Geo-Inf. 11, (2022)</p></li>
+</ul>
 
 
 
