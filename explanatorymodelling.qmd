@@ -16,7 +16,6 @@ output:
     self_contained: false
 ---
 
-# Explanatory Landslide Susceptibility Modelling Using Statistical Modelling Techniques
 
 Landslide susceptibility modelling is emerging field of research that aims to identify the contributing factors of landslides and predict areas that are most susceptible. These studies serve as a valuable decision-support tool, helping us identify the areas at highest risk and implement preventive measures accordingly. In this research project, we aims to demonstrate the potential contribution of spatial non-stationarity in landslide susceptibility modelling. Particuarly, two statistical model frameworks are employed to model explanatory landslide susceptibility.
 

@@ -16,7 +16,6 @@ output:
     self_contained: false
 ---
 
-# Predictive Landslide Susceptibility Modelling Using Machine Learning Techniques
 
 Landslide susceptibility modelling is an emerging field of research aiming to identify the contributing factors of landslides and to predict the most susceptible areas. These studies serve as a valuable decision-support tool to facilitate the identification of the highest risk areas and implement preventive measures accordingly. In this research project, we aim to demonstrate the potential contribution of spatial non-stationarity in landslide susceptibility modelling. To do so, we will attempt to make a comparative case study of nonspatial and spatial random forest techniques, and how space can be incorporated to these models. In particular, we will be developing three different RF models
 

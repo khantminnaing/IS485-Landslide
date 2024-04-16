@@ -183,8 +183,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#explanatory-landslide-susceptibility-modelling-using-statistical-modelling-techniques" id="toc-explanatory-landslide-susceptibility-modelling-using-statistical-modelling-techniques" class="nav-link active" data-scroll-target="#explanatory-landslide-susceptibility-modelling-using-statistical-modelling-techniques">Explanatory Landslide Susceptibility Modelling Using Statistical Modelling Techniques</a></li>
-  <li><a href="#import-packages" id="toc-import-packages" class="nav-link" data-scroll-target="#import-packages">1.0 Import Packages</a></li>
+  <li><a href="#import-packages" id="toc-import-packages" class="nav-link active" data-scroll-target="#import-packages">1.0 Import Packages</a></li>
   <li><a href="#import-datasets" id="toc-import-datasets" class="nav-link" data-scroll-target="#import-datasets">2.0 Import Datasets</a></li>
   <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">3.0 Data Wrangling</a>
   <ul class="collapse">
@@ -302,15 +301,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<section id="explanatory-landslide-susceptibility-modelling-using-statistical-modelling-techniques" class="level1">
-<h1>Explanatory Landslide Susceptibility Modelling Using Statistical Modelling Techniques</h1>
 <p>Landslide susceptibility modelling is emerging field of research that aims to identify the contributing factors of landslides and predict areas that are most susceptible. These studies serve as a valuable decision-support tool, helping us identify the areas at highest risk and implement preventive measures accordingly. In this research project, we aims to demonstrate the potential contribution of spatial non-stationarity in landslide susceptibility modelling. Particuarly, two statistical model frameworks are employed to model explanatory landslide susceptibility.</p>
 <ul>
 <li><p><strong>Logistic Regression</strong> (<code>stats</code> package)</p></li>
 <li><p><strong>Geographically Weighted Logistic Regression</strong> (<code>GWmodel</code> package)</p></li>
 </ul>
 <p>The modelling will start with the parametric tests and analyses associated with the fundamental concepts and theories of these frameworks. This is followed by model training, validation, and evaluation. Subsequently, measures of variable coefficients as well as target outcome estimates are extracted and interpolated to discuss the model results, culminating in the creation of the landslide susceptibility map.</p>
-</section>
 <section id="import-packages" class="level1">
 <h1>1.0 Import Packages</h1>
 <p>Before we start the analysis, we will need to import necessary R packages first. In particular, we will import three packages that will allow us to fit two statistical models we mentioned above.</p>

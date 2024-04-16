@@ -183,8 +183,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#predictive-landslide-susceptibility-modelling-using-machine-learning-techniques" id="toc-predictive-landslide-susceptibility-modelling-using-machine-learning-techniques" class="nav-link active" data-scroll-target="#predictive-landslide-susceptibility-modelling-using-machine-learning-techniques">Predictive Landslide Susceptibility Modelling Using Machine Learning Techniques</a></li>
-  <li><a href="#import-packages" id="toc-import-packages" class="nav-link" data-scroll-target="#import-packages">1.0 Import Packages</a></li>
+  <li><a href="#import-packages" id="toc-import-packages" class="nav-link active" data-scroll-target="#import-packages">1.0 Import Packages</a></li>
   <li><a href="#import-datasets" id="toc-import-datasets" class="nav-link" data-scroll-target="#import-datasets">2.0 Import Datasets</a></li>
   <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">3.0 Data Wrangling</a>
   <ul class="collapse">
@@ -291,15 +290,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<section id="predictive-landslide-susceptibility-modelling-using-machine-learning-techniques" class="level1">
-<h1>Predictive Landslide Susceptibility Modelling Using Machine Learning Techniques</h1>
 <p>Landslide susceptibility modelling is an emerging field of research aiming to identify the contributing factors of landslides and to predict the most susceptible areas. These studies serve as a valuable decision-support tool to facilitate the identification of the highest risk areas and implement preventive measures accordingly. In this research project, we aim to demonstrate the potential contribution of spatial non-stationarity in landslide susceptibility modelling. To do so, we will attempt to make a comparative case study of nonspatial and spatial random forest techniques, and how space can be incorporated to these models. In particular, we will be developing three different RF models</p>
 <ul>
 <li><p>(Nonspatial) Random Forest (<code>ranger</code> package)</p></li>
 <li><p>Moran’s Eigenvector Random Forest (<code>spatialRF</code> package)</p></li>
 <li><p>Geographically Weighted Random Forest (<code>SpatialML</code> package)</p></li>
 </ul>
-</section>
 <section id="import-packages" class="level1">
 <h1>1.0 Import Packages</h1>
 <p>Before we start the analysis, we will need to import necessary R packages first. In particular, we will import three packages that will allow us to fit three RF models we mentioned above.</p>
