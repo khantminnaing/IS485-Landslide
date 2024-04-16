@@ -1,5 +1,5 @@
 ---
-title: "Predictive Landslide Susceptibility Modelling Using Machine Learning Techniques"
+title: "Predictive Landslide Susceptibility Modelling Using Machine Learning Techniques" 
 author:
   - name: Khant Min Naing
   - name: Ann Mei Yi Victoria Grace
