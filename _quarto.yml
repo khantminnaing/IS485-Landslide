@@ -24,6 +24,8 @@ website:
           text: "Predictive Modelling"
       - text: Research Poster
         href: poster.qmd
+      - text: "Final Slides"
+        href: final_presentation.qmd
 
   page-footer:
     background: primary
