@@ -40,7 +40,7 @@ Spatial weights are a key component in any cross-sectional analysis of spatial d
 
 ## *Strengths*
 
-Using machine learning models like Frequency Ratio (FR) and Analytic Hierarchy Process (AHP) can facilitate the adoption of appropriate mitigation measures against landslides (Goswami et. al, 2023).
+Using machine learning models like Frequency Ratio (FR) and Analytic Hierarchy Process (AHP) can facilitate the adoption of appropriate mitigation measures against landslides (Goswami et al., 2023).
 
 ML models have been favoured for its ability to solve nonlinear problems, improve predictive performance across various classifiers (Song et al., 2023) and capture non-linear relationships between variables (Achu et al., 2023).
 
@@ -60,7 +60,7 @@ Particularly in landslide identification, machine learning models are lacking in
 
 ### 4.0 Research Design
 
-![](images/Screenshot 2024-04-16 at 7.48.44 PM.png)
+![](images/Screenshot%202024-04-16%20at%207.48.44%20PM.png)
 
 ### 5.0 References
 

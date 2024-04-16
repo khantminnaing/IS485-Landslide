@@ -1,5 +1,5 @@
 ---
-title: "Explanatory Landslide Susceptibility Modelling"
+title: "Explanatory Landslide Susceptibility Modelling Using Statistical Modelling Techniques"
 author:
   - name: Khant Min Naing
   - name: Ann Mei Yi Victoria Grace
@@ -83,7 +83,7 @@ train_grid_v4.sf <- st_set_crs(train_grid_v4.sf, 32632)
 
 By setting the appropriate CRS, we ensure that our spatial data is in a projected system suitable for accurate distance and area calculations. This is a crucial step in preparing our data for further spatial analysis.
 
-# 4.0 Exploratory Data Analysis (ESDA)
+# 4.0 Exploratory Data Analysis (EDA)
 
 ## 4.1 Summary Statistics
 
@@ -163,11 +163,11 @@ $$
 
 where $\log\left(\frac{p}{1 - p}\right)$ is the log-odds or logit of the probability.
 
-LR follows from the principle of maximum likelihood estimation, which maximizes the probability of getting the observed results, based on the fitted regression coefficients.
+LR follows from the principle of maximum likelihood estimation, which maximises the probability of getting the observed results, based on the fitted regression coefficients.
 
 ## 5.1 Fitting Logistic Regression Model 1
 
-The `glm` function fits generalized linear models, a class of models that includes logistic regression. The syntax of the `glm` function is similar to that of `lm`, except that we must pass the argument `family = binomial` in order to tell R to run a logistic regression rather than some other type of generalized linear model.
+The `glm` function fits generalised linear models, a class of models that includes logistic regression. The syntax of the `glm` function is similar to that of `lm`, except that we must pass the argument `family = binomial` in order to tell R to run a logistic regression rather than some other type of generalized linear model.
 
 Under general logistic regression, all variables are considered first. We use the **`glm`** function to fit a basic LR model (LR 1) with all the variables.
 
@@ -188,7 +188,7 @@ sum_lr
 
 ### 5.1.2 Calculating Percentage of Deviance Explained
 
-In Generalized Linear Models (GLMs), deviance is a measure of goodness of fit. Specifically, deviance is a measure of the discrepancy between the data and the model's predictions. The null deviance shows how well the response variable is predicted by a model that includes only the intercept (no predictors). The model's deviance shows how well the response variable is predicted by the model.
+In Generalised Linear Models (GLMs), deviance is a measure of goodness of fit. Specifically, deviance is a measure of the discrepancy between the data and the model's predictions. The null deviance shows how well the response variable is predicted by a model that includes only the intercept (no predictors). The model's deviance shows how well the response variable is predicted by the model.
 
 In mathematical terms, the percentage of deviance explained is calculated as:
 
@@ -261,7 +261,7 @@ There are currently no established criteria for identifying the extent of varian
 Results of multicollinearity test between explanatory landslide factors are presented in Table 2. Three lithological categories -- metamorphic, sedimentary and unconsolidated shows high VIF values of 7.85, 5.98 and 9.42 respectively, indicating moderate multicollinearity.
 :::
 
-### **5.2.2 Remove Variable with High Multicollinearity**
+### 5.2.2 Remove Variable with High Multicollinearity
 
 To avoid potential issues in subsequent modelling results, the variable with the highest VIF value, lithology (unconsolidated) is removed from the dataset.
 
@@ -627,7 +627,7 @@ LR Model 3 has the best Akaike Information Criterion (AIC) value, indicating tha
 
 # 6.0 Geographically Weighted Logistic Regression
 
-Geographically Weighted Regression (GWR) is a local regression model that has been widely adopted in spatial research \[40\]. This model is particularly suited for spatial analysis as it extends traditional and global regression frameworks such as Ordinary Least Squares (OLS) and LR by integrating local parameters and spatial weights \[41\]. In contrast to the spatially constant regression parameter estimations by global regression models, GWR allows these estimates to vary based on location and GWLR can be formulated as:
+Geographically Weighted Regression (GWR) is a local regression model that has been widely adopted in spatial research. This model is particularly suited for spatial analysis as it extends traditional and global regression frameworks such as Ordinary Least Squares (OLS) and LR by integrating local parameters and spatial weights. In contrast to the spatially constant regression parameter estimations by global regression models, GWR allows these estimates to vary based on location and GWLR can be formulated as:
 
 $$
 P(u_i,v_i) = \frac{e^{\beta_0(u_i,v_j) + \beta_1(u_j,v_j)x_{i1} + ... + \beta_k(u_j,v_j)x_{ik}}}{1 + e^{\beta_0(u_j,v_j) + \beta_1(u_j,v_j)x_{i1} + ... + \beta_k(u_j,v_j)x_{ik}}}
@@ -668,6 +668,12 @@ testing_data_sf  <- testing(ls_split)
 training_data_sp <- as_Spatial(training_data_sf)
 ```
 
+
+:::{.callout-note}
+#### Future Works
+We hope that the package developer or other developers improve the data limit.
+:::
+
 ### 6.1.2 Calculating Distance Matrix
 
 Next, we calculate a distance matrix. This matrix contains the distances between all pairs of data points and is required for fitting the GWLR model.
@@ -683,7 +689,7 @@ We then compute the adaptive bandwidth for our GWLR model. The bandwidth is a cr
 
 ![](images/Screenshot%202024-04-15%20at%2011.42.19%20PM.png){fig-align="center" width="328"}
 
-With fixed method, there is greater likelihood that some local calibrations will be based on only a few data points and so the resulting distribution of local esitmates will exhibit greater variation. We can reduce such estimation bias with adaptive approach.
+With fixed method, there is greater likelihood that some local calibrations will be based on only a few data points and so the resulting distribution of local estimates will exhibit greater variation. We can reduce such estimation bias with the adaptive approach.
 
 ```{r}
 #| eval: false
@@ -865,9 +871,9 @@ resp$pred <- resp$pred
 resp
 ```
 
-## 7.7 Rasterizing Predictions
+## 7.7 Rasterising Predictions
 
-In this code chunk, we rasterize the predictions **`resp`** onto the raster grid **`grid`** using the **`terra::rasterize`** function. The rasterized predictions are stored in **`kpred`**.
+In this code chunk, we rasterise the predictions **`resp`** onto the raster grid **`grid`** using the **`terra::rasterize`** function. The rasterised predictions are stored in **`kpred`**.
 
 ```{r}
 #| eval: false

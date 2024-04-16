@@ -10,7 +10,7 @@
 <meta name="author" content="Ann Mei Yi Victoria Grace">
 <meta name="dcterms.date" content="2024-01-07">
 
-<title>Explanatory Landslide Susceptibility Modelling</title>
+<title>Explanatory Landslide Susceptibility Modelling Using Statistical Modelling Techniques</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -99,6 +99,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="site_libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
+<script src="site_libs/bsTable-3.3.7/bootstrapTable.js"></script>
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -189,7 +191,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#checking-data-class" id="toc-checking-data-class" class="nav-link" data-scroll-target="#checking-data-class">3.1 Checking Data Class</a></li>
   <li><a href="#transforming-data-to-simple-feature-objects" id="toc-transforming-data-to-simple-feature-objects" class="nav-link" data-scroll-target="#transforming-data-to-simple-feature-objects">3.2 Transforming Data to Simple Feature Objects</a></li>
   </ul></li>
-  <li><a href="#exploratory-data-analysis-esda" id="toc-exploratory-data-analysis-esda" class="nav-link" data-scroll-target="#exploratory-data-analysis-esda">4.0 Exploratory Data Analysis (ESDA)</a>
+  <li><a href="#exploratory-data-analysis-eda" id="toc-exploratory-data-analysis-eda" class="nav-link" data-scroll-target="#exploratory-data-analysis-eda">4.0 Exploratory Data Analysis (EDA)</a>
   <ul class="collapse">
   <li><a href="#summary-statistics" id="toc-summary-statistics" class="nav-link" data-scroll-target="#summary-statistics">4.1 Summary Statistics</a></li>
   <li><a href="#correlation-matrix" id="toc-correlation-matrix" class="nav-link" data-scroll-target="#correlation-matrix">4.2 Correlation Matrix</a></li>
@@ -206,7 +208,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#curse-of-multicollinearity" id="toc-curse-of-multicollinearity" class="nav-link" data-scroll-target="#curse-of-multicollinearity">5.2 Curse of Multicollinearity</a>
   <ul class="collapse">
   <li><a href="#calculate-variance-inflation-factor-vif" id="toc-calculate-variance-inflation-factor-vif" class="nav-link" data-scroll-target="#calculate-variance-inflation-factor-vif">5.2.1 Calculate Variance Inflation Factor (VIF)</a></li>
-  <li><a href="#remove-variable-with-high-multicollinearity" id="toc-remove-variable-with-high-multicollinearity" class="nav-link" data-scroll-target="#remove-variable-with-high-multicollinearity"><strong>5.2.2 Remove Variable with High Multicollinearity</strong></a></li>
+  <li><a href="#remove-variable-with-high-multicollinearity" id="toc-remove-variable-with-high-multicollinearity" class="nav-link" data-scroll-target="#remove-variable-with-high-multicollinearity">5.2.2 Remove Variable with High Multicollinearity</a></li>
   </ul></li>
   <li><a href="#stepwise-selection" id="toc-stepwise-selection" class="nav-link" data-scroll-target="#stepwise-selection">5.3 Stepwise Selection</a></li>
   <li><a href="#fitting-logistic-regression-model-2" id="toc-fitting-logistic-regression-model-2" class="nav-link" data-scroll-target="#fitting-logistic-regression-model-2">5.4 Fitting Logistic Regression Model 2</a>
@@ -250,7 +252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#variogram" id="toc-variogram" class="nav-link" data-scroll-target="#variogram">7.4 Variogram</a></li>
   <li><a href="#creating-krige-object" id="toc-creating-krige-object" class="nav-link" data-scroll-target="#creating-krige-object">7.5 Creating Krige Object</a></li>
   <li><a href="#prediction-with-krige-object" id="toc-prediction-with-krige-object" class="nav-link" data-scroll-target="#prediction-with-krige-object">7.6 Prediction with Krige Object</a></li>
-  <li><a href="#rasterizing-predictions" id="toc-rasterizing-predictions" class="nav-link" data-scroll-target="#rasterizing-predictions">7.7 Rasterizing Predictions</a></li>
+  <li><a href="#rasterising-predictions" id="toc-rasterising-predictions" class="nav-link" data-scroll-target="#rasterising-predictions">7.7 Rasterising Predictions</a></li>
   <li><a href="#creating-spatial-interpolated-map" id="toc-creating-spatial-interpolated-map" class="nav-link" data-scroll-target="#creating-spatial-interpolated-map">7.8 Creating Spatial Interpolated Map</a></li>
   </ul></li>
   </ul>
@@ -261,7 +263,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Explanatory Landslide Susceptibility Modelling</h1>
+<h1 class="title">Explanatory Landslide Susceptibility Modelling Using Statistical Modelling Techniques</h1>
   <div class="quarto-categories">
     <div class="quarto-category">R</div>
     <div class="quarto-category">sf</div>
@@ -364,8 +366,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>By setting the appropriate CRS, we ensure that our spatial data is in a projected system suitable for accurate distance and area calculations. This is a crucial step in preparing our data for further spatial analysis.</p>
 </section>
 </section>
-<section id="exploratory-data-analysis-esda" class="level1">
-<h1>4.0 Exploratory Data Analysis (ESDA)</h1>
+<section id="exploratory-data-analysis-eda" class="level1">
+<h1>4.0 Exploratory Data Analysis (EDA)</h1>
 <section id="summary-statistics" class="level2">
 <h2 class="anchored" data-anchor-id="summary-statistics">4.1 Summary Statistics</h2>
 <p>First, we calculate the summary statistics of the <strong><code>train_grids_v4</code></strong> data frame using the <strong><code>st()</code></strong> function. This will provide us with a general understanding of the dataset’s characteristics.</p>
@@ -394,7 +396,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: left;">14596</td>
 <td style="text-align: left;">1</td>
 <td style="text-align: left;">12642</td>
-<td style="text-align: left;">37922</td>
+<td style="text-align: left;">37923</td>
 <td style="text-align: left;">50563</td>
 </tr>
 <tr class="even">
@@ -404,7 +406,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: left;">4280699</td>
 <td style="text-align: left;">154</td>
 <td style="text-align: left;">3455206</td>
-<td style="text-align: left;">11141722</td>
+<td style="text-align: left;">11141723</td>
 <td style="text-align: left;">14724829</td>
 </tr>
 <tr class="odd">
@@ -746,10 +748,10 @@ p(y = 1|x) = \frac{e^{\beta_0+\beta_1x_1+...+\beta_kx_k}}{1 + e^{\beta_0+\beta_1
 \log\left(\frac{p}{1 - p}\right) = \beta_0 + \beta_1x_1 + ... + \beta_kx_k
 \]</span></p>
 <p>where <span class="math inline">\(\log\left(\frac{p}{1 - p}\right)\)</span> is the log-odds or logit of the probability.</p>
-<p>LR follows from the principle of maximum likelihood estimation, which maximizes the probability of getting the observed results, based on the fitted regression coefficients.</p>
+<p>LR follows from the principle of maximum likelihood estimation, which maximises the probability of getting the observed results, based on the fitted regression coefficients.</p>
 <section id="fitting-logistic-regression-model-1" class="level2">
 <h2 class="anchored" data-anchor-id="fitting-logistic-regression-model-1">5.1 Fitting Logistic Regression Model 1</h2>
-<p>The <code>glm</code> function fits generalized linear models, a class of models that includes logistic regression. The syntax of the <code>glm</code> function is similar to that of <code>lm</code>, except that we must pass the argument <code>family = binomial</code> in order to tell R to run a logistic regression rather than some other type of generalized linear model.</p>
+<p>The <code>glm</code> function fits generalised linear models, a class of models that includes logistic regression. The syntax of the <code>glm</code> function is similar to that of <code>lm</code>, except that we must pass the argument <code>family = binomial</code> in order to tell R to run a logistic regression rather than some other type of generalized linear model.</p>
 <p>Under general logistic regression, all variables are considered first. We use the <strong><code>glm</code></strong> function to fit a basic LR model (LR 1) with all the variables.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
@@ -815,7 +817,7 @@ Number of Fisher Scoring iterations: 7</code></pre>
 </section>
 <section id="calculating-percentage-of-deviance-explained" class="level3">
 <h3 class="anchored" data-anchor-id="calculating-percentage-of-deviance-explained">5.1.2 Calculating Percentage of Deviance Explained</h3>
-<p>In Generalized Linear Models (GLMs), deviance is a measure of goodness of fit. Specifically, deviance is a measure of the discrepancy between the data and the model’s predictions. The null deviance shows how well the response variable is predicted by a model that includes only the intercept (no predictors). The model’s deviance shows how well the response variable is predicted by the model.</p>
+<p>In Generalised Linear Models (GLMs), deviance is a measure of goodness of fit. Specifically, deviance is a measure of the discrepancy between the data and the model’s predictions. The null deviance shows how well the response variable is predicted by a model that includes only the intercept (no predictors). The model’s deviance shows how well the response variable is predicted by the model.</p>
 <p>In mathematical terms, the percentage of deviance explained is calculated as:</p>
 <p><span class="math display">\[
 \text{Percentage of Deviance Explained} = \left(1 - \frac{D_{\text{model}}}{D_{\text{null}}} \right) \times 100
@@ -989,7 +991,7 @@ Observation
 </div>
 </section>
 <section id="remove-variable-with-high-multicollinearity" class="level3">
-<h3 class="anchored" data-anchor-id="remove-variable-with-high-multicollinearity"><strong>5.2.2 Remove Variable with High Multicollinearity</strong></h3>
+<h3 class="anchored" data-anchor-id="remove-variable-with-high-multicollinearity">5.2.2 Remove Variable with High Multicollinearity</h3>
 <p>To avoid potential issues in subsequent modelling results, the variable with the highest VIF value, lithology (unconsolidated) is removed from the dataset.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>train_grids_v4 <span class="ot">&lt;-</span> <span class="fu">subset</span>(train_grids_v4, <span class="at">select =</span> <span class="sc">-</span>Lithology_Unconsolidated)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1037,29 +1039,29 @@ Observation
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>stepwise1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-                             Stepwise Summary                             
-------------------------------------------------------------------------
-Variable                  Method        AIC          BIC       Deviance  
-------------------------------------------------------------------------
-Slope_Angle              addition    27757.416    27775.078    27753.416 
-Profile_Curvature        addition    25065.141    25091.634    25059.141 
-Plan_Curvature           addition    24303.970    24339.294    24295.970 
-Landuse_Vegetation       addition    23891.260    23935.415    23881.260 
-Lithology_Plutonic       addition    23677.727    23730.713    23665.727 
-Precipitation            addition    23539.203    23601.020    23525.203 
-Proximity_Fault          addition    23430.433    23501.081    23414.433 
-TWI                      addition    23337.014    23416.493    23319.014 
-Lithology_Sedimentary    addition    23278.363    23366.672    23258.363 
-Lithology_Metamorphic    addition    23256.786    23353.927    23234.786 
-Proximity_Stream         addition    23245.816    23351.788    23221.816 
-Aspect_SouthEast         addition    23237.365    23352.167    23211.365 
-Proximity_Road           addition    23231.794    23355.428    23203.794 
-Aspect_South             addition    23226.738    23359.203    23196.738 
-Aspect_NorthEast         addition    23220.038    23361.333    23188.038 
-Aspect_East              addition    23216.825    23366.952    23182.825 
-Proximity_Settlement     addition    23214.504    23373.462    23178.504 
-SPI                      addition    23213.794    23381.582    23175.794 
-------------------------------------------------------------------------</code></pre>
+                              Stepwise Summary                               
+---------------------------------------------------------------------------
+Variable                     Method        AIC          BIC       Deviance  
+---------------------------------------------------------------------------
+Slope_Angle                 addition    27757.416    27775.078    27753.416 
+Profile_Curvature           addition    25065.141    25091.634    25059.141 
+Plan_Curvature              addition    24303.970    24339.294    24295.970 
+Landuse_Vegetation          addition    23891.260    23935.415    23881.260 
+Lithology_Plutonic          addition    23677.727    23730.713    23665.727 
+Precipitation               addition    23539.203    23601.020    23525.203 
+Proximity_Fault             addition    23430.433    23501.081    23414.433 
+TWI                         addition    23337.014    23416.493    23319.014 
+Lithology_Sedimentary       addition    23278.363    23366.672    23258.363 
+Lithology_Unconsolidated    addition    23148.835    23245.976    23126.835 
+Lithology_Metamorphic       addition    22999.689    23105.661    22975.689 
+Lithology_Plutonic          removal     22997.760    23094.901    22975.760 
+Proximity_Stream            addition    22989.371    23095.343    22965.371 
+Aspect_SouthEast            addition    22984.054    23098.857    22958.054 
+Aspect_NorthEast            addition    22979.924    23103.558    22951.924 
+Aspect_South                addition    22975.790    23108.254    22945.790 
+Aspect_East                 addition    22972.549    23113.844    22940.549 
+SPI                         addition    22971.964    23122.090    22937.964 
+---------------------------------------------------------------------------</code></pre>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -1357,11 +1359,11 @@ IV = \sum_{i=1}^{n} (W_i \times (\%I - \%II))
 <span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y=</span><span class="st">"Landslide"</span>)</span>
 <span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(IV<span class="sc">$</span>Summary[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">row.names=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table data-quarto-postprocess="true" class="table table-sm table-striped small">
+<table class="table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">Variable</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">IV</th>
+<th style="text-align: left;">Variable</th>
+<th style="text-align: right;">IV</th>
 </tr>
 </thead>
 <tbody>
@@ -1459,8 +1461,6 @@ IV = \sum_{i=1}^{n} (W_i \times (\%I - \%II))
 </tr>
 </tbody>
 </table>
-
-
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -1808,7 +1808,7 @@ Observation
 </section>
 <section id="geographically-weighted-logistic-regression" class="level1">
 <h1>6.0 Geographically Weighted Logistic Regression</h1>
-<p>Geographically Weighted Regression (GWR) is a local regression model that has been widely adopted in spatial research [40]. This model is particularly suited for spatial analysis as it extends traditional and global regression frameworks such as Ordinary Least Squares (OLS) and LR by integrating local parameters and spatial weights [41]. In contrast to the spatially constant regression parameter estimations by global regression models, GWR allows these estimates to vary based on location and GWLR can be formulated as:</p>
+<p>Geographically Weighted Regression (GWR) is a local regression model that has been widely adopted in spatial research. This model is particularly suited for spatial analysis as it extends traditional and global regression frameworks such as Ordinary Least Squares (OLS) and LR by integrating local parameters and spatial weights. In contrast to the spatially constant regression parameter estimations by global regression models, GWR allows these estimates to vary based on location and GWLR can be formulated as:</p>
 <p><span class="math display">\[
 P(u_i,v_i) = \frac{e^{\beta_0(u_i,v_j) + \beta_1(u_j,v_j)x_{i1} + ... + \beta_k(u_j,v_j)x_{ik}}}{1 + e^{\beta_0(u_j,v_j) + \beta_1(u_j,v_j)x_{i1} + ... + \beta_k(u_j,v_j)x_{ik}}}
 \]</span></p>
@@ -1846,6 +1846,19 @@ P(u_i,v_i) = \frac{e^{\beta_0(u_i,v_j) + \beta_1(u_j,v_j)x_{i1} + ... + \beta_k(
 <span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>training_data_sp <span class="ot">&lt;-</span> <span class="fu">as_Spatial</span>(training_data_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Future Works
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We hope that the package developer or other developers improve the data limit.</p>
+</div>
+</div>
 </section>
 <section id="calculating-distance-matrix" class="level3">
 <h3 class="anchored" data-anchor-id="calculating-distance-matrix">6.1.2 Calculating Distance Matrix</h3>
@@ -1863,7 +1876,7 @@ P(u_i,v_i) = \frac{e^{\beta_0(u_i,v_j) + \beta_1(u_j,v_j)x_{i1} + ... + \beta_k(
 <p><img src="images/Screenshot 2024-04-15 at 11.42.19 PM.png" class="img-fluid figure-img" width="328"></p>
 </figure>
 </div>
-<p>With fixed method, there is greater likelihood that some local calibrations will be based on only a few data points and so the resulting distribution of local esitmates will exhibit greater variation. We can reduce such estimation bias with adaptive approach.</p>
+<p>With fixed method, there is greater likelihood that some local calibrations will be based on only a few data points and so the resulting distribution of local estimates will exhibit greater variation. We can reduce such estimation bias with the adaptive approach.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>bw.adaptive <span class="ot">&lt;-</span> <span class="fu">bw.ggwr</span>(<span class="at">formula =</span> </span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>                       Landslide <span class="sc">~</span> Slope_Angle, </span>
@@ -2156,9 +2169,9 @@ Projected CRS: WGS 84 / UTM zone 32N
 <span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>resp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="rasterizing-predictions" class="level2">
-<h2 class="anchored" data-anchor-id="rasterizing-predictions">7.7 Rasterizing Predictions</h2>
-<p>In this code chunk, we rasterize the predictions <strong><code>resp</code></strong> onto the raster grid <strong><code>grid</code></strong> using the <strong><code>terra::rasterize</code></strong> function. The rasterized predictions are stored in <strong><code>kpred</code></strong>.</p>
+<section id="rasterising-predictions" class="level2">
+<h2 class="anchored" data-anchor-id="rasterising-predictions">7.7 Rasterising Predictions</h2>
+<p>In this code chunk, we rasterise the predictions <strong><code>resp</code></strong> onto the raster grid <strong><code>grid</code></strong> using the <strong><code>terra::rasterize</code></strong> function. The rasterised predictions are stored in <strong><code>kpred</code></strong>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>kpred <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rasterize</span>(resp, grid, </span>
 <span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">field =</span> <span class="st">"pred"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

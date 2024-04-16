@@ -10,7 +10,7 @@
 <meta name="author" content="Ann Mei Yi Victoria Grace">
 <meta name="dcterms.date" content="2024-01-07">
 
-<title>Machine Learning Modelling</title>
+<title>Predictive Landslide Susceptibility Modelling Using Machine Learning Techniques</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -252,7 +252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Machine Learning Modelling</h1>
+<h1 class="title">Predictive Landslide Susceptibility Modelling Using Machine Learning Techniques</h1>
   <div class="quarto-categories">
     <div class="quarto-category">R</div>
     <div class="quarto-category">sf</div>
@@ -923,7 +923,7 @@ Prediction    0    1
 <section id="morans-eigenvector-random-forest" class="level1">
 <h1>6.0 Moran’s Eigenvector Random Forest</h1>
 <p>Borcard and Legendre developed an approach called the Principal Coordinates of Neighbour Matrices (PCNM) to create spatial predictors that can be incorporated into models. Dray and Legendre further [2006] improved mathematical foundations of PCNM and investigated its close relation to Moran’s index of spatial autocorrelation (Moran’s I). They proposed a Moran’s eigenvector approach which extracts Moran’s Eigenvector Maps (MEMs) from the spatial weighting matrix.</p>
-<p>The spatial weight matrix, denoted as W=[ <span class="math inline">\(w_i\)</span>][ <span class="math inline">\(_j\)</span>] , is an n×n matrix that represents the spatial relationships between different locations of n observations in the dataset. Each entry in the matrix represents the spatial relationship between location i and location j. The centering operator H subtracts the mean of each row and column from the elements of W, resulting in a doubly-centred weight matrix, Ω, where the row and column means are zero. By diagonalising this doubly-centred weight matrix Ω, eigenvectors obtained are orthogonal vectors with a unit norm that maximise Moran’s <em>I</em>. These eigenvectors are called Moran’s Eigenvector Maps (MEMs). The eigenvalues of MEMs are equal to the Moran’s I coefficients of spatial autocorrelation and describe the local structures of the observations in the dataset.</p>
+<p>The spatial weight matrix, denoted as W= <span class="math inline">\(w_i\)</span> <span class="math inline">\(_j\)</span> , is an n×n matrix that represents the spatial relationships between different locations of n observations in the dataset. Each entry in the matrix represents the spatial relationship between location i and location j. The centering operator H subtracts the mean of each row and column from the elements of W, resulting in a doubly-centred weight matrix, Ω, where the row and column means are zero. By diagonalising this doubly-centred weight matrix Ω, eigenvectors obtained are orthogonal vectors with a unit norm that maximise Moran’s <em>I</em>. These eigenvectors are called Moran’s Eigenvector Maps (MEMs). The eigenvalues of MEMs are equal to the Moran’s I coefficients of spatial autocorrelation and describe the local structures of the observations in the dataset.</p>
 <p><span class="math inline">\(Ω=HWH=(I-11^t/n) W (I-11^t/n)\)</span></p>
 <p>where <span class="math inline">\(I\)</span> is the identity matrix, <span class="math inline">\(1\)</span> is the column vector of 1 and <span class="math inline">\(1^t\)</span> is the transpose of the column vector of 1.</p>
 <p>Using the concept of MEMs, Benito introduced a methodological framework that generate MEMs from weight matrix and uses them as spatial predictors to fit a non-spatial RF model into a spatial RF model, which will be termed as Moran’s Eigenvector Random Forest (MERF) in this study. These spatial predictors can be used directly as explanatory variables to represent spatial processes not considered by the non-spatial predictors.</p>
