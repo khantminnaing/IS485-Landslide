@@ -18,7 +18,7 @@ output:
 
 # Predictive Landslide Susceptibility Modelling Using Machine Learning Techniques
 
-Landslide susceptibility modelling is emerging field of research that aims to identify the contributing factors of landslides and predict areas that are most susceptible. These studies serve as a valuable decision-support tool, helping us identify the areas at highest risk and implement preventive measures accordingly. In this research project, we aims to demonstrate the potential contribution of spatial non-stationarity in landslide susceptibility modelling. To do so, we will attempt to make a comparative case study of nonspatial and spatial random forest techniques and how space can be incorporate to these models. In particular, we will be developing three different RF models
+Landslide susceptibility modelling is an emerging field of research aiming to identify the contributing factors of landslides and to predict the most susceptible areas. These studies serve as a valuable decision-support tool to facilitate the identification of the highest risk areas and implement preventive measures accordingly. In this research project, we aim to demonstrate the potential contribution of spatial non-stationarity in landslide susceptibility modelling. To do so, we will attempt to make a comparative case study of nonspatial and spatial random forest techniques, and how space can be incorporated to these models. In particular, we will be developing three different RF models
 
 -   (Nonspatial) Random Forest (`ranger` package)
 
@@ -59,7 +59,7 @@ ls_data <- readRDS("data/rds/sample_Q6.rds")
 
 In this section, we are preparing our data for the subsequent analysis. The **`ls_data`** dataset, which contains our landslide data, is divided into two subsets: a training set and a testing set.
 
-The code chunk below performs this operation. This process is crucial because it allows us to train our model on one subset of the data (the training set) and then evaluate its performance on unseen data (the testing set). This helps to ensure that our model is not just memorizing the training data and is actually able to generalize to new data. The **`set.seed(1243)`** function ensures that the random split of data is reproducible. The **`initial_split`** function from the **`rsample`** package is used to perform the split, with 20% of the data allocated to the testing set (**`prop = .2`**). The split is stratified by the **`Landslide`** variable, meaning the proportion of each class of **`Landslide`** is the same in the training and testing sets.
+The code chunk below performs this operation. This process is crucial because it allows us to train our model on a subset of the data (the training set) and then evaluate its performance on unseen data, the testing set. This ensures that our model is not just memorising the training data and is actually able to generalise as new data. The **`set.seed(1243)`** function ensures that the random split of data is reproducible. The **`initial_split`** function from the **`rsample`** package is used to perform the split, with 20% of the data allocated to the testing set (**`prop = .2`**). The split is stratified by the **`Landslide`** variable, meaning the proportion of each class of **`Landslide`** is the same in the training and testing sets.
 
 ```{r}
 set.seed(1243)
@@ -71,9 +71,25 @@ training_data <- training(ls_split)
 testing_data  <- testing(ls_split)
 ```
 
-## 3.2 Preparing the Testing Data
+## 3.2 Checking the Balance of Classes
 
-In this section, we are further refining our testing data for the analysis. We will be performing two main operations:
+In this section, we are verifying whether our training and testing datasets have a representative ratio of landslide (class 1) and non-landslide (class 0) data. This is an important step to ensure that our model is trained and tested on balanced data.
+
+The code chunk below performs these checks:
+
+```{r}
+sum(training_data$Landslide == 1)
+sum(training_data$Landslide == 0)
+
+sum(testing_data$Landslide == 1)
+sum(testing_data$Landslide == 0)
+```
+
+Based on these calculations, our **`training_data`** has **1209 landslide** and **1594 non-landslide** samples. Our **`testing_data`** has **4839 landslide** and **6378 non-landslide** samples. This indicates that our data has a representative ratio of landslide to non-landslide samples, which is crucial for training a balanced and unbiased model.
+
+## 3.3 Preparing the Testing Data
+
+In this section, we are further refining our testing data for the analysis. Here, we perform two main operations:
 
 1.  **Saving the target variable:** We save the **`Landslide`** values from **`testing_data`** as a separate column. This is done because **`Landslide`** is our target variable, and we want to compare our model's predictions with the actual values to evaluate its performance.
 
@@ -86,7 +102,7 @@ test_col <- as.factor(testing_data$Landslide)
 testing_data <- testing_data_temp <- subset(testing_data, select = -c(Train_ID,Grid_ID,Landslide))
 ```
 
-## 3.3 Storing Variable Names
+## 3.4 Storing Variable Names
 
 In this section, we are streamlining our code by storing the names of our variables in vectors. y storing the variable names in vectors, we can easily reference them later in our code. This approach will make our code cleaner and more efficient, as we won't have to repeatedly write out all the variable names. Also, it reduces the chance of errors that could arise from mistyping variable names.
 
@@ -96,7 +112,7 @@ The code chunk below performs these operations:
 
 -   We then use the `colnames` function to get the names of columns 6 to 29 from the `ls_data` dataset. These are the names of the independent variable used in this study, We store them in a vector called `predictor.variable.names`.
 
--   We etract the 'X' and 'Y' columns from the training data and store them in a new data frame called `xy`.
+-   We extract the 'X' and 'Y' columns from the training data and store them in a new data frame called `xy`.
 
 ```{r}
 dependent.variable.name <- "Landslide"
@@ -106,7 +122,7 @@ colnames(xy) <- c("x", "y")
 random.seed <- 1
 ```
 
-## 3.4 Transforming Data to Simple Feature Objects
+## 3.5 Transforming Data to Simple Feature Objects
 
 In this section, we are transforming our **`training_data`** and **`testing_data`** data frames into simple feature (**`sf`**) objects. This is a crucial step for spatial analysis, as **`sf`** objects allow us to perform various spatial operations.
 
@@ -115,7 +131,6 @@ The code chunk below performs these transformations:
 ```{r}
 training_data_sf <- st_as_sf(training_data, coords = c("X", "Y"))
 testing_data_sf <- st_as_sf(testing_data, coords = c("X", "Y"))
-
 ```
 
 To ensure that our spatial data is in the correct projected system, we will set the CRS of `training_data_sf` and `testing_data_sf` to **WGS 84 / UTM zone 32N** (EPSG code 32632). This is crucial for accurate spatial analysis, as different CRSs can lead to different results. By setting appropriate CRS, we ensure that our spatial data is in a projected system suitable for accurate distance and area calculations.
@@ -128,9 +143,9 @@ testing_data_sf <- st_set_crs(testing_data_sf, 32632)
 st_crs(training_data_sf)
 ```
 
-## 3.5 Distance Matrix Transformation and Threshold Setting
+## 3.6 Distance Matrix Transformation and Threshold Setting
 
-In this section, we are performing transformations on the distance matrix and setting distance thresholds based on quantile values. These steps are crucial for further spatial analysis.
+In this section, we are performing transformations on the distance matrix and setting distance thresholds based on *quantile values*. These steps are crucial for further spatial analysis.
 
 -   We use **`gw.dist`** function from the **`spgwr`** package to compute a geographically weighted distance matrix for the training data,
 
@@ -148,27 +163,11 @@ distance.matrix <- distance.matrix / 1000
 quantile(distance.matrix)
 ```
 
-After examining the quantile values, we set the distance thresholds as follows:
+After examining the quantile values, we set the rounded distance thresholds as follows:
 
 ```{r}
 distance.thresholds <- c(0, 20, 35, 55, 110)
 ```
-
-## 3.6 Checking the Balance of Classes
-
-In this section, we are verifying whether our training and testing datasets have a representative ratio of landslide (class 1) and non-landslide (class 0) data. This is an important step to ensure that our model is trained and tested on balanced data.
-
-The code chunk below performs these checks:
-
-```{r}
-sum(training_data$Landslide == 1)
-sum(training_data$Landslide == 0)
-
-sum(testing_data$Landslide == 1)
-sum(testing_data$Landslide == 0)
-```
-
-Based on these calculations, our **`training_data`** has **1209 landslide** and **1594 non-landslide** samples. Our **`testing_data`** has **4839 landslide** and **6378 non-landslide** samples. This indicates that our data has a representative ratio of landslide to non-landslide samples, which is crucial for training a balanced and unbiased model.
 
 # 4.0 Explanatory Data Analysis
 
@@ -176,9 +175,9 @@ Based on these calculations, our **`training_data`** has **1209 landslide** and 
 
 Spatial predictor variables often exhibit spatial autocorrelation, where nearby observations are not independent but rather exhibit similar values. This leads to spatial nonstationarity, a phenomenon where the relationships between variables change over space, violating the assumption of a global model.
 
-To address this issue, we use Moran's I, a common measure of spatial autocorrelation widely adopted by the geospatial data science community. Moran's I quantifies the similarity between values and neighbouring observations, considering spatial relationships between neighbours. It describes how each observation differs from the mean of the study area.
+To address this issue, we use Moran's I, a common measure of spatial autocorrelation widely adopted by the geospatial data science community. Moran's I quantifies the similarity between values and neighbouring observations, considering spatial relationships between neighbours. It describes how each observation differs from the mean (or average) of the study area.
 
-Our aim is to assess the spatial autocorrelation level of predictor variables at different spatial scales. The function **`plot_training_df_moran()`** helps in assessing the spatial autocorrelation of the response variable and the predictors across different distance thresholds. This function generates a plot that visualizes the spatial autocorrelation of the response variable and the predictors across different distance thresholds. The **`fill.color`** and **`point.color`** arguments are used to customize the colors of the plot.
+Our aim is to assess the spatial autocorrelation level of predictor variables at different spatial scales. The function **`plot_training_df_moran()`** assesses the spatial autocorrelation of the response variable and the predictors across different distance thresholds. This function generates a plot that visualises the spatial autocorrelation of the response variable and the predictors across different distance thresholds. The **`fill.color`** and **`point.color`** arguments are used to customise the colors of the plot.
 
 The code chunk below performs this operation:
 
@@ -209,7 +208,7 @@ The **`rf()`** function from the **`spatialRF`** package is a convenient wrapper
 
 The code chunk below fits a non-spatial random forest model using the **`rf()`** function:
 
-By default, RF model from `ranger` use the following parameters.
+By default, RF model from `ranger` uses the following parameters:
 
 -   Number of Trees (`ntree`) : 500 
 
@@ -275,13 +274,13 @@ The plot above provides a visual representation of the importance of each predic
 
 ## 5.4 Understanding Variable Importance Scores
 
-The **`randomForestExplainer`** package offers several options to deepen our understanding of variable importance scores. One such option is the **`measure_importance()`** function, which analyzes the forest to find out:
+The **`randomForestExplainer`** package offers several options to deepen our understanding of variable importance scores. One such option is the **`measure_importance()`** function, which analyses the forest to find out:
 
 -   The average minimum tree depth at which each variable can be found (**`mean_min_depth`**).
 
 -   The number of nodes in which a variable was selected to make a split (**`no_of_nodes`**).
 
--   The number of times the variable was selected as the first one to start a tree (**`times_a_root`**).
+-   The number of times the variable was selected first to start a tree (**`times_a_root`**).
 
 -   The probability of a variable to be in more nodes than what would be expected by chance (**`p_value`**).
 
@@ -310,7 +309,7 @@ This table provides a detailed view of the variable importance scores, allowing 
 
 ## 5.5 Assessing Predictor Contribution to Model Transferability
 
-The **`rf_importance()`** function from the **`spatialRF`** package provides a way to assess the extent to which each predictor contributes to model transferability. Model transferability refers to the model's predictive ability on independent spatial folds, which can be measured with the **`rf_evaluate()`** function (discussed later).
+The **`rf_importance()`** function from the **`spatialRF`** package provides a way to assess the extent to which each predictor contributes to the model transferability. Model transferability refers to the model's predictive ability on independent spatial folds, which can be measured with the **`rf_evaluate()`** function (discussed later).
 
 The **`rf_importance()`** function assesses predictor contribution by comparing the performance of the full model with models fitted without each predictor. The difference in performance between the full model and a model without a given predictor represents the contribution of that predictor to model transferability.
 
@@ -332,7 +331,7 @@ read_rds("data/rds/transferability.plot.rds")
 
 ## 5.6 Partial Dependence Plot (PDP)
 
-Partial dependence plots (PDPs) are a powerful tool in machine learning that allow us to visualize the relationship between predictor variables and the target outcome. Introduced by Friedman (2001), PDPs are used to interpret the output of complex machine learning models. They present the expected target outcomes as a function of the input variables and show the marginal effect one feature can have on the predicted outcome of the machine learning model.
+Partial dependence plots (PDPs) are a powerful tool in machine learning that allow us to visualise the relationship between predictor variables and the target outcome. Introduced by Friedman (2001), PDPs are used to interpret the output of complex machine learning models. They present the expected target outcomes as a function of the input variables and show the marginal effect one feature can have on the predicted outcome of the machine learning model.
 
 In PDPs, the Y-axis value (ŷ) is defined by the average of all possible model predictions when the value of the objective predictor is at X. PDPs can reveal whether the relationship between the target and a feature is linear, monotonic, curvilinear, or of other complex types.
 
@@ -359,7 +358,7 @@ The **`performance`** slot of our non-spatial random forest model (**`non.spatia
 
 -   **R squared** and **pseudo R squared**: These are computed from the observations and the predictions, and indicate to what extent model outcomes represent the input data. These values will usually be high if the data is highly aggregated in space.
 
--   **RMSE** and its normalized version: These are computed via the **`root_mean_squared_error()`** function, and are linear with R squared and pseudo R squared.
+-   **RMSE** and its normalised version: These are computed via the **`root_mean_squared_error()`** function, and are linear with R squared and pseudo R squared.
 
 The code chunk below prints these performance measures:
 
@@ -419,9 +418,9 @@ plot_response_curves(
 
 # 6.0 Moran's Eigenvector Random Forest
 
-Borcard and Legendre developed an approach called the Principal Coordinates of Neighbour Matrices (PCNM) to create spatial predictors that can be incorporated into models. Dray and Legendre further \[2006\] improved mathematical foundations of PCNM and investigated its close relation to Moran's index of spatial autocorrelation (Moran's I). They proposed Moran's eigenvector approach which extract Moran's Eigenvector Maps (MEMs) from the spatial weighting matrix.
+Borcard and Legendre developed an approach called the Principal Coordinates of Neighbour Matrices (PCNM) to create spatial predictors that can be incorporated into models. Dray and Legendre further \[2006\] improved mathematical foundations of PCNM and investigated its close relation to Moran's index of spatial autocorrelation (Moran's I). They proposed a Moran's eigenvector approach which extracts Moran's Eigenvector Maps (MEMs) from the spatial weighting matrix.
 
-The spatial weight matrix, denoted as W=\[ $w_ij$\] , is an n×n matrix that represents the spatial relationships between different locations of n observations in the dataset. Each entry  in the matrix represents the spatial relationship between location i and location j. The centring operator H subtracts the mean of each row and column from the elements of W, resulting in a doubly-centred weight matrix Ω where the row and column means are zero. By diagonalising this doubly-centred weight matrix Ω, eigenvectors obtained are orthogonal vectors with a unit norm that maximise Moran's *I*. These eigenvectors are called Moran's Eigenvector Maps (MEMs). The eigenvalues of MEMs are equal to the Moran's I coefficients of spatial autocorrelation and describe the local structures of the observations in the dataset.
+The spatial weight matrix, denoted as W=\[ $w_i$\]\[ $_j$\] , is an n×n matrix that represents the spatial relationships between different locations of n observations in the dataset. Each entry in the matrix represents the spatial relationship between location i and location j. The centering operator H subtracts the mean of each row and column from the elements of W, resulting in a doubly-centred weight matrix, Ω, where the row and column means are zero. By diagonalising this doubly-centred weight matrix Ω, eigenvectors obtained are orthogonal vectors with a unit norm that maximise Moran's *I*. These eigenvectors are called Moran's Eigenvector Maps (MEMs). The eigenvalues of MEMs are equal to the Moran's I coefficients of spatial autocorrelation and describe the local structures of the observations in the dataset.
 
 $Ω=HWH=(I-11^t/n) W (I-11^t/n)$
 
@@ -474,7 +473,7 @@ From the plots above, MERF has effectively eliminated the spatial autocorrelatio
 
 ## 6.3 Sequential Selection of Spatial Predictors
 
-As explained earlier, the **`rf_spatial`** function generates Moran's eigenvectors and includes them into the training dataset through sequential selection. The selection procedure is performed by the **`select_spatial_predictors_sequential()`** function, which finds the smaller subset of spatial predictors that maximizes the model's R squared and minimizes the Moran's I of the residuals. The **`rf_spatial`** function already automates this process, so there's no need to manually run it. However, we can use the **`plot_optimization()`** function to visualize the optimization process. In the plot below, dots linked by lines represent the selected spatial predictors.
+As explained earlier, the **`rf_spatial`** function generates Moran's eigenvectors and includes them into the training dataset through sequential selection. The selection procedure is performed by the **`select_spatial_predictors_sequential()`** function, which finds the smaller subset of spatial predictors that maximises the model's R squared and minimises the Moran's I of the residuals. The **`rf_spatial`** function already automates this process, so there is no need to manually run it. However, we can use the **`plot_optimization()`** function to visualise the optimisation process. In the plot below, dots linked by lines represent the selected spatial predictors.
 
 ```{r}
 p <- spatialRF::plot_optimization(spatial.rf)
@@ -482,7 +481,7 @@ p <- spatialRF::plot_optimization(spatial.rf)
 
 ## 6.4 Plotting Spatial Predictors
 
-We can also visualize the spatial predictors obtained from the Moran's Eigenvector Random Forest (MERF) model. This can be done using the **`get_spatial_predictors()`** function from the **`spatialRF`** package, which retrieves the spatial predictors from the MERF model.
+We can also visualise the spatial predictors obtained from the Moran's Eigenvector Random Forest (MERF) model. This can be done using the **`get_spatial_predictors()`** function from the **`spatialRF`** package, which retrieves the spatial predictors from the MERF model.
 
 The code chunk below performs this operation and generates a plot of the spatial predictors using appropriate `ggplot2` functions:
 
@@ -517,7 +516,7 @@ p1
 
 The **`importance`** slot of our MERF model (**`spatial.rf$variable.importance`**) contains the variable importance scores. These scores provide a measure of the contribution of each predictor variable to the predictive power of the model.
 
-We can visualize these importance scores using the **`plot_importance()`** function from the **`spatialRF`** package, print them with the **`print_importance()`** function, or retrieve the data frame of importance scores with the **`get_importance()`** function.
+We can visualise these importance scores using the **`plot_importance()`** function from the **`spatialRF`** package, print them with the **`print_importance()`** function, or retrieve the data frame of importance scores with the **`get_importance()`** function.
 
 The code chunk below generates plots of the variable importance scores for both the RF and MERF models:
 
@@ -687,7 +686,7 @@ GWRF can be used as both a predictive and an explanatory tool. Similar to GWLR a
 
 Before we fit the GWRF model, have to select bandwidth, we need to select an optimal bandwidth. The **`grf.bw`** function from the **`gwrf`** package is used for this purpose.
 
-The **`step`** parameter is used to define the increment in the bandwidth during the optimization process. The **`bw.min`** and **`bw.max`** parameters define the range within which the optimal bandwidth is searched.geo.weighted. The **`geo.weighted`** parameter is a boolean flag that determines the type of random forest algorithm to use. If **`geo.weighted`** is set to **`TRUE`**, the algorithm calculates a Geographically Weighted Random Forest using the **`case.weights`** option of the **`ranger`** package. This means that each observation in the local dataset is weighted based on its geographical location. If **`geo.weighted`** is set to **`FALSE`**, it will calculate local random forests without weighting each observation in the local dataset.
+The **`step`** parameter is used to define the increment in the bandwidth during the optimisation process. The **`bw.min`** and **`bw.max`** parameters define the range within which the optimal bandwidth is searched. The **`geo.weighted`** parameter is a boolean flag that determines the type of random forest algorithm to use. If **`geo.weighted`** is set to **`TRUE`**, the algorithm calculates a Geographically Weighted Random Forest using the **`case.weights`** option of the **`ranger`** package. This means that each observation in the local dataset is weighted based on its geographical location. If **`geo.weighted`** is set to **`FALSE`**, it will calculate local random forests without weighting each observation in the local dataset. Given that our study is interested in spatial nonstationarity, **`geo.weighted`** is set to **`TRUE`**.
 
 Below is the code chunk for calculating bandwidth selection
 
@@ -906,6 +905,7 @@ write_rds(gwRF_adaptive_306, "data/rds/gwRF_adaptive_306.rds")
 
 ```{r}
 #| eval: false
+#| echo: false
 rm(gwRF_adaptive_59)
 rm(gwRF_adaptive_92)
 rm(gwRF_adaptive_154)
@@ -920,19 +920,19 @@ rm(ls_split)
 
 In previous section, we fitted a total of 6 GWRF models, each having different bandwidth. In this section, we will use these models to predict using different spatial weights.
 
-In GWRF framework, prediction is carried out the fusion of global and local predictions using a weight parameter. This fusion of predictions enables the extraction of the locally heterogeneous signal (low bias) from the local sub-model and its integration with that of a global model which uses more data (low variance).
+In GWRF framework, prediction is carried out by the fusion of global and local predictions using a weight parameter. This fusion of predictions enables the extraction of the locally heterogeneous signal (low bias) from the local sub-model and its integration with that of a global model which uses more data (low variance).
 
 The weight parameter, denoted as α can be varied and user-specified. A purely global model is indicated by an α value of 0, which means it is devoid of any local model influence. Conversely, an α value of 1 denotes a purely local model, with no influence from the global model. For values between these thresholds, the weighting varies. For instance, an α value of 0.25 suggests a diminished weighting for the local model, thereby favouring the global one, while an α value of 0.75 implies a more favourable weighting for the local model over the global one. An α value of 0.50 signifies an equal weighting for both the local and global models.
 
 Below is the code chunk for making predictions with various spatial weights.
 
--   Preidctions are made using GWRF model with specific bandwidth and weight parameter.
+-   Predictions are made using GWRF model with specific bandwidth and weight parameter.
 
 -   Predictions are then converted to binary values.
 
 -   Confusion matrix is computed using `testing_data`
 
--   Accurarcy, precision, recall, and F1 scores are computed.
+-   Accuracy, precision, recall, and F1 scores are computed.
 
 ::: panel-tabset
 #### 59-Bandwidth GWRF
@@ -962,13 +962,13 @@ pred_col_59 <- factor(pred_col_59)
 
 cm_59_0 <- confusionMatrix(pred_col_59, test_col)
 write_rds(cm_59_0, "data/rds/cm_59_0.rds")
+rm(gwRF_pred_59)
 ```
 
 ```{r}
 cm_59_0 <- read_rds("data/rds/cm_59_0.rds")
 cm_59_0
 rm(cm_59_0)
-rm(gwRF_pred_59)
 ```
 
 ```{r}
@@ -4320,6 +4320,10 @@ write_rds(pred_weight_0.75, "data/rds/pred_weight_0.75.rds")
 write_rds(pred_weight_1, "data/rds/pred_weight_1.rds")
 ```
 
+## 7.7 Bandwidth and Spatial Weight Selection
+
+Georganos & Kalogirou (2022) observed accuracy results generated from models of lower bandwidths are unstable since the model uses fewer samples. As such, they calibrated models and concluded bandwidths between 100 and 400 are more reliable. Balancing between initial $R^2$ performances and the above-rendered accuracy scores, the local weight of 0.75 for bandwidth 189 is selected for the interpolation of landslide susceptibility prediction. 
+
 # 8.0 Kriging
 
 Kriging is a geostatistical interpolation technique that generates estimates of the uncertainty surrounding each interpolated value. It is particularly useful when there is moderate spatial autocorrelation, as it helps in preserving spatial variability.
@@ -4447,7 +4451,7 @@ plot(v, fv)
 
 ## 8.5 Creating Krige Object
 
-In this code chunk, we create a **`gstat`** object named **`k`** using the **`gstat`** function. This object represents a geostatistical model that we'll use for Kriging. The formula **`Predicted ~ 1`** specifies that we're modeling the **`Predicted`** variable as a function of a constant (i.e., we're fitting a mean model). The **`data`** argument is set to **`testing_data_sf`**. The **`model`** argument is set to **`fv`**.
+In this code chunk, we create a **`gstat`** object named **`k`** using the **`gstat`** function. This object represents a geostatistical model that we use for Kriging. The formula **`Predicted ~ 1`** specifies that we are modelling the **`Predicted`** variable as a function of a constant (i.e., we're fitting a mean model). The **`data`** argument is set to **`testing_data_sf`**. The **`model`** argument is set to **`fv`**.
 
 ```{r}
 #| eval: false
@@ -4471,9 +4475,9 @@ resp$pred <- resp$pred
 resp
 ```
 
-## 8.7 Rasterizing Predictions
+## 8.7 Rasterising Predictions
 
-In this code chunk, we rasterize the predictions **`resp`** onto the raster grid **`grid`** using the **`terra::rasterize`** function. The rasterized predictions are stored in **`kpred`**.
+In this code chunk, we rasterise the predictions **`resp`** onto the raster grid **`grid`** using the **`terra::rasterize`** function. The rasterised predictions are stored in **`kpred`**.
 
 ```{r}
 #| eval: false
