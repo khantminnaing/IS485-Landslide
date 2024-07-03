@@ -1,0 +1,43 @@
+---
+title: "Reflections on ICCSA 2024"
+author:
+  - name: Khant Min Naing
+  - name: Ann Mei Yi Victoria Grace
+date: 03-07-2024 
+date-modified: "last-modified"
+categories:
+  - R
+  - sf
+  - gwmodel
+output:
+  distill::distill_article:
+    code_folding: false
+    toc: true
+    self_contained: false
+---
+
+# What's up in Hanoi?
+
+We made it to our first ever research conference!
+
+From 1 to 4 July 2024, the International Conference on Computer Science and Its Applications held its 24th session at Thuyloi University. We received a very warm welcome to the conference venue and the volunteers were very approachable.
+
+![Thuyloi University, Hanoi (Photo: Victoria Grace ANN)](images/thuyloi.jpg){width="375"}
+
+![ICCSA Street Banner (Photo: Victoria Grace ANN)](images/iccsa_street_banner.jpg){width="383"}
+
+![Welcome Pack (Photo: Victoria Grace ANN)](images/iccsa_goodies.jpg){width="382"}
+
+![Victoria and Khant (Photo: Victoria Grace ANN)](images/us_banner.jpg){width="376"}
+
+It was wonderful learning from many talented, inspiring and hardworking researchers, and how they have been developing models, conducting feasibility studies and applying computer science to address a diverse range of issues unique to their hometowns and beyond. We are also proud to announce that our paper is among the **39% of selected papers** for this conference proceeding and would like to thank our anonymous reviewers for their valuable input when we were drafting the final version of our paper.
+
+On Day 1, 1 July 2024, we were very pumped and excited to share our findings from our explanatory model with fellow researchers. It was a great success and joy exchanging information and sharing about the power of using local models to devise a landslide susceptibility map!
+
+![Featuring Victoria](images/vic_presenting.jpg){width="681"}
+
+![Featuring Khant](images/khant_presenting.jpg){width="682"}
+
+Our research advisor Prof Kam Tin Seong was unable to join us for this conference this time, but we are immensely grateful for his encouragement and support.
+
+Titled, "Is there a Space in Landslide Suceptibility Modelling: A Case Study of Valtellina Valley, Northern Italy", our published paper abstract can be found on Springer's website over [here](https://link.springer.com/chapter/10.1007/978-3-031-64605-8_16). Many thanks to the ICCSA conference organisers, chairs and sponsors for making ICCSA 2024 a success! If you are interested or have more questions about our research and development, feel free to connect with us via Linkedin or email.

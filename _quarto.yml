@@ -24,8 +24,8 @@ website:
           text: "Predictive Modelling"
       - text: Research Poster
         href: poster.qmd
-      - text: "Final Slides"
-        href: final_presentation.qmd
+      - text: "ICCSA 2024"
+        href: iccsa.qmd
 
   page-footer:
     background: primary
