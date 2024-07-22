@@ -4504,7 +4504,7 @@ Now that we have the data ready, we use appropriate **`tmap`** functions to crea
 #| fig-width: 10
 #| fig-height: 10
 tmap_options(check.and.fix = TRUE)
-tmap_mode("plot")
+tmap_mode("view")
 tm_shape(kpred) + 
   tm_raster(alpha = 0.6, 
             palette = "-RdYlGn",
