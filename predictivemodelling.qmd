@@ -8,7 +8,9 @@ date-modified: "last-modified"
 categories:
   - R
   - sf
-  - gwmodel
+  - spatialRF
+  - spatialML
+  - ranger
 output:
   distill::distill_article:
     code_folding: false
@@ -915,7 +917,7 @@ rm(ls_data)
 rm(ls_split)
 ```
 
-## 7.2 Prediction with Various Spatial Weights
+## 7.3 Prediction with Various Spatial Weights
 
 In previous section, we fitted a total of 6 GWRF models, each having different bandwidth. In this section, we will use these models to predict using different spatial weights.
 
@@ -2457,7 +2459,7 @@ rm(gwRF_adaptive_306)
 :::
 :::
 
-## 7.3 Plotting GWRF Model Prediction Accuracy at Incrementing Weight & Optimised Bandwidth
+## 7.4 Plotting GWRF Model Prediction Accuracy at Incrementing Weight & Optimised Bandwidth
 
 In this section, we are plotting the prediction accuracy of the GWRFmodels at incrementing weight parameters and optimised bandwidths. The weight parameters range from 0 to 1 in increments of 0.25, and the optimised bandwidths used are 59, 92, 154, 189, 260, and 306.
 
@@ -2498,7 +2500,7 @@ ggplot(df_gwRF, aes(x = Bandwidth, y = Accuracy, color = Weight)) +
   )
 ```
 
-## 7.4 Iteraction with Standardised Bandwidths
+## 7.5 Iteraction with Standardised Bandwidths
 
 In the previous sections, we fitted, trained, and tested Geographically Weighted Random Forest (GWRF) models using optimised bandwidth values. However, the bandwidths used were random with different steps between them, which may make the observed result patterns not generalisable. To see if the patterns we observed earlier can be generalised (at least for our dataset), we will use standardised bandwidths with 50 steps to fit new models. We will use 50, 100, 150, 200, 250, and 300 as bandwidths.
 
@@ -2684,7 +2686,7 @@ rm(gwRF_adaptive_250)
 rm(gwRF_adaptive_300)
 ```
 
-## 7.5 Prediction with Various Spatial Weights
+## 7.6 Prediction with Various Spatial Weights
 
 In this section, we will test the predictions using the newly fitted Geographically Weighted Random Forest (GWRF) models with standardised bandwidths at different weight parameters. This process is similar to what we did in the previous sections.
 
@@ -4271,7 +4273,7 @@ rm(gwRF_adaptive_300)
 :::
 :::
 
-## 7.6 Plotting GWRF Model Prediction Accuracy at Incrementing Weight & Standardised Bandwidth
+## 7.7 Plotting GWRF Model Prediction Accuracy at Incrementing Weight & Standardised Bandwidth
 
 In this section, we are plotting the prediction accuracy of the GWRF models at incrementing weight parameters and standardised bandwidths. The weight parameters range from 0 to 1 in increments of 0.25, and the standardised bandwidths used are 50, 100, 150, 200, 250, and 300.
 
@@ -4319,7 +4321,7 @@ write_rds(pred_weight_0.75, "data/rds/pred_weight_0.75.rds")
 write_rds(pred_weight_1, "data/rds/pred_weight_1.rds")
 ```
 
-## 7.7 Bandwidth and Spatial Weight Selection
+## 7.8 Bandwidth and Spatial Weight Selection
 
 Georganos & Kalogirou (2022) observed accuracy results generated from models of lower bandwidths are unstable since the model uses fewer samples. As such, they calibrated models and concluded bandwidths between 100 and 400 are more reliable. Balancing between initial $R^2$ performances and the above-rendered accuracy scores, the local weight of 0.75 for bandwidth 189 is selected for the interpolation of landslide susceptibility prediction. 
 
@@ -4505,10 +4507,14 @@ Now that we have the data ready, we use appropriate **`tmap`** functions to crea
 #| fig-height: 10
 tmap_options(check.and.fix = TRUE)
 tmap_mode("view")
+labels <- c("Very Low", "Low", "Medium", "High", "Very High")
+
 tm_shape(kpred) + 
   tm_raster(alpha = 0.6, 
             palette = "-RdYlGn",
-            title = "Probability of Landslides") +
+            title = "Landslide Susceptibility",
+            breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1),
+            labels = labels) +  
   tm_layout(main.title = "Landslide Susceptibility Map (GWRF)",
             main.title.position = "center",
             main.title.size = 1.2,
