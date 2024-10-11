@@ -23,6 +23,7 @@ This project has achieved significant academic recognition, resulting in two pee
 ::: {style="color: #603494;"}
 #### Conference Presentations {style="color: #603494;"}
 :::
+
 +---------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------+
 | [![](images/images.png){fig-align="center" width="141"}](https://2024.iccsa.org/)                       | **24th International Conference on Computational Science and its Applications**                       |
 |                                                                                                         |                                                                                                       |
@@ -39,6 +40,6 @@ This project has achieved significant academic recognition, resulting in two pee
 #### Publications {style="color: #603494;"}
 :::
 
-1.  Khant Min Naing, Victoria Grace Ann and Tin Seong Kam. 2024. From Data to Application: Harnessing Big Spatial Data and Spatially Explicit Machine Learning Model for Landslide Susceptibility Prediction and Mapping. In *The 12th ACM SIGSPATIAL International Workshop on Analytics for Big Geospatial Data (BigSpatial '24), October 29, 2024, Atlanta, GA, USA*. ACM, New York, NY, USA. DOI:http://dx.doi.org/10.1145/3681763.3698477 
+1.  Khant Min Naing, Victoria Grace Ann and Tin Seong Kam. 2024. From Data to Application: Harnessing Big Spatial Data and Spatially Explicit Machine Learning Model for Landslide Susceptibility Prediction and Mapping. In *The 12th ACM SIGSPATIAL International Workshop on Analytics for Big Geospatial Data (BigSpatial '24), October 29, 2024, Atlanta, GA, USA*. ACM, New York, NY, USA. DOI:<http://dx.doi.org/10.1145/3681763.3698477>
 
-2.  Khant Min Naing, Victoria Grace Ann, and Tin Seong Kam. 2024. Is There a Space in Landslide Susceptibility Modeling: Case Study of Valtellina Valley in Italy. In *Osvaldo Gervasi, Beniamino Murgante, Chiara Garau, David Taniar, Ana Maria A. C. Rocha, Maria Noelia Faginas Lago, eds. Computational Science and Its Applications -- ICCSA 2024. ICCSA 2024. Lecture Notes in Computer Science 14813* (2024), 221--238. DOI:http://dx.doi.org/10.1007/978-3-031-64605-8_16   
+2.  Khant Min Naing, Victoria Grace Ann, and Tin Seong Kam. 2024. Is There a Space in Landslide Susceptibility Modeling: Case Study of Valtellina Valley in Italy. In *Osvaldo Gervasi, Beniamino Murgante, Chiara Garau, David Taniar, Ana Maria A. C. Rocha, Maria Noelia Faginas Lago, eds. Computational Science and Its Applications -- ICCSA 2024. ICCSA 2024. Lecture Notes in Computer Science 14813* (2024), 221--238. DOI:<http://dx.doi.org/10.1007/978-3-031-64605-8_16>
