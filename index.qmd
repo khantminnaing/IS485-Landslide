@@ -8,34 +8,28 @@ title: "Is There a Space in Landslide Susceptibility Modelling: A Case Study of 
 #### Introduction {style="color: #603494;"}
 :::
 
-Landslides refer to the geomorphic phenomenon of slope failure and mass movement in mountainous regions due to eroding and depositing sediment. In the span of the last five decades, the frequency of landslide events has increased tenfold \[1\]. Landslides are complex geomorphic phenomena and are driven by tectonic, climatic and/or human activities \[2\]. Landslides pose a frequent threat to critical infrastructure and urban communities worldwide, causing increasingly costly damage and massive displacement that hampers urban development \[3-6\].
+Landslides, the failure and mass movement of slopes, have increased tenfold over the past five decades. Driven by tectonic, climatic, and human activities, they pose significant threats to infrastructure and urban communities, causing costly damage and displacement. While engineering solutions like concrete surfacing and terracing mitigate risks on gradual slopes, steeper terrains require more complex and expensive interventions. Implementing landslide susceptibility maps can aid urban planning by prioritizing high-risk areas, guiding preventive measures, and assessing site suitability for new developments.
 
-Extensive engineering prevention works such as concrete surfacing, terracing \[7\] and slope modification \[8\] are typical, successful landslide risk mitigations for more gradually sloped areas. However, implementing these works on steeper terrains incurs greater costs due to the complexity of these modifications. Slope geometry alterations, complex drainage systems installations, and reinforcing internal structures for a single high-risk site easily cost millions \[8\]. With the implementation of landslide susceptibility maps and assessments, tiering areas according to their instability levels could supplement in urban planning decisions and the prioritization of the highest-risk areas which kickstart the formulation of preventive measures and site suitability assessments for new developments \[9\].
+As a result, landslide susceptibility modeling has emerged as a timely and crucial area of research. In this field, geoscientists and researchers strive to model landslide occurrences as a dynamic function of various predisposing and conditioning factors. Several qualitative and quantitative methodological approaches have been explored and proposed to establish the causal link between landslide factors and landslide susceptibility. Methodologically, many studies have explored different statistical and machine learning methods. Despite their usefulness, these methods often fail to explicitly consider the impact of **spatial non-stationarity** and **spatial autocorrelation** when geographically referenced data are used, thereby limiting their interpretability and practice applicability.
 
-In this study, global and local versions of statistical and machine learning techniques explore the explanatory factors influencing landslide susceptibility and the prediction of susceptibility areas within our study area. Two statistical models -- Logistic Regression (LR) and Geographically Weighted Logistic Regression (GWLR) models and two machine learning models -- Random Forest (RF) and Geographically Weighted Random Forest (GWRF) are fitted and developed in this study. Landslide occurrences are closely related to the characteristics of the environment and the explanatory variables of landslides are unlikely to have an equal and constant contribution to their occurrences \[10\] over the entire study area. When working with spatial datasets, conventional modelling approaches such as LR and RF attempt to treat observations as independent values and usually produce parameter estimates and predictions which do not consider spatial aspects such as spatial dependency and spatial heterogeneity. Using models that are not calibrated to model underlying spatial structures is likely to produce results with less ground-realistic inferences \[11\] and overlook local variations or structures. This study aims to draw a comparative case study between these global models and their spatial and local derivate models, analysing how global models can be calibrated into local derivates to account for spatial relationship as well as to improve the model outcomes.
+In this project, presented by **Khant Min Naing** and **Victoria Grace Ann** from *Singapore Management University*, we explore the potential of integrating spatial properties into generalised statistical and machine learning based landslide models. Using Valtellina Valley in Italy as a case study, this study developed and trained three spatial landslide models, **Geographically Weighted Logistic Regression (GWLR)**, **Moran's Eigenvector Random Forest (MERF)** and **Geographically Weighted Random Forest (GWRF)** and proposes an I**ntegrated Dual Geographical Random Forest Framework (Dual GRF)** leveraging on MERF and GWRF. The findings demonstrate that spatial models outperform global baseline models and result in more spatially-adaptive landslide risk predictions and interpretations.
 
 ::: {style="color: #603494;"}
-#### References {style="color: #603494;"}
+#### Conference Presentation and Publications {style="color: #603494;"}
 :::
 
-1.  Cendrero, A., Forte, L.M., Remondo, J., Cuesta‐Albertos, J.A.: Anthropocene Geomorphic Change. climate or human activities? Earth's Future. 8, (2020)
+This project has achieved significant academic recognition, resulting in two peer-reviewed publications. Additionally, the findings have been presented at two prestigious academic conferences, renowned within the fields of computational science and geospatial information systems. These accomplishments highlight the project's contribution to advancing knowledge and its impact on the academic community.
 
-2.  Froude, M.J., Petley, D.N.: Global fatal landslide occurrence from 2004 to 2016. Natural Hazards and Earth System Sciences. 18, 2161--2181 (2018)
+![](images/images.png){fig-align="center" width="110"}
 
-3.  Aleotti, P., Chowdhury, R.: Landslide hazard assessment: Summary review and new perspectives. Bulletin of Engineering Geology and the Environment. 58, 21--44 (1999)
+#### 24th International Conference on Computational Science and its Applications
 
-4.  Budimir, M.E., Atkinson, P.M., Lewis, H.G.: A systematic review of landslide probability mapping using logistic regression. Landslides. 12, 419--436 (2015)
+*July 1 - 4, 2024*\
+Hanoi, Vietnam
 
-5.  Wang, H., Zhang, L., Yin, K., Luo, H., Li, J.: Landslide identification using machine learning. Geoscience Frontiers. 12, 351--364 (2021)
+![](images/acmsigspatial-full.png){fig-align="center" width="110"}
 
-6.  Zulkafli, S.A., Abd Majid, N., Rainis, R.: Spatial analysis on the variances of landslide factors using geographically weighted logistic regression in Penang Island, Malaysia. Sustainability. 15, 852 (2023)
+#### **32nd ACM SIGSPATIAL International Conference on Advances in Geographic Information Systems (ACM SIGSPATIAL 2024)**
 
-7.  Shrestha, A.B., Ezee, G.C., Adhikary, R.P., Rai, S.K.: Resource Manual on Flash Flood Risk Management; module 3 - structural measures. (2012)
-
-8.  Popescu, M.E., Sasahara, K.: Engineering measures for landslide disaster mitigation. Landslides -- Disaster Risk Reduction. 609--631 (2009)
-
-9.  Regmi, N.R., Giardino, J.R., McDonald, E.V., Vitek, J.D.: A comparison of logistic regressionbased models of susceptibility to landslides in western Colorado, USA. Landslides. 11, 247--262 (2013)
-
-10. Achu, A.L., Aju, C.D., Di Napoli, M., Prakash, P., Gopinath, G., Shaji, E., Chandra, V.: Machinelearning based landslide susceptibility modelling with emphasis on uncertainty analysis. Geoscience Frontiers. 14, 101657 (2023)
-
-11. Liu, X., Kounadi, O., Zurita-Milla, R.: Incorporating Spatial Autocorrelation in Machine Learning Models Using Spatial Lag and Eigenvector Spatial Filtering Features. ISPRS Int. J. Geo-Inf. 11, (2022)
+*October 29 - November 1, 2024*\
+Atlanta, GA, USA
