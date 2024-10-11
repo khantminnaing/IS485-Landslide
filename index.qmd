@@ -20,16 +20,16 @@ In this project, presented by **Khant Min Naing** and **Victoria Grace Ann** fro
 
 This project has achieved significant academic recognition, resulting in two peer-reviewed publications. Additionally, the findings have been presented at two prestigious academic conferences, renowned within the fields of computational science and geospatial information systems. These accomplishments highlight the project's contribution to advancing knowledge and its impact on the academic community.
 
-![](images/images.png){fig-align="center" width="110"}
++--------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+| ![](images/images.png){fig-align="center" width="110"}             | #### 24th International Conference on Computational Science and its Applications                                          |
+|                                                                    |                                                                                                                           |
+|                                                                    | *July 1 - 4, 2024*\                                                                                                       |
+|                                                                    | Hanoi, Vietnam                                                                                                            |
++--------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+| ![](images/acmsigspatial-full.png){fig-align="center" width="110"} | #### **32nd ACM SIGSPATIAL International Conference on Advances in Geographic Information Systems (ACM SIGSPATIAL 2024)** |
+|                                                                    |                                                                                                                           |
+|                                                                    | *October 29 - November 1, 2024*\                                                                                          |
+|                                                                    | Atlanta, GA, USA                                                                                                          |
++--------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
 
-#### 24th International Conference on Computational Science and its Applications
-
-*July 1 - 4, 2024*\
-Hanoi, Vietnam
-
-![](images/acmsigspatial-full.png){fig-align="center" width="110"}
-
-#### **32nd ACM SIGSPATIAL International Conference on Advances in Geographic Information Systems (ACM SIGSPATIAL 2024)**
-
-*October 29 - November 1, 2024*\
-Atlanta, GA, USA
+#### 
