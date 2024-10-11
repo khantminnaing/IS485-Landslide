@@ -10,6 +10,8 @@ This project is submitted to the **Singapore Management University** in partial 
 #### **Co-Authors** {style="color: #603494;"}
 :::
 
+![](images/3.png){width="200"}
+
 **Khant Min Naing**
 
 Khant is a final year student at SMU, double-majoring in Smart City Management & Technology (SMT) and Public Policy & Public Management (PPPM). His research interests are centered around urban science, geospatial technology, and public policy. He has a particular interest in the challenges and opportunities presented by Southeast Asian urbanism. Khant is keen on leveraging data science and analytics to understand the dynamics of cities, communities, and natural environments in Southeast Asian cities.
@@ -19,6 +21,8 @@ Khant is a final year student at SMU, double-majoring in Smart City Management &
 Singapore Management University
 
 [![](images/LinkedIn_logo.png){fig-align="left" width="25"}](https://www.linkedin.com/in/khantminnaing/)
+
+![](images/1.png){width="200"}
 
 **Victoria Grace Ann**
 
@@ -33,6 +37,8 @@ Singapore Management University
 ::: {style="color: #603494;"}
 #### **Supervisor** {style="color: #603494;"}
 :::
+
+![](images/2.png){width="200"}
 
 **Associate Professor Kam Tin Seong**\
 tskam\@smu.edu.sg\
