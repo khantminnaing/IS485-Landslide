@@ -12,4 +12,4 @@ output:
     self_contained: false
 ---
 
-![](images/18_SMT__Spatialigent_Final_Poster.png)
+![](images/GeoFest (2)_page-0001.jpg)
