@@ -14,12 +14,15 @@ As a result, landslide susceptibility modeling has emerged as a timely and cruci
 
 In this project, presented by **Khant Min Naing** and **Victoria Grace Ann** from *Singapore Management University*, we explore the potential of integrating spatial properties into generalised statistical and machine learning based landslide models. Using Valtellina Valley in Italy as a case study, this study developed and trained three spatial landslide models, **Geographically Weighted Logistic Regression (GWLR)**, **Moran's Eigenvector Random Forest (MERF)** and **Geographically Weighted Random Forest (GWRF)** and proposes an I**ntegrated Dual Geographical Random Forest Framework (Dual GRF)** leveraging on MERF and GWRF. The findings demonstrate that spatial models outperform global baseline models and result in more spatially-adaptive landslide risk predictions and interpretations.
 
+::: {style="color: #603494;"}
 #### Academic Recognition {style="color: #603494;"}
+:::
 
 This project has achieved significant academic recognition, resulting in two peer-reviewed publications. Additionally, the findings have been presented at two prestigious academic conferences, renowned within the fields of computational science and geospatial information systems. These accomplishments highlight the project's contribution to advancing knowledge and its impact on the academic community.
 
+::: {style="color: #603494;"}
 #### Conference Presentations {style="color: #603494;"}
-
+:::
 +---------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------+
 | [![](images/images.png){fig-align="center" width="141"}](https://2024.iccsa.org/)                       | **24th International Conference on Computational Science and its Applications**                       |
 |                                                                                                         |                                                                                                       |
@@ -32,7 +35,9 @@ This project has achieved significant academic recognition, resulting in two pee
 |                                                                                                         | Atlanta, GA, USA                                                                                      |
 +---------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------+
 
+::: {style="color: #603494;"}
 #### Publications {style="color: #603494;"}
+:::
 
 1.  Khant Min Naing, Victoria Grace Ann and Tin Seong Kam. 2024. From Data to Application: Harnessing Big Spatial Data and Spatially Explicit Machine Learning Model for Landslide Susceptibility Prediction and Mapping. In *The 12th ACM SIGSPATIAL International Workshop on Analytics for Big Geospatial Data (BigSpatial '24), October 29, 2024, Atlanta, GA, USA*. ACM, New York, NY, USA. DOI:http://dx.doi.org/10.1145/3681763.3698477 
 
