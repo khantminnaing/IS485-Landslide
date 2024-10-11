@@ -36,11 +36,11 @@ This project is submitted to the **Singapore Management University** in partial 
 #### **Supervisor** {style="color: #603494;"}
 :::
 
-+--------------------------------+-----------------------------------------------+
-| ![](images/2.png){width="200"} | **Associate Professor Kam Tin Seong**\        |
-|                                | tskam\@smu.edu.sg\                            |
-|                                | Singapore Management University               |
-+--------------------------------+-----------------------------------------------+
++--------------------------------+------------------------------------------+
+| ![](images/2.png){width="200"} | **Associate Professor Kam Tin Seong**\   |
+|                                | tskam\@smu.edu.sg\                       |
+|                                | Singapore Management University          |
++--------------------------------+------------------------------------------+
 
 ::: {style="color: #603494;"}
 #### **Submitted to** {style="color: #603494;"}
