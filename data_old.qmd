@@ -1,0 +1,1080 @@
+---
+title: "Data Preview"
+author:
+  - name: Khant Min Naing
+  - name: Ann Mei Yi Victoria Grace
+date: 01-07-2024 
+date-modified: "last-modified"
+categories:
+  - R
+  - sf
+  - ggplot2
+output:
+  distill::distill_article:
+    code_folding: false
+    toc: true
+    toc_depth: 4
+    self_contained: false
+---
+
+::: {style="color: #603494;"}
+## 1.0 Set Up {style="color: #603494;"}
+:::
+
+```{r}
+#| echo: false
+#| 
+pacman::p_load(ggnewscale)
+devtools::install_github("thomasp85/patchwork")
+```
+
+In this section, we set up the necessary R packages for data processing and exploratory spatial data analysis. The following packages are downloaded.
+
+-   [**sp**](https://cran.r-project.org/web/packages/sp/index.html) for handling and analysing spatial data, providing classes and methods for spatial data manipulation.
+
+-   [**sf**](https://cran.r-project.org/web/packages/sf/index.html) for importing, managing, and processing geospatial data, using simple features, enabling seamless integration with other tidyverse tools.
+
+-   [**raster**](https://cran.r-project.org/web/packages/raster/index.html) for reading, writing, manipulating, analysing and modelling raster (gridded) spatial data.
+
+-   [**elevatr**](https://cran.r-project.org/web/packages/elevatr/index.html) for extracting elevation data from various APIs and digital elevation models.
+
+-   [**terra**](https://cran.r-project.org/web/packages/terra/index.html) for spatial data analysis with vector (points, lines, polygons) and raster (grid) data
+
+-   [**tidyr**](https://cran.r-project.org/web/packages/tidyr/index.html) for creating tidy data, where each column is a variable, each row is an observation, and each cell contains a single value.
+
+-   [**dplyr**](https://cran.r-project.org/web/packages/dplyr/index.html) for data manipulation and wrangling
+
+-   [**ggplot2**](https://cran.r-project.org/web/packages/ggplot2/index.html)for visualizing data into static and interactive graphics, based on [The Grammar of Graphics](https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448/ref=as_li_ss_tl) paradigm.
+
+-   [**cowplot**](https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html) for creating complex and publication-quality multi-panel plots with added features and themes, an extension to ggplot2
+
+-   [**classInt**](https://cran.r-project.org/web/packages/classInt/index.html) for classifying numeric data into intervals or classes, for mapping or other graphics purposes
+
+-   [**RColorBrewer**](https://cran.r-project.org/web/packages/RColorBrewer/index.html) for creating visually appealing plots, particularly useful for thematic mapping.
+
+-   [**paletteer**](https://cran.r-project.org/web/packages/paletteer/index.html) for accessing a diverse collection of color palettes for data visualization.
+
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+library(sp)
+library(raster) 
+library(elevatr)
+library(sf)
+library(RColorBrewer)
+library(classInt)
+library(ggplot2)
+library(tidyr)
+library(paletteer)
+library(cowplot)
+library(dplyr)
+library(patchwork)
+library(terra)
+library(ggnewscale)
+```
+
+::: {style="color: #603494;"}
+## 2.0 Import {style="color: #603494;"}
+:::
+
+In this section, I will import the necessary datasets (both spatial and geospatial) into R environment.
+
+```{r, code_folding=FALSE, warning=FALSE}
+valtellina <- read_sf(dsn = "data/vector", layer = "valtellina")
+landslides <- read_sf(dsn = "data/vector", layer = "landslide_inventory")
+precipitation <-raster("data/raster/avgprecipitation_mm.tif")
+elevation <-raster("data/raster/elevation_m.tiff")
+twi <-raster("data/raster/twi_.tif")
+lithology <- read_sf(dsn = "data/vector", layer = "lithology_cat")
+profile_c <- raster("data/raster/profile_curvature_cat.tif")
+plan_c <- raster("data/raster/plan_curvature_cat.tif")
+slope <- raster("data/raster/slope_degree.tif")
+distance_building <- raster("data/raster/distance_to_building_m.tif")
+distance_roads <-  raster("data/raster/distance_to_roads_m.tif")
+distance_river <-  raster("data/raster/distance_to_river_m.tif")
+distance_faults <-  raster("data/raster/distance_to_faults_m.tif")
+aspect <- raster("data/raster/aspect_cat.tif")
+hillshade <- raster("data/raster/hillshade.tif")
+```
+
+```{r}
+crs(valtellina)
+```
+
+Some Layers Required Cropping and Masking
+
+```{r}
+distance_building_cropped = crop(distance_building, valtellina)
+distance_building_final = mask(distance_building_cropped, valtellina)
+distance_roads_cropped = crop(distance_roads, valtellina)
+distance_roads_final = mask(distance_roads_cropped, valtellina)
+distance_river_cropped = crop(distance_river, valtellina)
+distance_river_final = mask(distance_river_cropped, valtellina)
+distance_faults_cropped = crop(distance_faults, valtellina)
+distance_faults_final = mask(distance_faults_cropped, valtellina)
+hillshade_cropped = crop(hillshade, valtellina)
+hillshade_final = mask(hillshade_cropped, valtellina)
+
+ref = extent(distance_building_final)
+distance_faults_final <- setExtent(distance_faults_final, ref, keepres=FALSE, snap=FALSE)
+```
+
+::: {style="color: #603494;"}
+## 3.0 Study Area {style="color: #603494;"}
+:::
+
+Before creating thematic maps for each landslide parameter, a map is created to plot the study area of this project, Valtellina Valley in Italy using `ggplot` package.
+
+```{r}
+valtellina_transformed <- st_transform(valtellina, crs = "+proj=merc")
+
+ggplot(data = valtellina_transformed) +
+  geom_sf()+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Study Area",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Zindi') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 12), 
+        axis.title.y = element_text(size = 12),
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(size = 10))
+```
+
+::: {style="color: #603494;"}
+## 4.0 Fixing CRS References {style="color: #603494;"}
+:::
+
+Map projection is an important property of a geospatial data. In order to perform geoprocessing using geospatial data, we need to ensure that data are projected using the appropriate and standard coordinate system. For this project, we use EPSG:32632 (WGS 84 / UTM zone 32N) for all the datasets.
+
+```{r, code_folding=FALSE,results='hide'}
+precipitation <- projectRaster(precipitation, crs = "+proj=merc")
+
+```
+
+::: {style="color: #603494;"}
+## 5.0 Reclassify Data Values {style="color: #603494;"}
+:::
+
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+reclass_df <- c(-Inf, -0.0001, 1,
+                -0.0001, 0.0001, 2,
+                0.0001, Inf, 3)
+reclass_df
+reclass_m <- matrix(reclass_df,ncol = 3,byrow = TRUE)
+
+profile_classifed <- reclassify(profile_c,reclass_m)
+profile_classifed_df <- as.data.frame(profile_classifed,xy=TRUE)%>%drop_na()
+profile_codes <- unique(profile_classifed_df["profile_curvature_cat"])
+profile_names <-c("convex", "flat", "concave")
+profile_colors <-c("#0d3d83","#eff635","#77d91d")
+
+plan_classifed <- reclassify(plan_c,reclass_m)
+plan_classifed_df <- as.data.frame(plan_classifed,xy=TRUE)%>%drop_na()
+plan_codes <- unique(plan_classifed_df["plan_curvature_cat"])
+plan_names <-c("concave", "flat", "convex")
+plan_colors <-c("#77d91d","#eff635","#0d3d83")
+```
+
+::: {style="color: #603494;"}
+## 6.0 Create Database {style="color: #603494;"}
+:::
+
+Before plotting the thematic maps with ggplot2, raster datasets are converted into data frames.
+
+```{r, code_folding=FALSE}
+
+precipitation_df <- as.data.frame(precipitation,xy=TRUE)%>%drop_na()
+tail(precipitation_df)
+elevation_df <- as.data.frame(elevation,xy=TRUE)%>%drop_na()
+twi_df <- as.data.frame(twi,xy=TRUE)%>%drop_na()
+lithology_df <- as.data.frame(lithology,xy=TRUE)%>%drop_na()
+profile_c_df <- as.data.frame(profile_c,xy=TRUE)%>%drop_na()
+plan_c_df <- as.data.frame(plan_c,xy=TRUE)%>%drop_na()
+slope_df <- as.data.frame(slope,xy=TRUE)%>%drop_na()
+distance_building_df <- as.data.frame(distance_building_final,xy=TRUE)%>%drop_na()
+distance_roads_df <- as.data.frame(distance_roads_final,xy=TRUE)%>%drop_na()
+distance_river_df <- as.data.frame(distance_river_final,xy=TRUE)%>%drop_na()
+distance_faults_df <- as.data.frame(distance_faults_final,xy=TRUE)%>%drop_na()
+hillshade_df <- as.data.frame(hillshade_final,xy=TRUE)%>%drop_na()
+```
+
+::: {style="color: #603494;"}
+## 7.0 Plot with ggplot2 {style="color: #603494;"}
+:::
+
+In this session, we will plot the various parametric data we prepared and processed in previous session into thematic maps. We will use the following functions from ggplot2 to plot these maps.
+
+-   [`geom_raster()`](https://ggplot2.tidyverse.org/reference/geom_tile.html) allows for visualizing `tiles` (such as raster).
+
+-   [`geom_sf()`](https://ggplot2.tidyverse.org/reference/ggsf.html) allows for visualizing `sf` objects.
+
+-   [`geom_sf()`](https://ggplot2.tidyverse.org/reference/ggsf.html) automatically detects the geometry type of spatial objects stored in `sf` and draw maps accordingly.
+
+#### 7.01 Average Precipitation
+
+Precipitation and subsequently rainfall directly affect landslide susceptibility through triggering soil and debris movement, and causing instability of soil layers.
+
+::: panel-tabset
+## Plot
+
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| echo: false
+
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=avgprecipitation_mm),data=precipitation_df)+
+  geom_sf(fill='transparent',data=valtellina_transformed)+
+  scale_fill_gradientn('avg precipitation \n(mm)', colours=c("#eff635","#e4c838","#99bf3e","#61adab","#5071ea","#4225df","#3310a2"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Average Precipitation Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Zindi') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+
+## Code
+
+::: {style="font-size: 1em"}
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| eval: false
+
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=avgprecipitation_mm),data=precipitation_df)+
+  geom_sf(fill='transparent',data=valtellina_transformed)+
+  scale_fill_gradientn('avg precipitation \n(mm)', colours=c("#eff635","#e4c838","#99bf3e","#61adab","#5071ea","#4225df","#3310a2"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Average Precipitation Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Zindi') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+:::
+:::
+
+#### 7.02 Elevation
+
+Elevation factor affects the landslide susceptibility in the way that higher elevations are generally more susceptible to landslides. Many studies observed higher frequency of landslides at higher elevation than lower elevation.
+
+::: panel-tabset
+## Plot
+
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| echo: false
+ggplot()+
+  geom_raster(data = hillshade_df,
+              aes(x, y, fill = hillshade),
+              show.legend = FALSE) +
+  scale_fill_distiller(palette = "Greys") +
+  new_scale_fill() +
+  geom_raster(aes(x=x,y=y,fill=elevation_m),data=elevation_df,alpha = .6)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('elevation (m)', colours=c("#aeede7","#cbe18d","#8cb066","#c87a4d","#936451","#dad3ce","#f3f3f3"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Elevation Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Shuttle Radar Topography Mission') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+
+## Code
+
+::: {style="font-size: 1em"}
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| eval: false
+ggplot()+
+  geom_raster(data = hillshade_df,
+              aes(x, y, fill = hillshade),
+              show.legend = FALSE) +
+  scale_fill_distiller(palette = "Greys") +
+  new_scale_fill() +
+  geom_raster(aes(x=x,y=y,fill=elevation_m),data=elevation_df,alpha = .6)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('elevation (m)', colours=c("#aeede7","#cbe18d","#8cb066","#c87a4d","#936451","#dad3ce","#f3f3f3"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Elevation Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Shuttle Radar Topography Mission') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+:::
+:::
+
+#### 
+
+#### 7.02 Toporgraphic Wetness Index
+
+Topographic wetness index (TWI) describe the impacts of topographic factors on the soil moisture content along the runoff areas and can be used to describe the hydrological influences on landslide occurrences.
+
+::: panel-tabset
+## Plot
+
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| echo: false
+
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=twi_),data=twi_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('twi', colours=c("#9beef0", "#59c1ed", "#0096e6", "#006ad5", "#0036b4", "#020295"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Topographic Wetness Index Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Zindi') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+
+## Code
+
+::: {style="font-size: 1em"}
+```{r}
+#| eval: false
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=twi_),data=twi_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('twi', colours=c("#9beef0", "#59c1ed", "#0096e6", "#006ad5", "#0036b4", "#020295"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Topographic Wetness Index Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Zindi') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+:::
+:::
+
+#### 7.03 Lithology
+
+Lithology refers to the type of rock that makes up a slope. Different rock types have different inherent characteristics that affect the distribution of slope instability, which can results in landslide occurrences.
+
+::: panel-tabset
+## Plot
+
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| echo: false
+
+litho_colors <-c("#9cecfb","#fff204","#eed2c4","#ed6f05","#0d07e8",
+                   "#ee138d","#fe0902","#1bd7ff","#f582af","#c0e36c",
+                   "#712dfe","#4ccea0","#fffeba")
+
+
+# Plotting
+litho_map <- ggplot()+
+  geom_sf(aes(fill=code),color='transparent',data=lithology)+
+  scale_fill_manual(name = "lithology class",
+                    values = litho_colors,
+                    na.translate = FALSE)+
+  coord_sf(expand=FALSE)+
+  labs(title="Lithology Classification Map",
+       subtitle='Valtellina Valley, Italy',
+       caption=c('Source: Bucci et a., (2021)'))+
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = FALSE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+litho_map
+```
+
+## Code
+
+::: {style="font-size: 1em"}
+```{r}
+#| eval: false
+litho_colors <-c("#9cecfb","#fff204","#eed2c4","#ed6f05","#0d07e8",
+                   "#ee138d","#fe0902","#1bd7ff","#f582af","#c0e36c",
+                   "#712dfe","#4ccea0","#fffeba")
+
+
+# Plotting
+ggplot()+
+  geom_sf(aes(fill=code),color='transparent',data=lithology)+
+  scale_fill_manual(name = "lithology class",
+                    values = litho_colors,
+                    na.translate = FALSE)+
+  coord_sf(expand=FALSE)+
+  labs(title="Lithology Classification Map",
+       subtitle='Valtellina Valley, Italy',
+       caption=c('Source: Bucci et a., (2021)'))+
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = FALSE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+
+```
+:::
+:::
+
+#### 7.04 Profile Curvature
+
+Profile curvature refers to curvature of a slope profile, which is the line that intersects the slope surface at right angles. It can be convex, concave, or linear.
+
+::: panel-tabset
+## Plot
+
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| echo: false
+
+ggplot(data=profile_classifed_df)+
+  geom_raster(aes(x=x,y=y,fill=as.character(profile_curvature_cat)))+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_manual(name = "curvature type",
+                    values = profile_colors,
+                    labels = profile_names,
+                    na.translate = FALSE)+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Profile Curvature Classification Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Shuttle Radar Topography Mission') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = FALSE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+
+
+```
+
+## Code
+
+::: {style="font-size: 1em"}
+```{r}
+#| eval: false
+ggplot(data=profile_classifed_df)+
+  geom_raster(aes(x=x,y=y,fill=as.character(profile_curvature_cat)))+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_manual(name = "curvature type",
+                    values = profile_colors,
+                    labels = profile_names,
+                    na.translate = FALSE)+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Profile Curvature Classification Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Shuttle Radar Topography Mission') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = FALSE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+:::
+:::
+
+#### 7.05 Plan Curvature
+
+Plan (or planform) curvature refers to the curvature of a slope in the horizontal plane. It can be convex, concave, or linear.
+
+::: panel-tabset
+## Plot
+
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| echo: false
+#| 
+ggplot(data=plan_classifed_df)+
+  geom_raster(aes(x=x,y=y,fill=as.character(plan_curvature_cat)))+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_manual(name = "curvature type",
+                    values = plan_colors,
+                    labels = plan_names,
+                    na.translate = FALSE)+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Plan Curvature Classification Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Shuttle Radar Topography Mission') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = FALSE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+
+## Code
+
+::: {style="font-size: 1em"}
+```{r}
+#| eval: false
+ggplot(data=plan_classifed_df)+
+  geom_raster(aes(x=x,y=y,fill=as.character(plan_curvature_cat)))+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_manual(name = "curvature type",
+                    values = plan_colors,
+                    labels = plan_names,
+                    na.translate = FALSE)+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Plan Curvature Classification Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Shuttle Radar Topography Mission') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = FALSE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+:::
+:::
+
+#### 7.06 Slope Angle
+
+Slope angle refers to the angle of inclination of the slope surface, measured from the horizontal. It is usually expressed in degrees. Slope angles are directly influential in landslide susceptibility because they controls the movement of materials based on gravity.
+
+::: panel-tabset
+## Plot
+
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| echo: false
+  
+ggplot()+
+  geom_raster(data = hillshade_df,
+              aes(x, y, fill = hillshade),
+              show.legend = FALSE) +
+  scale_fill_distiller(palette = "Greys") +
+  new_scale_fill() +
+  geom_raster(aes(x=x,y=y,fill=slope_degree),data=slope_df, alpha = .6)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('twi', colours=c("#ffc809", "#ff7d04","#ff163b","#cc01b8", "#0000ff"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Slope Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Shuttle Radar Topography Mission') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+
+## Code
+
+::: {style="font-size: 1em"}
+```{r}
+#| eval: false
+ggplot()+
+  geom_raster(data = hillshade_df,
+              aes(x, y, fill = hillshade),
+              show.legend = FALSE) +
+  scale_fill_distiller(palette = "Greys") +
+  new_scale_fill() +
+  geom_raster(aes(x=x,y=y,fill=slope_degree),data=slope_df, alpha = .6)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('twi', colours=c("#ffc809", "#ff7d04","#ff163b","#cc01b8", "#0000ff"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Slope Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Shuttle Radar Topography Mission') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+:::
+:::
+
+#### 7.07 Distance to Settlements
+
+Distance to settlements refers to the Euclidean distance between the point of interest and the nearest human settlements. Expansion of settlements often leads to modification of the natural geomorphology of the area. This can destabilize slopes and impose landslide risk.
+
+::: panel-tabset
+## Plot
+
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| echo: false
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=distance_to_building_m),data=distance_building_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('proxmity (m)', colours=c("#A7226E","#F26B38","#F7DB4F","#DFD7BF"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Distance to Settlements Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: OpenStreetMap') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+
+## Code
+
+::: {style="font-size: 1em"}
+```{r}
+#| eval: false
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=distance_to_building_m),data=distance_building_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('proxmity (m)', colours=c("#A7226E","#F26B38","#F7DB4F","#DFD7BF"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Distance to Settlements Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: OpenStreetMap') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+:::
+:::
+
+#### 7.08 Distance to Roads
+
+Distance to roads refers to the Euclidean distance between the point of interest and the nearest road network segments. Transport lines such as roads may increase landslide risk through oversteepening.
+
+::: panel-tabset
+## Plot
+
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| echo: false
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=distance_to_roads_m),data=distance_roads_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('proximity (m)', colours=c("#f5214e","#f5913e","#ffe201","#05a160","#0094d7","#6f69b0"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Distance to Roads Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: OpenStreetMap') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+
+## Code
+
+::: {style="font-size: 1em"}
+```{r}
+#| eval: false
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=distance_to_roads_m),data=distance_roads_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('proximity (m)', colours=c("#f5214e","#f5913e","#ffe201","#05a160","#0094d7","#6f69b0"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Distance to Roads Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: OpenStreetMap') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+:::
+:::
+
+#### 7.09 Distance to Rivers/Streams
+
+Distance to rivers/streams refers to the Euclidean distance between the point of interest and the nearest rivers or streams. Movement of water can erode and cause "undercuts" to the base of an slope, making it oversteepened and unstable. This can drive landslide risks.
+
+::: panel-tabset
+## Plot
+
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| echo: false
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=distance_to_river_m),data=distance_river_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('proximity (m)', colours=c("#4f659d","#5dabba","#56d39c","#5fee4f","#eef456","#fbde4e", "#edb174", "#d78272"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Distance to Rivers Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Zindi') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+
+## Code
+
+::: {style="font-size: 1em"}
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| eval: false
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=distance_to_river_m),data=distance_river_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_gradientn('proximity (m)', colours=c("#4f659d","#5dabba","#56d39c","#5fee4f","#eef456","#fbde4e", "#edb174", "#d78272"))+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Distance to Rivers Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Zindi') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+:::
+:::
+
+#### 7.10 Distance to Faults
+
+Distance to rivers/streams refers to the Euclidean distance between the point of interest and the nearest geological faults. Faults refers to tectonic breaks or fractures between blocks of rocks, hence decreasing the strength of the rock. Areas closer to the faults are more prone to landslide than the area further away.
+
+::: panel-tabset
+## Plot
+
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| echo: false
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=distance_to_faults_m_1),data=distance_faults_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+   scale_fill_gradientn('proximity (m)', colours=c("#f5214e","#f5913e","#ffe201","#05a160","#0094d7","#6f69b0"))+
+  labs(x='Longitude',y='Latitude',
+       title="Distance to Faults Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Zindi') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+
+## Code
+
+::: {style="font-size: 1em"}
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| eval: false
+ggplot()+
+  geom_raster(aes(x=x,y=y,fill=distance_to_faults_m_1),data=distance_faults_df)+
+  geom_sf(fill='transparent',data=valtellina)+
+   scale_fill_gradientn('proximity (m)', colours=c("#f5214e","#f5913e","#ffe201","#05a160","#0094d7","#6f69b0"))+
+  labs(x='Longitude',y='Latitude',
+       title="Distance to Faults Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Zindi') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = TRUE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+:::
+:::
+
+#### 7.11 Slope Aspect Direction
+
+Slope aspect direction refers to the direction that a slope faces. It is usually expressed as a compass direction, such as north, south, east, or west. Aspect affects the exposure to sunlight, wind and precipitation thereby indirectly affecting other factors that contribute to landslides such as soil moisture, vegetation cover and soil thickness.
+
+::: panel-tabset
+## Plot
+
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| echo: false
+
+reclass_df <- c(-0.1, 51.4283882, 1,
+                51.4283883, 102.8567766 , 2,
+                102.8567767, 154.285164 , 3,
+                154.285165, 205.7135532 , 4,
+                205.7135533, 257.1419415, 5,
+                257.1419416, 308.57032, 6,
+                308.57033, 359.99868, 7,
+                359.99869, 360, 8)
+reclass_m <- matrix(reclass_df,ncol = 3,byrow = TRUE)
+
+aspect_classifed <- reclassify(aspect,reclass_m)
+aspect_classifed_df <- as.data.frame(aspect_classifed,xy=TRUE)%>%drop_na()
+
+aspect_names <-c("N","NE","E","SE","S","SW","W","NW")
+aspect_colors <-c("#84d601","#08ab44","#0068c0","#6c00a3","#ca009d","#ff5668","#ffab47","#f4fa03")
+
+aspect_map <- ggplot(data=aspect_classifed_df)+
+  geom_raster(aes(x=x,y=y,fill=as.character(aspect_cat)))+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_manual(name = "direction",
+                    values = aspect_colors,
+                    labels = aspect_names,
+                    na.translate = FALSE)+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Aspect Direction Classification Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Shuttle Radar Topography Mission') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = FALSE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+aspect_map
+```
+
+## Code
+
+::: {style="font-size: 1em"}
+```{r, code_folding=FALSE, results='hide', message=FALSE, warning=FALSE}
+#| eval: false
+reclass_df <- c(-0.1, 51.4283882, 1,
+                51.4283883, 102.8567766 , 2,
+                102.8567767, 154.285164 , 3,
+                154.285165, 205.7135532 , 4,
+                205.7135533, 257.1419415, 5,
+                257.1419416, 308.57032, 6,
+                308.57033, 359.99868, 7,
+                359.99869, 360, 8)
+reclass_m <- matrix(reclass_df,ncol = 3,byrow = TRUE)
+
+aspect_classifed <- reclassify(aspect,reclass_m)
+aspect_classifed_df <- as.data.frame(aspect_classifed,xy=TRUE)%>%drop_na()
+
+aspect_names <-c("N","NE","E","SE","S","SW","W","NW")
+aspect_colors <-c("#84d601","#08ab44","#0068c0","#6c00a3","#ca009d","#ff5668","#ffab47","#f4fa03")
+
+ggplot(data=aspect_classifed_df)+
+  geom_raster(aes(x=x,y=y,fill=as.character(aspect_cat)))+
+  geom_sf(fill='transparent',data=valtellina)+
+  scale_fill_manual(name = "direction",
+                    values = aspect_colors,
+                    labels = aspect_names,
+                    na.translate = FALSE)+
+  coord_sf(expand=FALSE)+
+  labs(x='Longitude',y='Latitude',
+       title="Aspect Direction Classification Map",
+       subtitle='Valtellina Valley, Italy',
+       caption='Source: Shuttle Radar Topography Mission') +
+  cowplot::theme_cowplot()+
+  theme(panel.grid.major = element_line(color = gray(.5),
+                                        linetype = 'dashed',
+                                        linewidth = 0.1),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill=NA,color = 'black'),
+        panel.ontop = FALSE,
+        axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 9))
+```
+:::
+:::
