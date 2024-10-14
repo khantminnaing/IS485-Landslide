@@ -24,7 +24,7 @@ output:
 Careful consideration and acquisition of appropriate data for various landslide susceptibility factors is of equal significance. To this end, Geoportale della Lombardia has maintained a comprehensive collection of geospatial data tailored for the Lombardy Region. Moreover, the digital lithology compiled by Bucci et al. has furnished an extensive classification of geological formations in Italy at a scale of 1:100 000. A selection and preparation of 15 landslide susceptibility factors have been undertaken for this study. These factors encompass a wide range of geological, topological, meteorological, hydrological, and human-related aspects.
 
 | Factor                            | Source (Final Data Type)                          | Scale       | Type         |
-|------------------|--------------------|------------------|------------------|
+|----------------------|-------------------------|-------------|-------------|
 | **Topographic Factors**           |                                                   |             |              |
 | \(1\) Elevation                   | Geoportale della Lombardia, DEM Derived (Raster)  | 15 × 15 m   | Continuous   |
 | \(2\) Slope Angle                 | Geoportale della Lombardia, DEM Derived (Raster)  | 15 × 15 m   | Continuous   |
