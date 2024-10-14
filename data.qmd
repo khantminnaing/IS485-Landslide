@@ -16,3 +16,30 @@ output:
     toc_depth: 4
     self_contained: false
 ---
+
+:: {style="color: #603494;"}
+#### **Landslide Factors Dataset Overview** {style="color: #603494;"}
+:::
+
+| Factor                            | **Source (Final Data Type)**                      | Scale       | Type         |
+|-----------------------|----------------------------|--------------|------------|
+| **Topographic Factors**           |                                                   |             |              |
+| \(1\) Elevation                   | Geoportale della Lombardia, DEM Derived (Raster)  | 15 × 15 m   | Continuous   |
+| \(2\) Slope Angle                 | Geoportale della Lombardia, DEM Derived (Raster)  | 15 × 15 m   | Continuous   |
+| \(3\) Aspect                      | Geoportale della Lombardia, DEM Derived (Raster)  | 15 × 15 m   | Categorial   |
+| \(4\) Profile Curvature           | Geoportale della Lombardia, DEM Derived (Raster)  | 15 × 15 m   | Continuous   |
+| \(5\) Plan Curvature              | Geoportale della Lombardia, DEM Derived (Raster)  | 15 × 15 m   | Continuous   |
+| **Geological Factors**            |                                                   |             |              |
+| \(6\) Lithology                   | Bucci et al., 2021 (Raster)                       | 1:100 000   | Categorical  |
+| \(7\) Distance to Faults          | Geoportale della Lombardia, DEM Derived (Raster)  | 15 × 15 m   | Continuous   |
+| **Meteorological Factors**        |                                                   |             |              |
+| \(8\) Average Precipitation       | ARPA Lombardia (Raster)                           | 15 × 15 m   | Continuous   |
+| **Hydrological Factors**          |                                                   |             |              |
+| \(9\) Distance to Streams         | Geoportale della Lombardia (Raster)               | 15 × 15 m   | Continuous   |
+| \(10\) Topographic Wetness Index  | Geoportale della Lombardia, DEM Derived (Raster)  | 15 × 15 m   | Continuous   |
+| \(11\) Steam Power Index          | Geoportale della Lombardia, DEM Derived (Raster)  | 15 × 15 m   | Continuous   |
+| \(12\) Sediment Transport Index   | Geoportale della Lombardia, DEM Derived (Raster)  | 15 × 15 m   | Continuous   |
+| **Anthropogenic Factors**         |                                                   |             |              |
+| \(13\) Distance to Settlements    | OpenStreetMap (Raster)                            | 15 × 15 m   | Continuous   |
+| \(14\) Distance to Road Networks  | Geoportale della Lombardia (Raster)               | 15 × 15 m   | Continuous   |
+| \(15\) Land Use Land Cover        | Geoportale della Lombardia (Raster)               | 15 × 15 m   | Categorial   |
