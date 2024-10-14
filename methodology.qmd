@@ -1,6 +1,8 @@
 ## Research Methodology
 
-### 1.0 Existing Methodology Approaches
+::: {style="color: #603494;"}
+### **Existing Methodology Approaches** {style="color: #603494;"}
+:::
 
 Landslide susceptibility assessment is an emerging research area of both importance and urgency and several approaches and models have been explored in scientific literature. These models can be generally categorized into four categories: expert-based, physically-based, statistical and machine learning-based.
 
@@ -16,7 +18,7 @@ Nevertheless, previous research has demonstrated that each model type has its un
 
 ### 2.0 Spatial Nonstationarity and Spatial Heterogeneity
 
-Many models using large spatial datasets for landslide risk prediction often overlook spatial nonstationarity. This occurs when global models assume uniformity in variable relationships across space, ignoring local variations. Failing to address spatial nonstationarity limits a model\'s ability to capture spatial autocorrelation, where nearby values are more similar than those farther apart. Consequently, such models lack adaptability to inherent spatial properties, potentially affecting their accuracy and applicability in complex environments.
+Many models using large spatial datasets for landslide risk prediction often overlook spatial nonstationarity. This occurs when global models assume uniformity in variable relationships across space, ignoring local variations. Failing to address spatial nonstationarity limits a model's ability to capture spatial autocorrelation, where nearby values are more similar than those farther apart. Consequently, such models lack adaptability to inherent spatial properties, potentially affecting their accuracy and applicability in complex environments.
 
 In 1996, Fotheringham, Charlton, and Brunson highlighted the impact of spatial nonstationarity on regression parameter estimates in geospatial datasets. They argued that relying on a global estimate of relationships can obscure important geographical variations within the data. Models not calibrated to underlying spatial properties often produce less realistic inferences and overlook underlying spatial structures. This issue, known as spatial nonstationarity, arises when a global model cannot accurately represent the relationships between variables due to local spatial variations, violating the assumption that these relationships remain constant across space.
 

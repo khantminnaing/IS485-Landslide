@@ -5,7 +5,7 @@ title: "Is There a Space in Landslide Susceptibility Modelling: A Case Study of 
 ![](images/landslides%20(4).png)
 
 ::: {style="color: #603494;"}
-#### Introduction {style="color: #603494;"}
+#### **Introduction** {style="color: #603494;"}
 :::
 
 Landslides, the failure and mass movement of slopes, have increased tenfold over the past five decades. Driven by tectonic, climatic, and human activities, they pose significant threats to infrastructure and urban communities, causing costly damage and displacement. While engineering solutions like concrete surfacing and terracing mitigate risks on gradual slopes, steeper terrains require more complex and expensive interventions. Implementing landslide susceptibility maps can aid urban planning by prioritizing high-risk areas, guiding preventive measures, and assessing site suitability for new developments.
@@ -15,7 +15,7 @@ As a result, landslide susceptibility modeling has emerged as a timely and cruci
 In this project, presented by **Khant Min Naing** and **Victoria Grace Ann** from *Singapore Management University*, we explore the potential of integrating spatial properties into generalised statistical and machine learning based landslide models. Using Valtellina Valley in Italy as a case study, this study developed and trained three spatial landslide models, **Geographically Weighted Logistic Regression (GWLR)**, **Moran's Eigenvector Random Forest (MERF)** and **Geographically Weighted Random Forest (GWRF)** and proposes an I**ntegrated Dual Geographical Random Forest Framework (Dual GRF)** leveraging on MERF and GWRF. The findings demonstrate that spatial models outperform global baseline models and result in more spatially-adaptive landslide risk predictions and interpretations.
 
 ::: {style="color: #603494;"}
-#### Academic Recognition {style="color: #603494;"}
+#### **Academic Recognition** {style="color: #603494;"}
 :::
 
 This project has achieved significant academic recognition, resulting in two peer-reviewed publications. Additionally, the findings have been presented at two prestigious academic conferences, renowned within the fields of computational science and geospatial information systems. These accomplishments highlight the project's contribution to advancing knowledge and its impact on the academic community.
