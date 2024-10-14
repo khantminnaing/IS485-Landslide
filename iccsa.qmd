@@ -12,7 +12,7 @@ output:
     self_contained: false
 ---
 
-![](images/IMG_4166 2-01.JPG){fig-align="center"}
+![](images/IMG_4166 2-01.JPG){fig-align="center" width="100%"}
 
 # What's up in Hanoi?
 
