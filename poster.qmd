@@ -2,7 +2,7 @@
 title: "Research Poster"
 author:
   - name: Khant Min Naing
-  - name: Ann Mei Yi Victoria Grace
+  - name: Victoria Grace Ann
 date: 01-07-2024 
 date-modified: "last-modified"
 output:
@@ -12,4 +12,4 @@ output:
     self_contained: false
 ---
 
-![](images/GeoFest (2)_page-0001.jpg)
+![](images/GeoFest%20(2)_page-0001.jpg)

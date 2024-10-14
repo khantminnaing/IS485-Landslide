@@ -1078,3 +1078,7 @@ ggplot(data=aspect_classifed_df)+
 ```
 :::
 :::
+
+**Spatial Weights**
+
+Spatial weights are a key component in any cross-sectional analysis of spatial dependence. They are an essential element in the construction of spatial autocorrelation statistics, and provide the means to create spatially explicit variables, such as spatially lagged variables and spatially smoothed rates. Formally, the weights express the neighbour structure between the observations as a n×n matrix, in which the elements w~ij~ of the matrix are the spatial weights.

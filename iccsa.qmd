@@ -2,7 +2,7 @@
 title: "Reflections on ICCSA 2024"
 author:
   - name: Khant Min Naing
-  - name: Ann Mei Yi Victoria Grace
+  - name: Victoria Grace Ann
 date: 03-07-2024 
 date-modified: "last-modified"
 categories:

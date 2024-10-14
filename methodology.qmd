@@ -4,7 +4,7 @@
 #### **Existing Methodology Approaches** {style="color: #603494;"}
 :::
 
-Landslide susceptibility assessment is an emerging research area of both importance and urgency and several approaches and models have been explored in scientific literature. These models can be generally categorized into four categories: expert-based, physically-based, statistical and machine learning-based.
+Landslide susceptibility assessment is an emerging research area of both importance and urgency and several approaches and models have been explored in scientific literature. These models can be generally categorized into four categories: expert-based, physically-based, statistical and machine learning-based. 
 
 -   Physically-based models are of the highest utility in theory, but such models often face challenges and uncertainties for real-world application due to the limited availability of spatially differentiated geotechnical data.
 
