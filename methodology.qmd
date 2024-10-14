@@ -1,7 +1,7 @@
 ## Research Methodology
 
 ::: {style="color: #603494;"}
-### **Existing Methodology Approaches** {style="color: #603494;"}
+#### **Existing Methodology Approaches** {style="color: #603494;"}
 :::
 
 Landslide susceptibility assessment is an emerging research area of both importance and urgency and several approaches and models have been explored in scientific literature. These models can be generally categorized into four categories: expert-based, physically-based, statistical and machine learning-based.
@@ -16,17 +16,21 @@ Landslide susceptibility assessment is an emerging research area of both importa
 
 Nevertheless, previous research has demonstrated that each model type has its unique strengths and limitations, and choosing an appropriate model depends largely on various factors, such as interpretability, generalisability, and the specific research objectives.
 
-### 2.0 Spatial Nonstationarity and Spatial Heterogeneity
+::: {style="color: #603494;"}
+#### **Spatial Nonstationarity and Spatial Heterogeneity** {style="color: #603494;"}
+:::
 
 Many models using large spatial datasets for landslide risk prediction often overlook spatial nonstationarity. This occurs when global models assume uniformity in variable relationships across space, ignoring local variations. Failing to address spatial nonstationarity limits a model's ability to capture spatial autocorrelation, where nearby values are more similar than those farther apart. Consequently, such models lack adaptability to inherent spatial properties, potentially affecting their accuracy and applicability in complex environments.
 
 In 1996, Fotheringham, Charlton, and Brunson highlighted the impact of spatial nonstationarity on regression parameter estimates in geospatial datasets. They argued that relying on a global estimate of relationships can obscure important geographical variations within the data. Models not calibrated to underlying spatial properties often produce less realistic inferences and overlook underlying spatial structures. This issue, known as spatial nonstationarity, arises when a global model cannot accurately represent the relationships between variables due to local spatial variations, violating the assumption that these relationships remain constant across space.
 
-### 3.0 Research Objectives
+::: {style="color: #603494;"}
+#### **Research Objectives** {style="color: #603494;"}
+:::
 
 Our study focuses on comparing the performance and applications of statistical and machine learning models in landslide susceptibility assessment. In particular, our study compares **global models** and **their spatial derivatives** in incorporating spatial relationships into landslide susceptibility modeling, guided by two key questions.
 
-#### 3.1 Explanatory Modelling
+#### Explanatory Modelling
 
 1.  What are the (i) landform properties and (ii) human-environment interaction factors affecting landslide susceptibility? Is landslide susceptibility independent geospatially?
 
@@ -34,33 +38,39 @@ Our study focuses on comparing the performance and applications of statistical a
 
 3.  Does the contribution landslide factors vary across the study area?
 
-#### 3.2 Predictive Modelling
+#### Predictive Modelling
 
 1.  How can spatial relationships and local dependencies be accounted in generalised statistical and machine learning models?
 
 2.  Do spatially-calibrated models perform better predictions than generalised baseline models?
 
-### 4.0 Research Design
+::: {style="color: #603494;"}
+#### **Research Methodology** {style="color: #603494;"}
+:::
 
 ![](images/GeoFest3.png)
 
-### 5.0 Model Overview
+::: {style="color: #603494;"}
+#### **Model Overview** {style="color: #603494;"}
+:::
 
-#### 5.1 Geographically Weighted Regression (GWR)
+#### Geographically Weighted Regression (GWR)
 
 In practice, relationships between variables may be nonstationary. However, traditional regression models assume that predictors and outcome variables are spatially homogeneous, or stationary.
 
 Ordinary least squares (OLS) linear regression is a standard global modelling technique that cannot detect nonstationarity, and thus using it may obscure regional variation in the relationships between predictors and the outcome variable.Geographically Weighted Regression (GWR) is a local regression framework proposed by Fotheringham, Charlton and Brunson. This model is suited for spatial analysis as it extends traditional and global regression frameworks such as Ordinary Least Squares (OLS) by integrating spatial weights and generating local-level model statistics.
 
-#### 5.2 Moran's Eigenvector Random Forest (MERF)
+#### Moran's Eigenvector Random Forest (MERF)
 
 Building upon the concept of Moran's Eigenvector Maps (MEMs), Benito introduced a spatial RF model incorporating spatial dependency. This model, termed Moran's Eigenvector Random Forest (MERF) in this study, first generates MEMs from a weight matrix. MEMs have two important properties. First, they are orthogonal unit vectors that maximize Moran's I, a measure of spatial autocorrelation. Second, their associated eigenvalues are equal to the Moran's I coefficients, describing the strength of local spatial structures. MERF hence uses MEMs as variables of spatial predictors when fitting a standard, non-spatial RF model. Directly incorporating these spatial predictors during model training enables MERF to integrate underlying spatial dependence in the data that a standard, nonspatial global RF would otherwise ignore. Chiefly, the MERF model allows RF to learn patterns related to spatial autocorrelation that would improve its ability to model spatially structured phenomena like landslides.
 
-#### 5.3 Geographically Weighted Random Forest (GWRF)
+#### Geographically Weighted Random Forest (GWRF)
 
 Proposed by Georganos and Kalogirou, GWRF is the spatial disaggregation of the classic RF model into an ensemble of local models. This formulation is based on the principles of the Geographically Weighted Regression (GWR) framework wherein a global process is decomposed into several local submodels. This methodology implies that spatial interactions are more effectively captured through an ensemble of local models rather than incorporating numerous spatial predictors into a single global model, as seen in the MERF approach.
 
-### 6.0 References
+::: {style="color: #603494;"}
+#### **References** {style="color: #603494;"}
+:::
 
 1.  Cascini, L.: Applicability of landslide susceptibility and hazard zoning at different scales. Engineering Geology. 102, 164--177 (2008).
 
