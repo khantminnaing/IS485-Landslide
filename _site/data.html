@@ -188,18 +188,22 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>:: {style=“color: #603494;”} #### <strong>Landslide Factors Dataset Overview</strong> {style=“color: #603494;”} :::</p>
+<section id="landslide-factors-dataset-overview" class="level4" style="color: #603494;">
+<h4 style="color: #603494;" class="anchored" data-anchor-id="landslide-factors-dataset-overview"><strong>Landslide Factors Dataset Overview</strong></h4>
+</section>
+<p>Careful consideration and acquisition of appropriate data for various landslide susceptibility factors is of equal significance. To this end, Geoportale della Lombardia has maintained a comprehensive collection of geospatial data tailored for the Lombardy Region. Moreover, the digital lithology compiled by Bucci et al.&nbsp;has furnished an extensive classification of geological formations in Italy at a scale of 1:100 000. A selection and preparation of 15 landslide susceptibility factors have been undertaken for this study. These factors encompass a wide range of geological, topological, meteorological, hydrological, and human-related aspects.</p>
 <table class="table">
+<caption>Summary of Landslide Factors used for Landslide Susceptibility Modelling&nbsp;</caption>
 <colgroup>
-<col style="width: 29%">
-<col style="width: 36%">
-<col style="width: 18%">
-<col style="width: 15%">
+<col style="width: 24%">
+<col style="width: 27%">
+<col style="width: 24%">
+<col style="width: 24%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>Factor</th>
-<th><strong>Source (Final Data Type)</strong></th>
+<th>Source (Final Data Type)</th>
 <th>Scale</th>
 <th>Type</th>
 </tr>
@@ -327,8 +331,104 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
+<section id="topographic-factors" class="level4">
+<h4 class="anchored" data-anchor-id="topographic-factors">Topographic Factors</h4>
+<p>Five topographic elements identified - elevation, slope angle, aspect, profile curvature, and plan curvature - are extracted from the 5m digital elevation model image. Elevations in landslide occurrence are largely attributed to its correlation with various climatic variables and slope angles have a large control over mass movements. Aspect, or slope direction, is indicative of the moisture content and solar exposure of the slope surface. Curvatures are variations in slope gradients. Profile and planar curvatures are two measures extensively used in landslide modelling, due to their direct impact on mass movement and flow. While profile curvature manages the speed of flow, plan curvature controls the direction of mass movement along a terrain. Curvature maps are classified into three categories: concave, flat, and convex.</p>
+<table class="table">
+<colgroup>
+<col style="width: 47%">
+<col style="width: 52%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><img src="images/elevation_m-01.png" class="img-fluid" alt="Elevation"></td>
+<td><img src="images/slope_degree-01.png" class="img-fluid" alt="Slope Angle"></td>
+</tr>
+<tr class="even">
+<td><img src="images/aspect-01.png" class="img-fluid" alt="Aspect"></td>
+<td><img src="images/profile_curvature-01.png" class="img-fluid" alt="Profile Curvature"></td>
+</tr>
+<tr class="odd">
+<td><img src="images/plan_curvature-01.png" class="img-fluid" alt="Plan Curvature"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="geological-factors" class="level4">
+<h4 class="anchored" data-anchor-id="geological-factors">Geological Factors</h4>
+<p>The two geological factors used are lithology and distance to fault. Lithological modifications affect the durability and compactness of soils and rocks and serve as important indicators of potential slope failures. The lithology classification of the study area is ​extracted from the​ 1:100000 Italy ​Geological Map​ provided by Bucci et al.&nbsp;led to 13 lithological classes. They were further categorized into metamorphic, plutonic, sedimentary rock, volcanic and unconsolidated classes. Faults are fractures between blocks of rock, along which displacements and mass movements can occur. Closer to major faults, the fracture density of a plane is greater and this produces more debris while reducing rock strength.</p>
+<table class="table">
+<colgroup>
+<col style="width: 41%">
+<col style="width: 58%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><img src="images/lithology-01.png" class="img-fluid" alt="Lithology"></td>
+<td><img src="images/distance_fault-01.png" class="img-fluid" alt="Distance to Faults"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="meteorological-factors" class="level4">
+<h4 class="anchored" data-anchor-id="meteorological-factors">Meteorological Factors</h4>
+<p>Meteorological factors refer to the various weather conditions. In context of landslides, weather patterns, particularly precipitation, play a significant role. Heavy and prolonged rainfall can saturate and weak the underlying soils and rocks that form slopes, leading to slope instability and subsequently rainfall-induced landslides. This study uses average precipitation data to model landslide susceptibility.</p>
+<table class="table">
+<colgroup>
+<col style="width: 94%">
+<col style="width: 5%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><img src="images/precipitation-01.png" class="img-fluid" alt="Average Precipitation"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hydrological-factors" class="level4">
+<h4 class="anchored" data-anchor-id="hydrological-factors">Hydrological Factors</h4>
+<p>Hydrological factors also stimulate landslides. Four relevant hydrological factors explored in this study are distance to streams, ​Topographic Wetness Index (TWI​), ​Stream Power Index (SPI​) and Sediment Transport Index (STI). Proximity to streams gives a direct hydrological input that saturates soil and increases pore water pressures weakening slopes. TWI is a measure of topographic control on hydrological processes and soil moisture distribution [50] and areas with higher TWI values indicate greater concentration of hydrological flow and soil saturation. Increased soil moisture reduces shear strength and causes slope failures. SPI encapsulates hydrological​ processes in natural terrains and quantifies their erosive power based on flow accumulation and slope. Higher SPI is indicative of greater fluvial erosive power and potential slope undercutting. These hydrological factors capture important hydrological processes affecting slope stability: direct hydrological loading from proximity to streams; distributed soil patterns from TWI; and fluvial erosion power from SPI.</p>
+<table class="table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 49%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><img src="images/distance_streams-01.png" class="img-fluid" alt="Distance to Streams"></td>
+<td><img src="images/twi-01.png" class="img-fluid" alt="Topographic Wetness Index"></td>
+</tr>
+<tr class="even">
+<td><img src="images/spi-01.png" class="img-fluid" alt="Steam Power Index"></td>
+<td><img src="images/sti-01.png" class="img-fluid" alt="Sediment Transport Index"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="anthropogenic-factors" class="level4">
+<h4 class="anchored" data-anchor-id="anthropogenic-factors">Anthropogenic Factors</h4>
+<p>Anthropogenic factors pertain to human-induced changes that influence the predisposing characteristics of slopes and soils. This study focuses on distance to settlements, distance to road networks and ​land use land cover. The​ construction of road networks has a strong correlation with landslide susceptibility as it cuts slopes that alter natural topography and degrade slope stability. Manmade structures can exert substantial loads on the terrain and displace surfaces. Land cover is another crucial indicator of human alteration of vegetation areas. Previous research has also underlined the importance of landslide susceptibility assessment.&nbsp;&nbsp;</p>
+<table class="table">
+<colgroup>
+<col style="width: 51%">
+<col style="width: 48%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><img src="images/distance_settlement-01.png" class="img-fluid" alt="Distance to Settlements"></td>
+<td><img src="images/distance_road-01.png" class="img-fluid" alt="Distance to Road Networks"></td>
+</tr>
+<tr class="even">
+<td><img src="images/lulc-01.png" class="img-fluid" alt="Land Use Land Cover"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
