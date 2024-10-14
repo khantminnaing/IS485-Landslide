@@ -8,7 +8,7 @@ title: "Study Area"
 
 **Valtellina Valley, Lombardy Region, Italy**
 
-![](images/study_area-01.png)
+![](images/study_area_31.png)
 
 Valtellina Valley, located in the Central Alps of Northern Italy, is chosen as the study area. The valley extends between 515,000 metres and 620,000 metres in easting (9.24°E to 10.63°E in longitude), and between 5,050,000 metres and 5,170,000 metres in northing (46.00°N to 46.64°N in latitude) and covers about 3308 square kilometres. The average mountain elevation there ranges from 2,500 to 3,000 meters with the bottom of the valley lying about 1000 to 1100 metres above sea level. The valley is cut by the Adda River flowing from North to South and characterized by a superimposed fluvial morphology and high steep slopes, akin to typical alpine glacial valleys \[1\]. The geomorphological features of the valley exhibit a pronounced contrast between its opposing slopes. The East--West orientation of the valley is also attributed to the geologic fault called the Periadriatic Seam, which imposes tectonic lineament upon the valley \[2\].
 
