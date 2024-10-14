@@ -17,6 +17,16 @@ output:
     self_contained: false
 ---
 
+
+The data inventory in this study comprises two main components: historic landslide data samples and landslide factor variables. 
+
+::: {style="color: #603494;"}
+#### **Landslide Inventory** {style="color: #603494;"}
+:::
+
+A total of 10,483 instances of translational, rotational shallow landslides, and debris flows were gathered from the Inventory of Landslide Phenomena in Italy (IFFI), which is a national data initiative between the Italian Institute for Environmental Protection and Research (ISPRA) [29] and regional and autonomous provinces. Additionally, non-landslide samples provided by the Geomatics and Earth Observation lab (GIS-GEOLab@Politecnico di Milano) were incorporated to enhance the training and testing sets. While acknowledging the potential of crowd-sourced landslide data inventories such as NASA - Cooperative Open Online Landslide Repository, the study prioritized proprietary and ground-truth datasets from national repositories to ensure the accuracy of the target outcomes. 
+
+
 ::: {style="color: #603494;"}
 #### **Landslide Factors Dataset Overview** {style="color: #603494;"}
 :::
